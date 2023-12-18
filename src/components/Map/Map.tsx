@@ -38,7 +38,7 @@ export default function Map() {
 		location.geoLocationCoordinates.lat,
 		location.geoLocationCoordinates.lng,
 	]
-	
+
 	return (
 		<>
 			<MapContainer
@@ -48,11 +48,11 @@ export default function Map() {
 				ref={mapRef}
 			>
 				<TileLayer attribution={MapUtils.maputils.attribution} url={MapUtils.maputils.url} />
-				{location.loaded && !location.error}(
+				{location.loaded && !location.error && (
 					<Marker position={userPosition}>
 						<Popup>Et on fait tourner les serviettes !</Popup>
 					</Marker>
-				)
+				)}
 			</MapContainer>
 		</>
 	)
