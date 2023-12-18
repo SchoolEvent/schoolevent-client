@@ -4,6 +4,8 @@ import { FavoritesList, Table } from './_components'
 
 import './ContactsLayout-styles.less'
 
+import Map from '../Map/Map'
+
 const { Content, Header, Sider } = Layout
 
 export function ContactsLayout() {
@@ -16,6 +18,7 @@ export function ContactsLayout() {
 				</Sider>
 				<Content>
 					<Table />
+					<Map />
 				</Content>
 			</Layout>
 		</Layout>
