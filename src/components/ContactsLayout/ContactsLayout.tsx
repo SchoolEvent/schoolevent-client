@@ -5,6 +5,7 @@ import { useLayoutEffect, useReducer, useState } from 'react'
 import { Info } from '@components'
 import { useDebounce } from '@utils'
 
+import Map from '../Map/Map'
 import { FavoritesList, Table } from './_components'
 import { INIT_TABLE_STATE } from './_components/Table/Table-constants'
 import { reducer } from './_components/Table/Table-utils'
@@ -85,6 +86,7 @@ export function ContactsLayout() {
 							globalSearch={debouncedGlobalSearch}
 							tableConfigReducer={{ tableConfig, setTableConfig }}
 						/>
+						<Map />
 					</Content>
 				</Layout>
 			</Content>
