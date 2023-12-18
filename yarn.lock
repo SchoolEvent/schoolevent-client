@@ -582,7 +582,7 @@
   version "7.0.15"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.15.tgz#596a1747233694d50f6ad8a7869fcb6f56cf5841"
 
-"@types/leaflet@^1.9.8":
+"@types/leaflet@1.9.8":
   version "1.9.8"
   resolved "https://registry.yarnpkg.com/@types/leaflet/-/leaflet-1.9.8.tgz#32162a8eaf305c63267e99470b9603b5883e63e8"
   dependencies:
@@ -1773,7 +1773,7 @@ keyv@^4.5.3:
   dependencies:
     json-buffer "3.0.1"
 
-leaflet@^1.9.4:
+leaflet@1.9.4:
   version "1.9.4"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.9.4.tgz#23fae724e282fa25745aff82ca4d394748db7d8d"
 
