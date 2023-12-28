@@ -189,6 +189,10 @@ export function Table() {
 				showTotal: (total, range) => {
 					return `${range[0]}-${range[1]} sur ${total} établissements`
 				},
+				locale: {
+					next_page: 'Page suivante',
+					prev_page: 'Page précédente',
+				},
 			}}
 			expandable={{
 				expandedRowRender: (record) => {
@@ -219,6 +223,18 @@ export function Table() {
 						payload: sorter.order ? { field: sorter.field as keyof ISchool, order } : null,
 					})
 				}
+			}}
+			locale={{
+				emptyText: 'Aucun établissement trouvé',
+				filterConfirm: 'OK',
+				filterReset: 'Réinitialiser',
+				filterTitle: 'Filtres',
+				selectAll: 'Tout sélectionner',
+				selectInvert: 'Inverser la sélection',
+				sortTitle: 'Trier',
+				triggerAsc: 'Trier par ordre croissant',
+				triggerDesc: 'Trier par ordre décroissant',
+				cancelSort: 'Annuler le tri',
 			}}
 		/>
 	)
