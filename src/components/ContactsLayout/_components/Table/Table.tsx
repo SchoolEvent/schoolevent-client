@@ -1,5 +1,5 @@
 import { Star as FavoriteIcon } from '@phosphor-icons/react'
-import { Table as AntdTable, Button, Space, Typography } from 'antd'
+import { Table as AntdTable, Button, Grid, Space, Typography } from 'antd'
 import { ColumnsType, TableRef } from 'antd/lib/table'
 import { useEffect, useLayoutEffect, useReducer, useRef } from 'react'
 
@@ -13,12 +13,15 @@ import { fetchTableData, getSortOrder, reducer } from './Table-utils'
 
 import './Table-styles.less'
 
+const { useBreakpoint } = Grid
+
 export function Table() {
 	const [tableConfig, setTableConfig] = useReducer(reducer, INIT_TABLE_STATE)
 	const { user } = useAuth()
 	const { favorites, addFavorite, deleteFavorite, doesFavoriteExist } = useFavorites()
 	const localStorage = useLocalStorage()
 	const tableRef = useRef<TableRef>(null)
+	const screens = useBreakpoint()
 
 	const handleFavorites = async (record: ISchool) => {
 		if (user) {
@@ -161,6 +164,7 @@ export function Table() {
 	return (
 		<AntdTable<ISchool>
 			ref={tableRef}
+			size={screens.xxl ? 'large' : 'small'}
 			rowKey={(record) =>
 				`${record.identifiant_de_l_etablissement}-${record.nom_commune}-${record.code_postal}`
 			}
