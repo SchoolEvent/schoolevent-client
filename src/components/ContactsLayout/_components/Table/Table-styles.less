@@ -58,18 +58,20 @@
 			}
 		}
 
-		tr:nth-child(even) {
-			td.ant-table-cell.ant-table-cell-row-hover {
-				background: #fdf0e3;
-			}
-		}
-
-		tr:nth-child(odd) {
-			td.ant-table-cell {
-				background: #fffbf8;
-
-				&.ant-table-cell-row-hover {
+		tr.ant-table-row {
+			&.even-row {
+				td.ant-table-cell.ant-table-cell-row-hover {
 					background: #fdf0e3;
+				}
+			}
+
+			&.odd-row {
+				td.ant-table-cell {
+					background: #fffbf8;
+
+					&.ant-table-cell-row-hover {
+						background: #fdf0e3;
+					}
 				}
 			}
 		}

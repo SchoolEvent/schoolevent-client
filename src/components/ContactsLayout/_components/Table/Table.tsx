@@ -92,7 +92,6 @@ export function Table() {
 				...school,
 				favoris: favorites.some((fav) => fav.id === school.identifiant_de_l_etablissement),
 			}))
-			console.log(data)
 
 			setTableConfig({
 				type: 'SET_DATA',
@@ -165,6 +164,7 @@ export function Table() {
 			rowKey={(record) =>
 				`${record.identifiant_de_l_etablissement}-${record.nom_commune}-${record.code_postal}`
 			}
+			rowClassName={(_record, index) => (index % 2 === 0 ? 'even-row' : 'odd-row')}
 			scroll={{ y: tableConfig.tableHeight }}
 			className="contacts-table"
 			columns={columns}
