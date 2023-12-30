@@ -1,15 +1,21 @@
 import { Star as FavoriteIcon } from '@phosphor-icons/react'
-import { Table as AntdTable, Button, Grid, Space, Typography } from 'antd'
+import { Table as AntdTable, Button, Grid, InputRef, Space, Typography } from 'antd'
 import { ColumnsType, TableRef } from 'antd/lib/table'
 import { useEffect, useLayoutEffect, useReducer, useRef } from 'react'
 
 import { useAuth, useFavorites } from '@contexts'
 import { ITableStorage } from '@types'
-import { useLocalStorage } from '@utils'
+import { isStringEmpty, useLocalStorage } from '@utils'
 
 import { INIT_TABLE_STATE, SELECTED_FIELDS } from './Table-constants'
 import { IAPIResponse, ISchool } from './Table-types'
-import { fetchTableData, getSortOrder, reducer } from './Table-utils'
+import {
+	WhereQueryBuilder,
+	fetchTableData,
+	getColumnSearchProps,
+	getSortOrder,
+	reducer,
+} from './Table-utils'
 
 import './Table-styles.less'
 
@@ -21,6 +27,7 @@ export function Table() {
 	const { favorites, addFavorite, deleteFavorite, doesFavoriteExist } = useFavorites()
 	const localStorage = useLocalStorage()
 	const tableRef = useRef<TableRef>(null)
+	const searchRef = useRef<InputRef>(null)
 	const screens = useBreakpoint()
 
 	const handleFavorites = async (record: ISchool) => {
@@ -81,11 +88,22 @@ export function Table() {
 		const fetchData = async () => {
 			setTableConfig({ type: 'SET_LOADING', payload: { loading: true } })
 
+			if (tableConfig.where.isEmpty()) {
+				const queryBuilder = new WhereQueryBuilder()
+				queryBuilder
+					.equals('type_etablissement', 'Collège')
+					.or()
+					.equals('type_etablissement', 'Lycée')
+				setTableConfig({ type: 'SET_WHERE', payload: { where: queryBuilder } })
+
+				return
+			}
+
 			const rawResponse = await fetchTableData({
 				limit: tableConfig.paginationSize,
 				offset: tableConfig.offset,
 				select: SELECTED_FIELDS,
-				where: 'type_etablissement="Lycée" OR type_etablissement="Collège"',
+				where: tableConfig.where.build(),
 				orderBy: tableConfig.orderBy,
 			})
 			const response: IAPIResponse = await rawResponse.json()
@@ -104,7 +122,14 @@ export function Table() {
 		}
 
 		fetchData()
-	}, [tableConfig.paginationSize, tableConfig.offset, tableConfig.orderBy, localStorage, favorites])
+	}, [
+		tableConfig.paginationSize,
+		tableConfig.offset,
+		tableConfig.orderBy,
+		tableConfig.where,
+		localStorage,
+		favorites,
+	])
 
 	const columns: ColumnsType<ISchool> = [
 		{
@@ -120,6 +145,16 @@ export function Table() {
 			dataIndex: 'type_etablissement',
 			sorter: true,
 			sortOrder: getSortOrder('type_etablissement', tableConfig.orderBy),
+			filters: [
+				{
+					text: 'Collège',
+					value: 'Collège',
+				},
+				{
+					text: 'Lycée',
+					value: 'Lycée',
+				},
+			],
 		},
 		{
 			key: 'nom_commune',
@@ -141,6 +176,24 @@ export function Table() {
 			dataIndex: 'adresse_1',
 			sorter: true,
 			sortOrder: getSortOrder('adresse_1', tableConfig.orderBy),
+			...getColumnSearchProps({
+				dataIndex: 'adresse_1',
+				inputRef: searchRef,
+				confirmCallback: (q) => {
+					const queryBuilder = tableConfig.where.copy()
+
+					if (q && !isStringEmpty(q)) {
+						queryBuilder.search('adresse_1', q)
+
+						setTableConfig({ type: 'SET_WHERE', payload: { where: queryBuilder } })
+					} else {
+						setTableConfig({ type: 'SET_WHERE', payload: { where: queryBuilder } })
+					}
+				},
+				resetCallback: () => {
+					setTableConfig({ type: 'SET_WHERE', payload: { where: tableConfig.where } })
+				},
+			}),
 		},
 		{
 			key: 'favoris',
@@ -212,7 +265,7 @@ export function Table() {
 				showExpandColumn: true,
 				rowExpandable: (record) => !!record,
 			}}
-			onChange={(_pagination, _filters, sorter) => {
+			onChange={(_pagination, filters, sorter) => {
 				if (!Array.isArray(sorter) && Object.entries(sorter).length > 0) {
 					const order = sorter.order === 'ascend' ? 'ASC' : 'DESC'
 
@@ -222,6 +275,27 @@ export function Table() {
 						type: 'SET_ORDER_BY',
 						payload: sorter.order ? { field: sorter.field as keyof ISchool, order } : null,
 					})
+				}
+
+				if (filters.type_etablissement) {
+					// const filterEtablissement = `type_etablissement="${filters.type_etablissement[0]}"`
+					// const newQuery = tableConfig.where
+					// 	? `${tableConfig.where} AND ${filterEtablissement}`
+					// 	: filterEtablissement
+					const queryBuilder = tableConfig.where.copy()
+					const filterValue = String(filters.type_etablissement[0])
+
+					if (queryBuilder.isEmpty()) {
+						queryBuilder.equals('type_etablissement', filterValue)
+					} else if (queryBuilder.hasDefaultSchoolFilter()) {
+						// queryBuilder.and().equals('type_etablissement', filterValue)
+						queryBuilder.removeDefaultSchoolFilter()
+						queryBuilder.isEmpty()
+							? queryBuilder.equals('type_etablissement', filterValue)
+							: queryBuilder.and().equals('type_etablissement', filterValue)
+					}
+
+					setTableConfig({ type: 'SET_WHERE', payload: { where: queryBuilder } })
 				}
 			}}
 			locale={{
