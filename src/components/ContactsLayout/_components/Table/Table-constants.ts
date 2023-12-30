@@ -1,4 +1,5 @@
 import { ITableConfigState } from './Table-types'
+import { WhereQueryBuilder } from './Table-utils'
 
 export const GOUV_API_URL =
 	'https://data.education.gouv.fr/api/explore/v2.1/catalog/datasets/fr-en-annuaire-education/records'
@@ -13,4 +14,5 @@ export const INIT_TABLE_STATE: ITableConfigState = {
 	paginationSize: 25,
 	offset: 0,
 	tableHeight: 0,
+	where: new WhereQueryBuilder(),
 }

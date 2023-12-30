@@ -1,3 +1,7 @@
+import { InputRef } from 'antd'
+
+import { WhereQueryBuilder } from './Table-utils'
+
 export interface IQueryParams {
 	limit: number
 	offset: number
@@ -27,6 +31,7 @@ export type TReducerActionType =
 	| TSetOffsetAction
 	| TSetOrderByAction
 	| TSetTableHeightAction
+	| TSetWhereAction
 
 export interface IAPIResponse {
 	total_count: number
@@ -77,6 +82,13 @@ type TSetTableHeightAction = {
 	}
 }
 
+type TSetWhereAction = {
+	type: 'SET_WHERE'
+	payload: {
+		where: WhereQueryBuilder
+	}
+}
+
 export interface ITableConfigState {
 	data: ISchool[]
 	loading: boolean
@@ -85,4 +97,12 @@ export interface ITableConfigState {
 	offset: number
 	orderBy?: string
 	tableHeight: number
+	where: WhereQueryBuilder
+}
+
+export interface IGetColumnSearchPropsParams {
+	dataIndex: keyof Omit<ISchool, 'favoris'>
+	inputRef: React.RefObject<InputRef>
+	confirmCallback?: (q: string | undefined) => void
+	resetCallback?: () => void
 }
