@@ -10,8 +10,9 @@ import { isStringEmpty, useLocalStorage } from '@utils'
 import { INIT_TABLE_STATE, SELECTED_FIELDS } from './Table-constants'
 import { IAPIResponse, ISchool } from './Table-types'
 import {
-	WhereQueryBuilder,
+	QueryStringBuilder,
 	fetchTableData,
+	getColumnRadioProps,
 	getColumnSearchProps,
 	getSortOrder,
 	reducer,
@@ -88,22 +89,13 @@ export function Table() {
 		const fetchData = async () => {
 			setTableConfig({ type: 'SET_LOADING', payload: { loading: true } })
 
-			if (tableConfig.where.isEmpty()) {
-				const queryBuilder = new WhereQueryBuilder()
-				queryBuilder
-					.equals('type_etablissement', 'Collège')
-					.or()
-					.equals('type_etablissement', 'Lycée')
-				setTableConfig({ type: 'SET_WHERE', payload: { where: queryBuilder } })
-
-				return
-			}
-
 			const rawResponse = await fetchTableData({
 				limit: tableConfig.paginationSize,
 				offset: tableConfig.offset,
 				select: SELECTED_FIELDS,
-				where: tableConfig.where.build(),
+				where: isStringEmpty(tableConfig.where)
+					? "type_etablissement IN ('Collège', 'Lycée')"
+					: tableConfig.where,
 				orderBy: tableConfig.orderBy,
 			})
 			const response: IAPIResponse = await rawResponse.json()
@@ -138,6 +130,9 @@ export function Table() {
 			dataIndex: 'nom_etablissement',
 			sorter: true,
 			sortOrder: getSortOrder('nom_etablissement', tableConfig.orderBy),
+			...getColumnSearchProps({
+				inputRef: searchRef,
+			}),
 		},
 		{
 			key: 'type_etablissement',
@@ -145,16 +140,12 @@ export function Table() {
 			dataIndex: 'type_etablissement',
 			sorter: true,
 			sortOrder: getSortOrder('type_etablissement', tableConfig.orderBy),
-			filters: [
-				{
-					text: 'Collège',
-					value: 'Collège',
-				},
-				{
-					text: 'Lycée',
-					value: 'Lycée',
-				},
-			],
+			...getColumnRadioProps({
+				options: [
+					{ label: 'Collège', value: 'Collège' },
+					{ label: 'Lycée', value: 'Lycée' },
+				],
+			}),
 		},
 		{
 			key: 'nom_commune',
@@ -162,6 +153,9 @@ export function Table() {
 			dataIndex: 'nom_commune',
 			sorter: true,
 			sortOrder: getSortOrder('nom_commune', tableConfig.orderBy),
+			...getColumnSearchProps({
+				inputRef: searchRef,
+			}),
 		},
 		{
 			key: 'code_postal',
@@ -169,6 +163,9 @@ export function Table() {
 			dataIndex: 'code_postal',
 			sorter: true,
 			sortOrder: getSortOrder('code_postal', tableConfig.orderBy),
+			...getColumnSearchProps({
+				inputRef: searchRef,
+			}),
 		},
 		{
 			key: 'adresse_1',
@@ -177,22 +174,7 @@ export function Table() {
 			sorter: true,
 			sortOrder: getSortOrder('adresse_1', tableConfig.orderBy),
 			...getColumnSearchProps({
-				dataIndex: 'adresse_1',
 				inputRef: searchRef,
-				confirmCallback: (q) => {
-					const queryBuilder = tableConfig.where.copy()
-
-					if (q && !isStringEmpty(q)) {
-						queryBuilder.search('adresse_1', q)
-
-						setTableConfig({ type: 'SET_WHERE', payload: { where: queryBuilder } })
-					} else {
-						setTableConfig({ type: 'SET_WHERE', payload: { where: queryBuilder } })
-					}
-				},
-				resetCallback: () => {
-					setTableConfig({ type: 'SET_WHERE', payload: { where: tableConfig.where } })
-				},
 			}),
 		},
 		{
@@ -277,26 +259,10 @@ export function Table() {
 					})
 				}
 
-				if (filters.type_etablissement) {
-					// const filterEtablissement = `type_etablissement="${filters.type_etablissement[0]}"`
-					// const newQuery = tableConfig.where
-					// 	? `${tableConfig.where} AND ${filterEtablissement}`
-					// 	: filterEtablissement
-					const queryBuilder = tableConfig.where.copy()
-					const filterValue = String(filters.type_etablissement[0])
+				const queryBuilder = new QueryStringBuilder(filters)
+				const queryString = queryBuilder.build()
 
-					if (queryBuilder.isEmpty()) {
-						queryBuilder.equals('type_etablissement', filterValue)
-					} else if (queryBuilder.hasDefaultSchoolFilter()) {
-						// queryBuilder.and().equals('type_etablissement', filterValue)
-						queryBuilder.removeDefaultSchoolFilter()
-						queryBuilder.isEmpty()
-							? queryBuilder.equals('type_etablissement', filterValue)
-							: queryBuilder.and().equals('type_etablissement', filterValue)
-					}
-
-					setTableConfig({ type: 'SET_WHERE', payload: { where: queryBuilder } })
-				}
+				setTableConfig({ type: 'SET_WHERE', payload: { where: queryString } })
 			}}
 			locale={{
 				emptyText: 'Aucun établissement trouvé',

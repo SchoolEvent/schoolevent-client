@@ -1,5 +1,5 @@
 import { MagnifyingGlass as SearchIcon } from '@phosphor-icons/react'
-import { Button, Input, Space } from 'antd'
+import { Button, Input, Radio, Space } from 'antd'
 import { ColumnType } from 'antd/lib/table'
 import { SortOrder } from 'antd/lib/table/interface'
 
@@ -8,11 +8,13 @@ import { getLocalStorage } from '@utils'
 
 import { GOUV_API_URL } from './Table-constants'
 import {
+	IGetColumnRadioPropsParams,
 	IGetColumnSearchPropsParams,
 	IQueryParams,
 	ISchool,
 	ITableConfigState,
 	TReducerActionType,
+	TTableFilters,
 } from './Table-types'
 
 export function fetchTableData(queryParams: IQueryParams) {
@@ -124,14 +126,14 @@ export function getSortOrder(
 }
 
 export function getColumnSearchProps(params: IGetColumnSearchPropsParams): ColumnType<ISchool> {
-	const { inputRef, confirmCallback, resetCallback } = params
+	const { inputRef } = params
 
 	// Even though selectedKeys is used as an array, it corresponds to the current
 	// filter value. It allows to have a controlled input value without declaring
 	// a state ourselves.
 	return {
 		filterDropdown: ({ confirm, clearFilters, selectedKeys, setSelectedKeys }) => (
-			<div className="custom-filter-dropdown">
+			<Space className="custom-filter-dropdown search" direction="vertical">
 				<Input
 					ref={inputRef}
 					value={selectedKeys[0]}
@@ -139,14 +141,13 @@ export function getColumnSearchProps(params: IGetColumnSearchPropsParams): Colum
 					onChange={(e) => {
 						setSelectedKeys(e.target.value ? [e.target.value] : [])
 					}}
+					onPressEnter={() => confirm()}
 				/>
 				<Space className="custom-filter-dropdown__btns-container">
 					<Button
 						type="link"
 						size="small"
 						onClick={() => {
-							console.log(selectedKeys)
-							resetCallback?.()
 							clearFilters?.()
 							// confirm() is important here because if we don't call it the input
 							// won't be cleared properly.
@@ -159,14 +160,13 @@ export function getColumnSearchProps(params: IGetColumnSearchPropsParams): Colum
 						type="primary"
 						size="small"
 						onClick={() => {
-							confirmCallback?.(selectedKeys[0] as string)
 							confirm()
 						}}
 					>
 						OK
 					</Button>
 				</Space>
-			</div>
+			</Space>
 		),
 		filterIcon: <SearchIcon size="16px" />,
 		onFilterDropdownOpenChange: (visible) => {
@@ -181,172 +181,105 @@ export function getColumnSearchProps(params: IGetColumnSearchPropsParams): Colum
 	}
 }
 
+export function getColumnRadioProps(params: IGetColumnRadioPropsParams): ColumnType<ISchool> {
+	const { options } = params
+
+	// Even though selectedKeys is used as an array, it corresponds to the current
+	// filter value. It allows to have a controlled input value without declaring
+	// a state ourselves.
+	return {
+		filterDropdown: ({ confirm, clearFilters, selectedKeys, setSelectedKeys }) => (
+			<Space className="custom-filter-dropdown radio" direction="vertical">
+				<Radio.Group value={selectedKeys[0]} onChange={(e) => setSelectedKeys([e.target.value])}>
+					<Space direction="vertical">
+						{options.map(({ label, value }) => (
+							<Radio key={value} value={value}>
+								{label}
+							</Radio>
+						))}
+					</Space>
+				</Radio.Group>
+				<Space className="custom-filter-dropdown__btns-container">
+					<Button
+						type="link"
+						size="small"
+						onClick={() => {
+							clearFilters?.()
+							// confirm() is important here because if we don't call it the input
+							// won't be cleared properly.
+							confirm()
+						}}
+					>
+						Réinitialiser
+					</Button>
+					<Button
+						type="primary"
+						size="small"
+						onClick={() => {
+							confirm()
+						}}
+					>
+						OK
+					</Button>
+				</Space>
+			</Space>
+		),
+	}
+}
+
 /**
  * This class is a utility class for building SQL WHERE clauses.
- *
- * Each conditions **MUST** be chained with the method `.and()` or `.or()`.
- *
- * @example
- * ```
- * const builder = new WhereQueryBuilder()
- * builder.equals('type_etablissement', 'Collège').and().equals('code_postal', '95310')
- * const queryString = builder.build()
- * // queryString = "type_etablissement="Collège" AND code_postal="95310""
- * ```
  */
-export class WhereQueryBuilder {
-	private conditions: (string | WhereQueryBuilder)[] = []
+export class QueryStringBuilder {
+	private filters: TTableFilters | undefined
 
-	constructor(conditions?: (string | WhereQueryBuilder)[]) {
-		if (conditions) {
-			this.conditions = conditions
+	constructor(filters?: TTableFilters) {
+		this.filters = filters
+	}
+
+	/**
+	 * Returns the SQL WHERE clause as a string.
+	 */
+	public build(): string {
+		if (!this.filters) {
+			return ''
 		}
-	}
 
-	/**
-	 * Adds an equality condition to the query. Returns the current instance for
-	 * chaining.
-	 */
-	equals(field: string, value: React.Key): WhereQueryBuilder {
-		this.conditions.push(`${field}=${this.stringifyValue(value)}`)
-		return this
-	}
+		const where: string[] = []
 
-	/**
-	 * Adds a greater-than condition to the query. Returns the current instance
-	 * for chaining.
-	 */
-	greaterThan(field: string, value: number): WhereQueryBuilder {
-		this.conditions.push(`${field}>${value}`)
-		return this
-	}
-
-	/**
-	 * Adds a lower-than condition to the query. Returns the current instance
-	 * for chaining.
-	 */
-	lowerThan(field: string, value: number): WhereQueryBuilder {
-		this.conditions.push(`${field}<${value}`)
-		return this
-	}
-
-	/**
-	 * Adds a LIKE condition to the query. Returns the current instance for chaining.
-	 */
-	like(field: string, value: React.Key): WhereQueryBuilder {
-		this.conditions.push(`${field} LIKE ${this.stringifyValue(value)}`)
-		return this
-	}
-
-	/**
-	 * Adds a custom condition to the query. Returns the current instance for chaining.
-	 */
-	custom(condition: string): WhereQueryBuilder {
-		this.conditions.push(condition)
-		return this
-	}
-
-	/**
-	 * Adds an AND operator to the query. Returns the current instance for chaining.
-	 */
-	and(): WhereQueryBuilder {
-		this.conditions.push('AND')
-		return this
-	}
-
-	/**
-	 * Adds an OR operator to the query. Returns the current instance for chaining.
-	 */
-	or(): WhereQueryBuilder {
-		this.conditions.push('OR')
-		return this
-	}
-
-	/**
-	 * Opens a parenthesis for nested conditions. This method helps build complex
-	 * queries. Returns a new instance for the nested conditions.
-	 */
-	openParen(): WhereQueryBuilder {
-		const subBuilder = new WhereQueryBuilder()
-		this.conditions.push(subBuilder)
-		return subBuilder
-	}
-
-	/**
-	 * Closes a parenthesis for nested conditions. Returns the parent instance for
-	 * chaining.
-	 */
-	closeParen(): WhereQueryBuilder {
-		return this
-	}
-
-	/**
-	 * Builds and returns the final query string.
-	 */
-	build(): string {
-		const result = this.conditions
-			.map((condition) => {
-				if (condition instanceof WhereQueryBuilder) {
-					return `(${condition.build()})`
+		for (const [key, value] of Object.entries(this.filters)) {
+			if (key === 'type_etablissement') {
+				if (value) {
+					where.push(`type_etablissement = '${value}'`)
+				} else {
+					where.push(`type_etablissement IN ('Collège', 'Lycée')`)
 				}
 
-				return condition
-			})
-			.join(' ')
+				continue
+			}
 
-		return result
-	}
+			if (value === null) {
+				continue
+			}
 
-	hasDefaultSchoolFilter(): boolean {
-		return this.build().includes('type_etablissement="Collège" OR type_etablissement="Lycée"')
-	}
+			if (value.length === 0) {
+				continue
+			}
 
-	indexOf(condition: string | WhereQueryBuilder): number {
-		return this.conditions.indexOf(condition)
-	}
-
-	removeDefaultSchoolFilter(): void {
-		const indexOfCollege = this.indexOf('type_etablissement="Collège"')
-		const indexOfLycee = this.indexOf('type_etablissement="Lycée"')
-
-		if (indexOfCollege !== -1 && indexOfLycee !== -1) {
-			if (indexOfCollege < indexOfLycee) {
-				this.conditions.splice(indexOfCollege, indexOfLycee - indexOfCollege + 1)
+			if (value.length === 1) {
+				where.push(`search(${key}, '${value[0]}')`)
 			} else {
-				this.conditions.splice(indexOfLycee, indexOfCollege - indexOfLycee + 1)
+				where.push(`${key} IN ('${value.join('","')}')`)
 			}
 		}
-	}
 
-	removeCondition(condition: string | WhereQueryBuilder): WhereQueryBuilder {
-		const index = this.conditions.indexOf(condition)
-		if (index !== -1) {
-			this.conditions.splice(index, 1)
-		}
-		return this
-	}
-
-	isEmpty(): boolean {
-		return this.conditions.length === 0
-	}
-
-	search(field: string, value: string): WhereQueryBuilder {
-		this.conditions.push(`search(${field}, "${value}")`)
-		return this
-	}
-
-	copy(): WhereQueryBuilder {
-		return new WhereQueryBuilder(this.conditions)
+		return where.join(' AND ')
 	}
 
 	/**
-	 * Private method to convert a value to a string. If the value is a string,
-	 * it is enclosed in quotes.
+	 * Returns true if the builder is empty, false otherwise.
 	 */
-	private stringifyValue(value: React.Key): string {
-		if (typeof value === 'string') {
-			return `"${value}"`
-		}
-		return String(value)
+	public isEmpty(): boolean {
+		return !this.filters || Object.entries(this.filters).length === 0
 	}
 }
