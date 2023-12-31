@@ -1,6 +1,5 @@
 import { InputRef } from 'antd'
-
-import { WhereQueryBuilder } from './Table-utils'
+import { FilterValue } from 'antd/lib/table/interface'
 
 export interface IQueryParams {
 	limit: number
@@ -85,7 +84,7 @@ type TSetTableHeightAction = {
 type TSetWhereAction = {
 	type: 'SET_WHERE'
 	payload: {
-		where: WhereQueryBuilder
+		where: string
 	}
 }
 
@@ -97,12 +96,15 @@ export interface ITableConfigState {
 	offset: number
 	orderBy?: string
 	tableHeight: number
-	where: WhereQueryBuilder
+	where?: string
 }
 
 export interface IGetColumnSearchPropsParams {
-	dataIndex: keyof Omit<ISchool, 'favoris'>
 	inputRef: React.RefObject<InputRef>
-	confirmCallback?: (q: string | undefined) => void
-	resetCallback?: () => void
 }
+
+export interface IGetColumnRadioPropsParams {
+	options: { label: string; value: React.Key }[]
+}
+
+export type TTableFilters = Record<string, FilterValue | null>

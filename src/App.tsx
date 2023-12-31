@@ -1,4 +1,4 @@
-import { ConfigProvider, theme as themeAlg } from 'antd'
+import { ConfigProvider } from 'antd'
 import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
@@ -36,7 +36,8 @@ function App() {
 			theme={{
 				cssVar: true,
 				token: { colorPrimary: '#FE8E06' },
-				algorithm: theme === 'dark' ? themeAlg.darkAlgorithm : themeAlg.defaultAlgorithm,
+				// TODO: fix issue with dark theme
+				// algorithm: theme === 'dark' ? themeAlg.darkAlgorithm : themeAlg.defaultAlgorithm,
 			}}
 		>
 			<Helmet>
