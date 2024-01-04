@@ -49,8 +49,8 @@ export function Table() {
 	}
 
 	useLayoutEffect(() => {
-		// This part is used to either set the table config from the local storage
-		// or to set the local storage with the table config
+		// This part is used to either import the table config from the local storage
+		// or to export the table config to the local storage if it doesn't exist.
 		if (localStorage.has('contacts.table')) {
 			const { orderBy, paginationSize } = localStorage.get('contacts.table') as ITableStorage
 
