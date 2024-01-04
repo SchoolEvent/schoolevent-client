@@ -1,4 +1,5 @@
 import { Button, Form, Input } from 'antd'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useSupabase } from '@utils'
@@ -6,6 +7,7 @@ import { useSupabase } from '@utils'
 import { ILoginFormFields } from '../types'
 
 export function LoginForm() {
+	const [isSubmittable, setIsSubmittable] = useState(false)
 	const [form] = Form.useForm()
 	const supabase = useSupabase()
 	const navigate = useNavigate()
@@ -27,6 +29,19 @@ export function LoginForm() {
 		navigate('/')
 	}
 
+	const values = Form.useWatch([], form)
+
+	useEffect(() => {
+		form.validateFields({ validateOnly: true }).then(
+			() => {
+				setIsSubmittable(true)
+			},
+			() => {
+				setIsSubmittable(false)
+			},
+		)
+	}, [values])
+
 	return (
 		<Form
 			form={form}
@@ -40,7 +55,21 @@ export function LoginForm() {
 			<Form.Item<ILoginFormFields>
 				label="Email"
 				name="email"
-				rules={[{ required: true, message: 'Veuillez saisir votre email.' }]}
+				validateFirst
+				rules={[
+					{ required: true, message: 'Veuillez saisir votre email.' },
+					() => ({
+						validator(_, value) {
+							const regexp = new RegExp(/^[a-zA-Z.]+@(edu\.)?esiee-it\.fr$/)
+
+							if (regexp.test(value)) {
+								return Promise.resolve()
+							}
+
+							return Promise.reject(new Error('Veuillez saisir votre email étudiant.'))
+						},
+					}),
+				]}
 			>
 				<Input />
 			</Form.Item>
@@ -54,7 +83,7 @@ export function LoginForm() {
 			</Form.Item>
 
 			<Form.Item>
-				<Button htmlType="submit" type="primary" block>
+				<Button htmlType="submit" type="primary" block disabled={!isSubmittable}>
 					Connexion
 				</Button>
 			</Form.Item>
