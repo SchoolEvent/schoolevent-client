@@ -1,4 +1,5 @@
+export { ContactsLayout } from './ContactsLayout/ContactsLayout'
+export { IconButton } from './IconButton/IconButton'
+export { Info } from './Info/Info'
 export { Login } from './Login/Login'
 export { MainLayout } from './MainLayout/MainLayout'
-export { IconButton } from './IconButton/IconButton'
-export { ContactsLayout } from './ContactsLayout/ContactsLayout'
