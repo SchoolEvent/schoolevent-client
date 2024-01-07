@@ -1,13 +1,16 @@
-import { SignOut as SignOutIcon } from '@phosphor-icons/react'
-import { Avatar, Dropdown } from 'antd'
+import { CaretDown as CaretDownIcon, SignOut as SignOutIcon } from '@phosphor-icons/react'
+import { Avatar, Dropdown, Space } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useAuth } from '@contexts'
+import { capitalize } from '@utils'
 
-// import { capitalize } from '@utils'
+import './UserMenu-styles.less'
 
 export function UserMenu() {
+	const [isOpen, setIsOpen] = useState<boolean>(false)
 	const { signOut, user } = useAuth()
 	const navigate = useNavigate()
 
@@ -27,21 +30,33 @@ export function UserMenu() {
 		return null
 	}
 
-	// TODO: uncomment this when we are able to use school email
-	// const getName = (email: string) => {
-	// 	const fullname = email.split('@').shift()!.split('.')
-	// 	fullname[0] = capitalize(fullname[0])
-	// 	fullname[1] = capitalize(fullname[1])
+	const getFullname = (email: string) => {
+		const fullname = email.split('@').shift()!.split('.')
+		fullname[0] = capitalize(fullname[0])
+		fullname[1] = capitalize(fullname[1])
 
-	// 	return fullname.join(' ')
-	// }
+		return fullname.join(' ')
+	}
 
-	// const name = getName(user.email!)
-	// const initials = name.split(' ')[0].charAt(0) + name.split(' ')[1].charAt(0)
+	const fullname = getFullname(user.email!)
+	const initials = fullname.split(' ')[0].charAt(0) + fullname.split(' ')[1].charAt(0)
 
 	return (
-		<Dropdown menu={{ items }}>
-			<Avatar />
-		</Dropdown>
+		<Space direction="horizontal" className={`user-menu${isOpen ? ' user-menu__active' : ''}`}>
+			<Avatar>{initials}</Avatar>
+			{fullname}
+			<Dropdown
+				menu={{ items }}
+				className="user-menu__dropdown"
+				onOpenChange={(open) => {
+					setIsOpen(open)
+				}}
+				trigger={['click']}
+			>
+				<i className="user-menu__icon">
+					<CaretDownIcon size="1rem" />
+				</i>
+			</Dropdown>
+		</Space>
 	)
 }

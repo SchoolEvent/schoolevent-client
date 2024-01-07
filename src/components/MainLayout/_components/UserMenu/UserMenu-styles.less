@@ -1,0 +1,24 @@
+.user-menu {
+	float: right;
+
+	&__icon {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 3px;
+		background-color: var(--ant-color-border-secondary);
+		border-radius: var(--ant-border-radius);
+		transition: var(--ant-motion-duration-mid);
+
+		&:hover {
+			background-color: var(--ant-color-border);
+			cursor: pointer;
+		}
+	}
+
+	&__active {
+		.user-menu__icon {
+			background-color: var(--ant-color-border);
+		}
+	}
+}

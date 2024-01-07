@@ -4,9 +4,9 @@ import { ColumnType } from 'antd/lib/table'
 import { SortOrder } from 'antd/lib/table/interface'
 
 import { ITableStorage } from '@types'
-import { getLocalStorage } from '@utils'
+import { getLocalStorage, isStringEmpty } from '@utils'
 
-import { GOUV_API_URL } from './Table-constants'
+import { DEFAULT_ETABLISSEMENT_FILTER, GOUV_API_URL } from './Table-constants'
 import {
 	IGetColumnRadioPropsParams,
 	IGetColumnSearchPropsParams,
@@ -252,7 +252,7 @@ export class QueryStringBuilder {
 				if (value) {
 					where.push(`type_etablissement = '${value}'`)
 				} else {
-					where.push('type_etablissement IN (\'Collège\', \'Lycée\')')
+					where.push(DEFAULT_ETABLISSEMENT_FILTER)
 				}
 
 				continue
@@ -282,4 +282,12 @@ export class QueryStringBuilder {
 	public isEmpty(): boolean {
 		return !this.filters || Object.entries(this.filters).length === 0
 	}
+}
+
+export function getGlobalSearch(globalSearch: string): string | null {
+	if (isStringEmpty(globalSearch)) {
+		return null
+	}
+
+	return `search(nom_etablissement, '${globalSearch}') OR search(nom_commune, '${globalSearch}') OR search(code_postal, '${globalSearch}') OR search(adresse_1, '${globalSearch}')`
 }

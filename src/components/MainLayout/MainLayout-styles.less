@@ -1,7 +1,7 @@
-.ant-layout {
+.main-layout {
 	height: 100%;
 
-	.ant-layout-sider {
+	&__sider {
 		.sider__logo {
 			display: flex;
 			align-items: center;
@@ -22,7 +22,7 @@
 			}
 		}
 
-		&-collapsed {
+		&.ant-layout-sider-collapsed {
 			.sider__logo {
 				img:nth-child(1) {
 					margin-left: 15px;
@@ -39,7 +39,7 @@
 		margin-top: 2rem;
 	}
 
-	.ant-layout-header {
+	&__header {
 		position: relative;
 		background-color: #f6f6f6;
 
@@ -51,7 +51,7 @@
 			transform: translate(-30%, -50%);
 
 			svg {
-				transition: rotate 250ms ease-in-out;
+				transition: rotate var(--ant-motion-duration-mid);
 			}
 		}
 
@@ -62,7 +62,7 @@
 		}
 	}
 
-	.ant-layout {
+	&__content {
 		background-color: #f6f6f6;
 	}
 }

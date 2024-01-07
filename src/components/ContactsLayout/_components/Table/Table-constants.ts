@@ -6,6 +6,8 @@ export const GOUV_API_URL =
 export const SELECTED_FIELDS =
 	'identifiant_de_l_etablissement,nom_etablissement,type_etablissement,adresse_1,code_postal,nom_commune,latitude,longitude,mail,telephone'
 
+export const DEFAULT_ETABLISSEMENT_FILTER = "type_etablissement IN ('Collège', 'Lycée')"
+
 export const INIT_TABLE_STATE: ITableConfigState = {
 	data: [],
 	loading: true,
