@@ -28,8 +28,14 @@ export function MainLayout() {
 	}, []) // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
-		<Layout>
-			<Sider trigger={null} width={200} collapsible collapsed={isCollapsed}>
+		<Layout className="main-layout">
+			<Sider
+				className="main-layout__sider"
+				trigger={null}
+				width={200}
+				collapsible
+				collapsed={isCollapsed}
+			>
 				<div className="sider__logo">
 					<img src="schoolevent_logo_white.svg" />
 					<img src="schoolevent_text_white.svg" />
@@ -37,7 +43,7 @@ export function MainLayout() {
 				<SideMenu />
 			</Sider>
 			<Layout>
-				<Header>
+				<Header className="main-layout__header">
 					<IconButton
 						icon={<ArrowLeft size="1rem" />}
 						onClick={toggleSider}
@@ -45,7 +51,7 @@ export function MainLayout() {
 					/>
 					<UserMenu />
 				</Header>
-				<Content>
+				<Content className="main-layout__content">
 					<Outlet />
 				</Content>
 			</Layout>

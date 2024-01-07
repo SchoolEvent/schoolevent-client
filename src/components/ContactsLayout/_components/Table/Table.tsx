@@ -7,13 +7,14 @@ import { useAuth, useFavorites } from '@contexts'
 import { ITableStorage } from '@types'
 import { isStringEmpty, useLocalStorage } from '@utils'
 
-import { INIT_TABLE_STATE, SELECTED_FIELDS } from './Table-constants'
+import { DEFAULT_ETABLISSEMENT_FILTER, INIT_TABLE_STATE, SELECTED_FIELDS } from './Table-constants'
 import { IAPIResponse, ISchool } from './Table-types'
 import {
 	QueryStringBuilder,
 	fetchTableData,
 	getColumnRadioProps,
 	getColumnSearchProps,
+	getGlobalSearch,
 	getSortOrder,
 	reducer,
 } from './Table-utils'
@@ -22,7 +23,7 @@ import './Table-styles.less'
 
 const { useBreakpoint } = Grid
 
-export function Table() {
+export function Table({ globalSearch }: { globalSearch: string }) {
 	const [tableConfig, setTableConfig] = useReducer(reducer, INIT_TABLE_STATE)
 	const { user } = useAuth()
 	const { favorites, addFavorite, deleteFavorite, doesFavoriteExist } = useFavorites()
@@ -89,13 +90,22 @@ export function Table() {
 		const fetchData = async () => {
 			setTableConfig({ type: 'SET_LOADING', payload: { loading: true } })
 
+			const builtGlobalSearch = getGlobalSearch(globalSearch)
+			const defaultWhere = isStringEmpty(tableConfig.where)
+				? DEFAULT_ETABLISSEMENT_FILTER
+				: tableConfig.where
+
+			// If the global search is set, we use it as the where clause.
+			// Otherwise, we use the default where clause.
+			const where = builtGlobalSearch
+				? `${DEFAULT_ETABLISSEMENT_FILTER} AND (${builtGlobalSearch})`
+				: defaultWhere
+
 			const rawResponse = await fetchTableData({
 				limit: tableConfig.paginationSize,
 				offset: tableConfig.offset,
 				select: SELECTED_FIELDS,
-				where: isStringEmpty(tableConfig.where)
-					? 'type_etablissement IN (\'Collège\', \'Lycée\')'
-					: tableConfig.where,
+				where,
 				orderBy: tableConfig.orderBy,
 			})
 			const response: IAPIResponse = await rawResponse.json()
@@ -121,6 +131,7 @@ export function Table() {
 		tableConfig.where,
 		localStorage,
 		favorites,
+		globalSearch,
 	])
 
 	const columns: ColumnsType<ISchool> = [
@@ -136,7 +147,7 @@ export function Table() {
 		},
 		{
 			key: 'type_etablissement',
-			title: 'Type d\'établissement',
+			title: "Type d'établissement",
 			dataIndex: 'type_etablissement',
 			sorter: true,
 			sortOrder: getSortOrder('type_etablissement', tableConfig.orderBy),
@@ -161,6 +172,7 @@ export function Table() {
 			key: 'code_postal',
 			title: 'Code postal',
 			dataIndex: 'code_postal',
+			width: screens.xxl ? 175 : 150,
 			sorter: true,
 			sortOrder: getSortOrder('code_postal', tableConfig.orderBy),
 			...getColumnSearchProps({
@@ -181,6 +193,7 @@ export function Table() {
 			key: 'favoris',
 			title: 'Favoris',
 			dataIndex: 'favoris',
+			width: screens.xxl ? 100 : 75,
 			render: (value, record) => {
 				return (
 					<Button

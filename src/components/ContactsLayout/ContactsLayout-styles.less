@@ -1,5 +1,7 @@
 .contacts-layout {
-	.ant-layout-sider {
+	height: 100%;
+
+	&__sider.ant-layout-sider {
 		margin-top: 16px;
 		background: none;
 		padding: 16px 0 16px 16px;
@@ -11,23 +13,36 @@
 		}
 	}
 
-	.ant-layout-content {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: white;
-		border-radius: 30px 30px 0 0;
-		margin: 16px 16px 0 16px;
-		padding: 16px;
-		box-shadow: 0 0 30px rgba(130, 130, 130, 0.15);
-	}
+	&__table-and-global-search {
+		height: 100%;
 
-	.ant-layout-header {
-		height: 100px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: orange;
-		font-weight: bold;
+		.contacts-table-container {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: white;
+			border-radius: calc(var(--ant-border-radius) * 3) 0 0 0;
+			margin: 16px 0 0 16px;
+			padding: 16px 0 0 16px;
+			box-shadow: 0 0 30px rgba(130, 130, 130, 0.15);
+
+			.ant-pagination {
+				margin: var(--ant-margin);
+			}
+		}
+
+		.contacts-layout__header {
+			height: fit-content;
+			display: flex;
+			flex-direction: column;
+			background: none;
+
+			.contacts-global-search {
+				align-self: flex-end;
+				.ant-input {
+					width: 275px;
+				}
+			}
+		}
 	}
 }
