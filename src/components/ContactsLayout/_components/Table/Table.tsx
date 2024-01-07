@@ -94,7 +94,7 @@ export function Table() {
 				offset: tableConfig.offset,
 				select: SELECTED_FIELDS,
 				where: isStringEmpty(tableConfig.where)
-					? "type_etablissement IN ('Collège', 'Lycée')"
+					? 'type_etablissement IN (\'Collège\', \'Lycée\')'
 					: tableConfig.where,
 				orderBy: tableConfig.orderBy,
 			})
@@ -136,7 +136,7 @@ export function Table() {
 		},
 		{
 			key: 'type_etablissement',
-			title: "Type d'établissement",
+			title: 'Type d\'établissement',
 			dataIndex: 'type_etablissement',
 			sorter: true,
 			sortOrder: getSortOrder('type_etablissement', tableConfig.orderBy),

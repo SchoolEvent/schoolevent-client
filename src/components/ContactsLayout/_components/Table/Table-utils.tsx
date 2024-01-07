@@ -252,7 +252,7 @@ export class QueryStringBuilder {
 				if (value) {
 					where.push(`type_etablissement = '${value}'`)
 				} else {
-					where.push(`type_etablissement IN ('Collège', 'Lycée')`)
+					where.push('type_etablissement IN (\'Collège\', \'Lycée\')')
 				}
 
 				continue

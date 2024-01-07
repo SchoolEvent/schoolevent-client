@@ -114,7 +114,6 @@ export function FavoriteContactsProvider({ children }: PropsWithChildren) {
 	)
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useFavorites() {
 	return useContext(FavoriteContactsContext)
 }
