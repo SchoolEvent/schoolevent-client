@@ -1,3 +1,4 @@
+export { Calendar } from './Calendar/Calendar'
 export { ContactsLayout } from './ContactsLayout/ContactsLayout'
 export { ContactsMap } from './ContactsMap/ContactsMap'
 export { CopyableText } from './CopyableText/CopyableText'

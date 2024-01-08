@@ -5,7 +5,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import { MainLayout } from '@components'
 import { AuthProvider, useTheme } from '@contexts'
-import { contactsRoute, eventsRoute, loginRoute, noMatchRoute } from '@routes'
+import { contactsRoute, loginRoute, noMatchRoute, calendarRoute, eventsRoute } from '@routes'
 
 import './App.less'
 
@@ -27,7 +27,7 @@ function App() {
 					<MainLayout />
 				</AuthProvider>
 			),
-			children: [contactsRoute, eventsRoute],
+			children: [contactsRoute, calendarRoute, eventsRoute],
 		},
 	])
 
