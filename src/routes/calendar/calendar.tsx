@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet'
 import { RouteObject } from 'react-router-dom'
 
-import { Calendar } from '@components'
+import { CalendarLayout } from '@components'
 
 export const calendarRoute: RouteObject = {
 	path: 'calendar',
@@ -10,7 +10,7 @@ export const calendarRoute: RouteObject = {
 			<Helmet>
 				<title>SchoolEvent | Calendier</title>
 			</Helmet>
-			<Calendar />
+			<CalendarLayout />
 		</>
 	),
 }
