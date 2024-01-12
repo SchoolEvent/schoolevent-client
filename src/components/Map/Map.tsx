@@ -7,27 +7,13 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 
 // Utils
 import MapUtils from './Map-utils'
-import { GeoLocation } from './_components/GeoLocation/GeoLocation'
+import { GeoLocation } from './_components/GeoLocation/GeoLocation-utils'
 
 // Style
 import './Map-styles.less'
 
 // Icon
 //import { MapPin } from "@phosphor-icons/react";
-
-/*
-function userMarker({location: L.LatLngExpression}) {
-	const map = useMap()
-	if (location.loaded && !location.error) {
-		map.flyTo(location, 9, { animate: true })
-	}
-	return location ? (
-		<Marker position={location}>
-			<Popup>Et on fait tourner les serviettes !</Popup>
-		</Marker>
-	) : null
-}
-*/
 
 export default function Map() {
 	const ZOOM_LEVEL = 9
@@ -38,7 +24,7 @@ export default function Map() {
 		location.geoLocationCoordinates.lat,
 		location.geoLocationCoordinates.lng,
 	]
-
+	
 	return (
 		<>
 			<MapContainer

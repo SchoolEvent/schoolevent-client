@@ -1,5 +1,6 @@
 import { Broom as ClearFiltersIcon, MagnifyingGlass as SearchIcon } from '@phosphor-icons/react'
-import { Button, Input, Layout, Space } from 'antd'
+import { ArrowsOutSimple, MapTrifold, XCircle } from '@phosphor-icons/react'
+import { Button, ConfigProvider, FloatButton, Input, Layout, Space } from 'antd'
 import { useLayoutEffect, useReducer, useState } from 'react'
 
 import { Info } from '@components'
@@ -34,6 +35,19 @@ export function ContactsLayout() {
 
 	const resetTableFilters = () => {
 		setTableConfig({ type: 'RESET_FILTERS' })
+	}
+
+	const [fullMap, setFullMap] = useState(false)
+	const [hideMap, setHideMap] = useState(true)
+	const [showButton, setShowButton] = useState(true)
+
+	function showMapContainer() {
+		setHideMap((hideMap) => !hideMap)
+		setShowButton(!showButton)
+	}
+
+	function fullMapDisplay() {
+		setFullMap((fullMap) => !fullMap)
 	}
 
 	return (
@@ -82,11 +96,54 @@ export function ContactsLayout() {
 						</Space>
 					</Header>
 					<Content className="contacts-table-container">
-						<Table
-							globalSearch={debouncedGlobalSearch}
-							tableConfigReducer={{ tableConfig, setTableConfig }}
-						/>
-						<Map />
+						<div
+							className={
+								hideMap
+									? 'full-table-container'
+									: fullMap
+									? 'hide-table-container'
+									: 'table-container'
+							}
+						>
+							<Table
+								globalSearch={debouncedGlobalSearch}
+								tableConfigReducer={{ tableConfig, setTableConfig }}
+							/>
+							<ConfigProvider theme={{ components: { FloatButton: { borderRadiusLG: 12 } } }}>
+								{showButton && (
+									<FloatButton
+										onClick={showMapContainer}
+										shape="square"
+										type="primary"
+										icon={<MapTrifold size={25} weight="thin" style={{ paddingRight: '5px' }} />}
+										style={{ right: 40, bottom: 20 }}
+									></FloatButton>
+								)}
+							</ConfigProvider>
+						</div>
+						<div
+							className={
+								hideMap ? 'hide-map-container' : fullMap ? 'full-map-container' : 'map-container'
+							}
+						>
+							<Map />
+							<ConfigProvider theme={{ components: { FloatButton: { borderRadiusLG: 12 } } }}>
+								<FloatButton
+									onClick={fullMapDisplay}
+									shape="square"
+									type="primary"
+									icon={<ArrowsOutSimple size={25} weight="thin" style={{ paddingRight: '3px' }} />}
+									style={{ right: 50, bottom: 100 }}
+								></FloatButton>
+								<FloatButton
+									onClick={showMapContainer}
+									shape="square"
+									type="primary"
+									icon={<XCircle size={25} weight="thin" />}
+									style={{ right: 50 }}
+								></FloatButton>
+							</ConfigProvider>
+						</div>
 					</Content>
 				</Layout>
 			</Content>
