@@ -5,6 +5,7 @@ import { Outlet, useNavigate } from 'react-router-dom'
 
 import { IconButton } from '@components'
 import { useAuth } from '@contexts'
+import { useLocalStorage } from '@utils'
 
 import { SideMenu, UserMenu } from './_components'
 
@@ -13,11 +14,15 @@ import './MainLayout-styles.less'
 const { Content, Header, Sider } = Layout
 
 export function MainLayout() {
-	const [isCollapsed, setIsCollapsed] = useState<boolean>(false)
+	const localStorage = useLocalStorage()
+	const [isCollapsed, setIsCollapsed] = useState<boolean>(
+		localStorage.get('sidebar.isCollapsed', false) as boolean,
+	)
 	const { user } = useAuth()
 	const navigate = useNavigate()
 
 	const toggleSider = () => {
+		localStorage.set({ key: 'sidebar.isCollapsed', data: !isCollapsed })
 		setIsCollapsed((prevState) => !prevState)
 	}
 

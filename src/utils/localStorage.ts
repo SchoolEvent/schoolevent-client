@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import localStorage from 'store2'
+import localStorage, { Reviver } from 'store2'
 
-import { TSetStorageParams, TSetStorageReturn, TStorageKey } from '@types'
+import { TGetStorageReturn, TSetStorageParams, TStorageKey } from '@types'
 
 const STORAGE_PREFIX = 'se'
 
@@ -17,7 +17,8 @@ export function useLocalStorage() {
 			set: ({ key, data }: TSetStorageParams) => {
 				storage.set(key, data)
 			},
-			get: (key: TStorageKey): TSetStorageReturn => storage.get(key),
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			get: (key: TStorageKey, alt?: any | Reviver): TGetStorageReturn => storage.get(key, alt),
 			has: (key: TStorageKey) => storage.has(key),
 		}),
 		[storage],
@@ -35,7 +36,7 @@ export function getLocalStorage() {
 		set: ({ key, data }: TSetStorageParams) => {
 			storage.set(key, data)
 		},
-		get: (key: TStorageKey): TSetStorageReturn => storage.get(key),
+		get: (key: TStorageKey): TGetStorageReturn => storage.get(key),
 		has: (key: TStorageKey) => storage.has(key),
 	}
 }
