@@ -34,7 +34,7 @@ export function MapDisplayProvider({ children }: PropsWithChildren) {
 			hideMap,
 			toggleMapState,
 		}),
-		[mapDisplayState, hideMap, toggleMapState],
+		[mapDisplayState, hideMap, toggleMapState, displayMap],
 	)
 
 	return <MapDisplayContext.Provider value={value}>{children}</MapDisplayContext.Provider>
