@@ -4,6 +4,7 @@ import { Button, ConfigProvider, FloatButton, Input, Layout, Space } from 'antd'
 import { useLayoutEffect, useReducer, useState } from 'react'
 
 import { Info } from '@components'
+import { useMapDisplay } from '@contexts'
 import { useDebounce } from '@utils'
 
 import Map from '../Map/Map'
@@ -19,6 +20,7 @@ export function ContactsLayout() {
 	const [tableConfig, setTableConfig] = useReducer(reducer, INIT_TABLE_STATE)
 	const [globalSearch, setGlobalSearch] = useState<string>('')
 	const debouncedGlobalSearch = useDebounce<string>(globalSearch, 750)
+	const { displayMap, hideMap, toggleMapState, mapDisplayState } = useMapDisplay()
 
 	useLayoutEffect(() => {
 		const header = document.querySelector('.contacts-layout__header') as HTMLElement
@@ -35,19 +37,6 @@ export function ContactsLayout() {
 
 	const resetTableFilters = () => {
 		setTableConfig({ type: 'RESET_FILTERS' })
-	}
-
-	const [fullMap, setFullMap] = useState(false)
-	const [hideMap, setHideMap] = useState(true)
-	const [showButton, setShowButton] = useState(true)
-
-	function showMapContainer() {
-		setHideMap((hideMap) => !hideMap)
-		setShowButton(!showButton)
-	}
-
-	function fullMapDisplay() {
-		setFullMap((fullMap) => !fullMap)
 	}
 
 	return (
@@ -98,9 +87,9 @@ export function ContactsLayout() {
 					<Content className="contacts-table-container">
 						<div
 							className={
-								hideMap
+								mapDisplayState.isHidden
 									? 'full-table-container'
-									: fullMap
+									: mapDisplayState.state === 'full'
 									? 'hide-table-container'
 									: 'table-container'
 							}
@@ -110,9 +99,9 @@ export function ContactsLayout() {
 								tableConfigReducer={{ tableConfig, setTableConfig }}
 							/>
 							<ConfigProvider theme={{ components: { FloatButton: { borderRadiusLG: 12 } } }}>
-								{showButton && (
+								{mapDisplayState.isHidden && (
 									<FloatButton
-										onClick={showMapContainer}
+										onClick={displayMap}
 										shape="square"
 										type="primary"
 										icon={<MapTrifold size={25} weight="thin" style={{ paddingRight: '5px' }} />}
@@ -123,20 +112,24 @@ export function ContactsLayout() {
 						</div>
 						<div
 							className={
-								hideMap ? 'hide-map-container' : fullMap ? 'full-map-container' : 'map-container'
+								mapDisplayState.isHidden
+									? 'hide-map-container'
+									: mapDisplayState.state === 'full'
+									? 'full-map-container'
+									: 'map-container'
 							}
 						>
 							<Map />
 							<ConfigProvider theme={{ components: { FloatButton: { borderRadiusLG: 12 } } }}>
 								<FloatButton
-									onClick={fullMapDisplay}
+									onClick={toggleMapState}
 									shape="square"
 									type="primary"
 									icon={<ArrowsOutSimple size={25} weight="thin" style={{ paddingRight: '3px' }} />}
 									style={{ right: 50, bottom: 100 }}
 								></FloatButton>
 								<FloatButton
-									onClick={showMapContainer}
+									onClick={hideMap}
 									shape="square"
 									type="primary"
 									icon={<XCircle size={25} weight="thin" />}

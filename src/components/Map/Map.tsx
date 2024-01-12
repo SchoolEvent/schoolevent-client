@@ -8,6 +8,7 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 // Utils
 import MapUtils from './Map-utils'
 import { GeoLocation } from './_components/GeoLocation/GeoLocation-utils'
+import { MapReloader } from './_components/MapReloader/MapReloader'
 
 // Style
 import './Map-styles.less'
@@ -24,7 +25,7 @@ export default function Map() {
 		location.geoLocationCoordinates.lat,
 		location.geoLocationCoordinates.lng,
 	]
-	
+
 	return (
 		<>
 			<MapContainer
@@ -33,6 +34,7 @@ export default function Map() {
 				scrollWheelZoom={true}
 				ref={mapRef}
 			>
+				<MapReloader />
 				<TileLayer attribution={MapUtils.maputils.attribution} url={MapUtils.maputils.url} />
 				{location.loaded && !location.error && (
 					<Marker position={userPosition}>
