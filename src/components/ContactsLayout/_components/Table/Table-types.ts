@@ -23,6 +23,13 @@ export interface ISchool {
 	favoris: boolean
 }
 
+export type TFilteredFields = keyof Pick<
+	ISchool,
+	'nom_etablissement' | 'type_etablissement' | 'nom_commune' | 'code_postal' | 'adresse_1'
+>
+
+export type TFiltersRecord = Record<TFilteredFields, string[] | null>
+
 export type TReducerActionType =
 	| TSetDataAction
 	| TSetLoadingAction
@@ -31,6 +38,8 @@ export type TReducerActionType =
 	| TSetOrderByAction
 	| TSetTableHeightAction
 	| TSetWhereAction
+	| TResetFiltersAction
+	| TSetFiltersAction
 
 export interface IAPIResponse {
 	total_count: number
@@ -88,6 +97,17 @@ type TSetWhereAction = {
 	}
 }
 
+type TResetFiltersAction = {
+	type: 'RESET_FILTERS'
+}
+
+type TSetFiltersAction = {
+	type: 'SET_FILTERS'
+	payload: {
+		filters: TFiltersRecord
+	}
+}
+
 export interface ITableConfigState {
 	data: ISchool[]
 	loading: boolean
@@ -97,6 +117,7 @@ export interface ITableConfigState {
 	orderBy?: string
 	tableHeight: number
 	where?: string
+	filters: TFiltersRecord
 }
 
 export interface IGetColumnSearchPropsParams {
@@ -105,6 +126,14 @@ export interface IGetColumnSearchPropsParams {
 
 export interface IGetColumnRadioPropsParams {
 	options: { label: string; value: React.Key }[]
+}
+
+export interface ITableProps {
+	globalSearch: string
+	tableConfigReducer: {
+		tableConfig: ITableConfigState
+		setTableConfig: React.Dispatch<TReducerActionType>
+	}
 }
 
 export type TTableFilters = Record<string, FilterValue | null>

@@ -1,14 +1,14 @@
 import { Star as FavoriteIcon } from '@phosphor-icons/react'
 import { Table as AntdTable, Button, Grid, InputRef, Space, Typography } from 'antd'
 import { ColumnsType, TableRef } from 'antd/lib/table'
-import { useEffect, useLayoutEffect, useReducer, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 
 import { useAuth, useFavorites } from '@contexts'
 import { ITableStorage } from '@types'
 import { isStringEmpty, useLocalStorage } from '@utils'
 
 import { DEFAULT_ETABLISSEMENT_FILTER, INIT_TABLE_STATE, SELECTED_FIELDS } from './Table-constants'
-import { IAPIResponse, ISchool } from './Table-types'
+import { IAPIResponse, ISchool, ITableProps, TFiltersRecord } from './Table-types'
 import {
 	QueryStringBuilder,
 	fetchTableData,
@@ -16,15 +16,15 @@ import {
 	getColumnSearchProps,
 	getGlobalSearch,
 	getSortOrder,
-	reducer,
 } from './Table-utils'
 
 import './Table-styles.less'
 
 const { useBreakpoint } = Grid
 
-export function Table({ globalSearch }: { globalSearch: string }) {
-	const [tableConfig, setTableConfig] = useReducer(reducer, INIT_TABLE_STATE)
+export function Table(props: ITableProps) {
+	const { globalSearch, tableConfigReducer } = props
+	const { tableConfig, setTableConfig } = tableConfigReducer
 	const { user } = useAuth()
 	const { favorites, addFavorite, deleteFavorite, doesFavoriteExist } = useFavorites()
 	const localStorage = useLocalStorage()
@@ -87,6 +87,7 @@ export function Table({ globalSearch }: { globalSearch: string }) {
 	}, [tableRef, localStorage])
 
 	useEffect(() => {
+		console.log({ where: tableConfig.where })
 		const fetchData = async () => {
 			setTableConfig({ type: 'SET_LOADING', payload: { loading: true } })
 
@@ -132,82 +133,126 @@ export function Table({ globalSearch }: { globalSearch: string }) {
 		localStorage,
 		favorites,
 		globalSearch,
+		setTableConfig,
 	])
 
-	const columns: ColumnsType<ISchool> = [
-		{
-			key: 'nom_etablissement',
-			title: 'Établissement',
-			dataIndex: 'nom_etablissement',
-			sorter: true,
-			sortOrder: getSortOrder('nom_etablissement', tableConfig.orderBy),
-			...getColumnSearchProps({
-				inputRef: searchRef,
-			}),
-		},
-		{
-			key: 'type_etablissement',
-			title: "Type d'établissement",
-			dataIndex: 'type_etablissement',
-			sorter: true,
-			sortOrder: getSortOrder('type_etablissement', tableConfig.orderBy),
-			...getColumnRadioProps({
-				options: [
-					{ label: 'Collège', value: 'Collège' },
-					{ label: 'Lycée', value: 'Lycée' },
-				],
-			}),
-		},
-		{
-			key: 'nom_commune',
-			title: 'Commune',
-			dataIndex: 'nom_commune',
-			sorter: true,
-			sortOrder: getSortOrder('nom_commune', tableConfig.orderBy),
-			...getColumnSearchProps({
-				inputRef: searchRef,
-			}),
-		},
-		{
-			key: 'code_postal',
-			title: 'Code postal',
-			dataIndex: 'code_postal',
-			width: screens.xxl ? 175 : 150,
-			sorter: true,
-			sortOrder: getSortOrder('code_postal', tableConfig.orderBy),
-			...getColumnSearchProps({
-				inputRef: searchRef,
-			}),
-		},
-		{
-			key: 'adresse_1',
-			title: 'Adresse',
-			dataIndex: 'adresse_1',
-			sorter: true,
-			sortOrder: getSortOrder('adresse_1', tableConfig.orderBy),
-			...getColumnSearchProps({
-				inputRef: searchRef,
-			}),
-		},
-		{
-			key: 'favoris',
-			title: 'Favoris',
-			dataIndex: 'favoris',
-			width: screens.xxl ? 100 : 75,
-			render: (value, record) => {
-				return (
-					<Button
-						className="favorite-button"
-						onClick={async () => {
-							await handleFavorites(record)
-						}}
-						icon={<FavoriteIcon size="1rem" weight={value ? 'fill' : 'regular'} />}
-						type="text"
-					/>
-				)
+	// useEffect(() => {
+	// 	console.log({ where: tableConfig.where })
+	// 	// This effect is used to set tableConfig.filtered fields values when
+	// 	// the user changes the filters.
+	// 	setTableConfig({
+	// 		type: 'SET_FILTERED',
+	// 		payload: {
+	// 			filtered: {
+	// 				nom_etablissement: !!tableConfig.where?.includes('nom_etablissement'),
+	// 				type_etablissement: !!tableConfig.where?.includes("type_etablissement = '"),
+	// 				nom_commune: !!tableConfig.where?.includes('nom_commune'),
+	// 				code_postal: !!tableConfig.where?.includes('code_postal'),
+	// 				adresse_1: !!tableConfig.where?.includes('adresse_1'),
+	// 			},
+	// 		},
+	// 	})
+	// }, [JSON.stringify(tableConfig.where)])
+
+	useEffect(
+		() => console.log({ filters: tableConfig.filters }),
+		[JSON.stringify(tableConfig.filters)],
+	)
+
+	// RECAP: I am trying to control the state of columns filters
+	// so that the filters input resets when clearing all filters.
+	// I tried to use the 'filtered' property of fields in getColumnSearchProps
+	const columns: ColumnsType<ISchool> = useMemo(
+		() => [
+			{
+				key: 'nom_etablissement',
+				title: 'Établissement',
+				dataIndex: 'nom_etablissement',
+				sorter: true,
+				sortOrder: getSortOrder('nom_etablissement', tableConfig.orderBy),
+				...getColumnSearchProps({
+					inputRef: searchRef,
+				}),
+				filteredValue: tableConfig.filters.nom_etablissement,
+				filterMultiple: true,
 			},
-		},
-	]
+			{
+				key: 'type_etablissement',
+				title: "Type d'établissement",
+				dataIndex: 'type_etablissement',
+				sorter: true,
+				sortOrder: getSortOrder('type_etablissement', tableConfig.orderBy),
+				...getColumnRadioProps({
+					options: [
+						{ label: 'Collège', value: 'Collège' },
+						{ label: 'Lycée', value: 'Lycée' },
+					],
+				}),
+				filteredValue: tableConfig.filters.type_etablissement,
+				filterMultiple: true,
+			},
+			{
+				key: 'nom_commune',
+				title: 'Commune',
+				dataIndex: 'nom_commune',
+				sorter: true,
+				sortOrder: getSortOrder('nom_commune', tableConfig.orderBy),
+				...getColumnSearchProps({
+					inputRef: searchRef,
+				}),
+				filteredValue: tableConfig.filters.nom_commune,
+				filterMultiple: true,
+			},
+			{
+				key: 'code_postal',
+				title: 'Code postal',
+				dataIndex: 'code_postal',
+				width: screens.xxl ? 175 : 150,
+				sorter: true,
+				sortOrder: getSortOrder('code_postal', tableConfig.orderBy),
+				...getColumnSearchProps({
+					inputRef: searchRef,
+				}),
+				filteredValue: tableConfig.filters.code_postal,
+				filterMultiple: true,
+			},
+			{
+				key: 'adresse_1',
+				title: 'Adresse',
+				dataIndex: 'adresse_1',
+				sorter: true,
+				sortOrder: getSortOrder('adresse_1', tableConfig.orderBy),
+				...getColumnSearchProps({
+					inputRef: searchRef,
+				}),
+				filteredValue: tableConfig.filters.adresse_1,
+				filterMultiple: true,
+			},
+			{
+				key: 'favoris',
+				title: 'Favoris',
+				dataIndex: 'favoris',
+				width: screens.xxl ? 100 : 75,
+				render: (value, record) => {
+					return (
+						<Button
+							className="favorite-button"
+							onClick={async () => {
+								await handleFavorites(record)
+							}}
+							icon={<FavoriteIcon size="1rem" weight={value ? 'fill' : 'regular'} />}
+							type="text"
+						/>
+					)
+				},
+			},
+		],
+		[JSON.stringify(tableConfig.filters), screens.xxl, JSON.stringify(tableConfig.orderBy)],
+	)
+
+	useEffect(() => {
+		console.log({ columns: columns.map((c) => ({ index: c.key, filtered: c.filtered })) })
+	}, [columns])
 
 	return (
 		<AntdTable<ISchool>
@@ -271,6 +316,8 @@ export function Table({ globalSearch }: { globalSearch: string }) {
 						payload: sorter.order ? { field: sorter.field as keyof ISchool, order } : null,
 					})
 				}
+
+				setTableConfig({ type: 'SET_FILTERS', payload: { filters: filters as TFiltersRecord } })
 
 				const queryBuilder = new QueryStringBuilder(filters)
 				const queryString = queryBuilder.build()

@@ -6,7 +6,11 @@ import { SortOrder } from 'antd/lib/table/interface'
 import { ITableStorage } from '@types'
 import { getLocalStorage, isStringEmpty } from '@utils'
 
-import { DEFAULT_ETABLISSEMENT_FILTER, GOUV_API_URL } from './Table-constants'
+import {
+	DEFAULT_ETABLISSEMENT_FILTER,
+	DEFAULT_FILTER_OBJECT,
+	GOUV_API_URL,
+} from './Table-constants'
 import {
 	IGetColumnRadioPropsParams,
 	IGetColumnSearchPropsParams,
@@ -100,6 +104,18 @@ export function reducer(state: ITableConfigState, action: TReducerActionType): I
 			return {
 				...state,
 				where: action.payload.where,
+			}
+		case 'RESET_FILTERS':
+			return {
+				...state,
+				orderBy: 'nom_etablissement ASC',
+				where: DEFAULT_ETABLISSEMENT_FILTER,
+				filters: DEFAULT_FILTER_OBJECT,
+			}
+		case 'SET_FILTERS':
+			return {
+				...state,
+				filters: action.payload.filters,
 			}
 	}
 }
