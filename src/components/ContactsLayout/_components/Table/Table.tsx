@@ -84,7 +84,7 @@ export function Table(props: ITableProps) {
 		const height = window.innerHeight - top - 55
 
 		setTableConfig({ type: 'SET_TABLE_HEIGHT', payload: { height } })
-	}, [tableRef, localStorage])
+	}, [tableRef, localStorage, setTableConfig])
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -134,6 +134,9 @@ export function Table(props: ITableProps) {
 		globalSearch,
 		setTableConfig,
 	])
+
+	const stringifiedFilters = JSON.stringify(tableConfig.filters)
+	const stringifiedOrderBy = JSON.stringify(tableConfig.orderBy)
 
 	const columns: ColumnsType<ISchool> = useMemo(
 		() => [
@@ -220,7 +223,8 @@ export function Table(props: ITableProps) {
 				},
 			},
 		],
-		[JSON.stringify(tableConfig.filters), screens.xxl, JSON.stringify(tableConfig.orderBy)],
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[stringifiedFilters, stringifiedOrderBy, screens.xxl],
 	)
 
 	return (
