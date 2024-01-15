@@ -40,7 +40,6 @@ export function MapDisplayProvider({ children }: PropsWithChildren) {
 	return <MapDisplayContext.Provider value={value}>{children}</MapDisplayContext.Provider>
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useMapDisplay() {
 	return useContext(MapDisplayContext)
 }
