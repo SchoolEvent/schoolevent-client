@@ -1,13 +1,18 @@
-import { Broom as ClearFiltersIcon, MagnifyingGlass as SearchIcon } from '@phosphor-icons/react'
-import { ArrowsOutSimple, MapTrifold, XCircle } from '@phosphor-icons/react'
-import { Button, ConfigProvider, FloatButton, Input, Layout, Space } from 'antd'
+import {
+	Broom as ClearFiltersIcon,
+	XCircle as CloseMapIcon,
+	ArrowsOutSimple as ExpandMapIcon,
+	MapTrifold as OpenMapIcon,
+	ArrowsInSimple as ReduceMapIcon,
+	MagnifyingGlass as SearchIcon,
+} from '@phosphor-icons/react'
+import { Button, Input, Layout, Space } from 'antd'
 import { useLayoutEffect, useReducer, useState } from 'react'
 
-import { Info } from '@components'
+import { ContactsMap, IconButton, Info } from '@components'
 import { useMapDisplay } from '@contexts'
 import { useDebounce } from '@utils'
 
-import Map from '../Map/Map'
 import { FavoritesList, Table } from './_components'
 import { INIT_TABLE_STATE } from './_components/Table/Table-constants'
 import { reducer } from './_components/Table/Table-utils'
@@ -21,6 +26,26 @@ export function ContactsLayout() {
 	const [globalSearch, setGlobalSearch] = useState<string>('')
 	const debouncedGlobalSearch = useDebounce<string>(globalSearch, 750)
 	const { displayMap, hideMap, toggleMapState, mapDisplayState } = useMapDisplay()
+
+	const getMapContainerClass = () => {
+		if (mapDisplayState.isHidden) {
+			return 'map-container__hidden'
+		} else if (mapDisplayState.state === 'full') {
+			return 'map-container__full'
+		} else {
+			return 'map-container'
+		}
+	}
+
+	const getTableContainerClass = () => {
+		if (mapDisplayState.isHidden) {
+			return 'table-container__full'
+		} else if (mapDisplayState.state === 'full') {
+			return 'table-container__hidden'
+		} else {
+			return 'table-container'
+		}
+	}
 
 	useLayoutEffect(() => {
 		const header = document.querySelector('.contacts-layout__header') as HTMLElement
@@ -85,57 +110,40 @@ export function ContactsLayout() {
 						</Space>
 					</Header>
 					<Content className="contacts-table-container">
-						<div
-							className={
-								mapDisplayState.isHidden
-									? 'full-table-container'
-									: mapDisplayState.state === 'full'
-									? 'hide-table-container'
-									: 'table-container'
-							}
-						>
+						<div className={getTableContainerClass()}>
 							<Table
 								globalSearch={debouncedGlobalSearch}
 								tableConfigReducer={{ tableConfig, setTableConfig }}
 							/>
-							<ConfigProvider theme={{ components: { FloatButton: { borderRadiusLG: 12 } } }}>
-								{mapDisplayState.isHidden && (
-									<FloatButton
-										onClick={displayMap}
-										shape="square"
-										type="primary"
-										icon={<MapTrifold size={25} weight="thin" style={{ paddingRight: '5px' }} />}
-										style={{ right: 40, bottom: 20 }}
-									></FloatButton>
-								)}
-							</ConfigProvider>
+							{mapDisplayState.isHidden && (
+								<IconButton
+									className="map-btn open-map-btn"
+									onClick={displayMap}
+									type="primary"
+									icon={<OpenMapIcon size={20} />}
+								/>
+							)}
 						</div>
-						<div
-							className={
-								mapDisplayState.isHidden
-									? 'hide-map-container'
-									: mapDisplayState.state === 'full'
-									? 'full-map-container'
-									: 'map-container'
-							}
-						>
-							<Map />
-							<ConfigProvider theme={{ components: { FloatButton: { borderRadiusLG: 12 } } }}>
-								<FloatButton
-									onClick={toggleMapState}
-									shape="square"
-									type="primary"
-									icon={<ArrowsOutSimple size={25} weight="thin" style={{ paddingRight: '3px' }} />}
-									style={{ right: 50, bottom: 100 }}
-								></FloatButton>
-								<FloatButton
-									onClick={hideMap}
-									shape="square"
-									type="primary"
-									icon={<XCircle size={25} weight="thin" />}
-									style={{ right: 50 }}
-								></FloatButton>
-							</ConfigProvider>
+						<div className={getMapContainerClass()}>
+							<ContactsMap />
+							<IconButton
+								className="map-btn toggle-mode-btn"
+								onClick={toggleMapState}
+								type="primary"
+								icon={
+									mapDisplayState.state === 'full' ? (
+										<ReduceMapIcon size={20} />
+									) : (
+										<ExpandMapIcon size={20} />
+									)
+								}
+							/>
+							<IconButton
+								className="map-btn close-map-btn"
+								onClick={hideMap}
+								type="primary"
+								icon={<CloseMapIcon size={20} />}
+							/>
 						</div>
 					</Content>
 				</Layout>

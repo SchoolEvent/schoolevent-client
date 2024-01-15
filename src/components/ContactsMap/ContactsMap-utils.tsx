@@ -2,9 +2,15 @@
 import { useEffect, useState } from 'react'
 
 // Interface
-import { IGeoLocationState, IPositionError } from './GeoLocation-types'
+import { IGeoLocationState, IPositionError } from './ContactsMap-types'
 
-export function GeoLocation() {
+export const MAP_UTILS = {
+	url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+	attribution:
+		'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+}
+
+export function useGeoLocation() {
 	const [location, setLocation] = useState<IGeoLocationState>({
 		loaded: false,
 		geoLocationCoordinates: { lat: 0, lng: 0 },

@@ -3,7 +3,7 @@ import { Table as AntdTable, Button, Grid, InputRef, Space, Typography } from 'a
 import { ColumnsType, TableRef } from 'antd/lib/table'
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 
-import { useAuth, useFavorites } from '@contexts'
+import { useAuth, useFavorites, useMapDisplay } from '@contexts'
 import { ITableStorage } from '@types'
 import { isStringEmpty, useLocalStorage } from '@utils'
 
@@ -26,6 +26,7 @@ export function Table(props: ITableProps) {
 	const { globalSearch, tableConfigReducer } = props
 	const { tableConfig, setTableConfig } = tableConfigReducer
 	const { user } = useAuth()
+	const { mapDisplayState } = useMapDisplay()
 	const { favorites, addFavorite, deleteFavorite, doesFavoriteExist } = useFavorites()
 	const localStorage = useLocalStorage()
 	const tableRef = useRef<TableRef>(null)
@@ -139,92 +140,153 @@ export function Table(props: ITableProps) {
 	const stringifiedOrderBy = JSON.stringify(tableConfig.orderBy)
 
 	const columns: ColumnsType<ISchool> = useMemo(
-		() => [
-			{
-				key: 'nom_etablissement',
-				title: 'Établissement',
-				dataIndex: 'nom_etablissement',
-				sorter: true,
-				sortOrder: getSortOrder('nom_etablissement', tableConfig.orderBy),
-				...getColumnSearchProps({
-					inputRef: searchRef,
-				}),
-				filteredValue: tableConfig.filters.nom_etablissement,
-				filterMultiple: true,
-			},
-			{
-				key: 'type_etablissement',
-				title: "Type d'établissement",
-				dataIndex: 'type_etablissement',
-				sorter: true,
-				sortOrder: getSortOrder('type_etablissement', tableConfig.orderBy),
-				...getColumnRadioProps({
-					options: [
-						{ label: 'Collège', value: 'Collège' },
-						{ label: 'Lycée', value: 'Lycée' },
-					],
-				}),
-				filteredValue: tableConfig.filters.type_etablissement,
-				filterMultiple: true,
-			},
-			{
-				key: 'nom_commune',
-				title: 'Commune',
-				dataIndex: 'nom_commune',
-				sorter: true,
-				sortOrder: getSortOrder('nom_commune', tableConfig.orderBy),
-				...getColumnSearchProps({
-					inputRef: searchRef,
-				}),
-				filteredValue: tableConfig.filters.nom_commune,
-				filterMultiple: true,
-			},
-			{
-				key: 'code_postal',
-				title: 'Code postal',
-				dataIndex: 'code_postal',
-				width: screens.xxl ? 175 : 150,
-				sorter: true,
-				sortOrder: getSortOrder('code_postal', tableConfig.orderBy),
-				...getColumnSearchProps({
-					inputRef: searchRef,
-				}),
-				filteredValue: tableConfig.filters.code_postal,
-				filterMultiple: true,
-			},
-			{
-				key: 'adresse_1',
-				title: 'Adresse',
-				dataIndex: 'adresse_1',
-				sorter: true,
-				sortOrder: getSortOrder('adresse_1', tableConfig.orderBy),
-				...getColumnSearchProps({
-					inputRef: searchRef,
-				}),
-				filteredValue: tableConfig.filters.adresse_1,
-				filterMultiple: true,
-			},
-			{
-				key: 'favoris',
-				title: 'Favoris',
-				dataIndex: 'favoris',
-				width: screens.xxl ? 100 : 75,
-				render: (value, record) => {
-					return (
-						<Button
-							className="favorite-button"
-							onClick={async () => {
-								await handleFavorites(record)
-							}}
-							icon={<FavoriteIcon size="1rem" weight={value ? 'fill' : 'regular'} />}
-							type="text"
-						/>
-					)
-				},
-			},
-		],
+		() => {
+			if (mapDisplayState.isHidden) {
+				return [
+					{
+						key: 'nom_etablissement',
+						title: 'Établissement',
+						dataIndex: 'nom_etablissement',
+						sorter: true,
+						sortOrder: getSortOrder('nom_etablissement', tableConfig.orderBy),
+						...getColumnSearchProps({
+							inputRef: searchRef,
+						}),
+						filteredValue: tableConfig.filters.nom_etablissement,
+						filterMultiple: true,
+					},
+					{
+						key: 'type_etablissement',
+						title: "Type d'établissement",
+						dataIndex: 'type_etablissement',
+						sorter: true,
+						sortOrder: getSortOrder('type_etablissement', tableConfig.orderBy),
+						...getColumnRadioProps({
+							options: [
+								{ label: 'Collège', value: 'Collège' },
+								{ label: 'Lycée', value: 'Lycée' },
+							],
+						}),
+						filteredValue: tableConfig.filters.type_etablissement,
+						filterMultiple: true,
+					},
+					{
+						key: 'nom_commune',
+						title: 'Commune',
+						dataIndex: 'nom_commune',
+						sorter: true,
+						sortOrder: getSortOrder('nom_commune', tableConfig.orderBy),
+						...getColumnSearchProps({
+							inputRef: searchRef,
+						}),
+						filteredValue: tableConfig.filters.nom_commune,
+						filterMultiple: true,
+					},
+					{
+						key: 'code_postal',
+						title: 'Code postal',
+						dataIndex: 'code_postal',
+						width: screens.xxl ? 175 : 150,
+						sorter: true,
+						sortOrder: getSortOrder('code_postal', tableConfig.orderBy),
+						...getColumnSearchProps({
+							inputRef: searchRef,
+						}),
+						filteredValue: tableConfig.filters.code_postal,
+						filterMultiple: true,
+					},
+					{
+						key: 'adresse_1',
+						title: 'Adresse',
+						dataIndex: 'adresse_1',
+						sorter: true,
+						sortOrder: getSortOrder('adresse_1', tableConfig.orderBy),
+						...getColumnSearchProps({
+							inputRef: searchRef,
+						}),
+						filteredValue: tableConfig.filters.adresse_1,
+						filterMultiple: true,
+					},
+					{
+						key: 'favoris',
+						title: 'Favoris',
+						dataIndex: 'favoris',
+						width: screens.xxl ? 100 : 75,
+						render: (value, record) => {
+							return (
+								<Button
+									className="favorite-button"
+									onClick={async () => {
+										await handleFavorites(record)
+									}}
+									icon={<FavoriteIcon size="1rem" weight={value ? 'fill' : 'regular'} />}
+									type="text"
+								/>
+							)
+						},
+					},
+				]
+			} else {
+				return [
+					{
+						key: 'nom_etablissement',
+						title: 'Établissement',
+						dataIndex: 'nom_etablissement',
+						sorter: true,
+						sortOrder: getSortOrder('nom_etablissement', tableConfig.orderBy),
+						...getColumnSearchProps({
+							inputRef: searchRef,
+						}),
+						filteredValue: tableConfig.filters.nom_etablissement,
+						filterMultiple: true,
+					},
+					{
+						key: 'nom_commune',
+						title: 'Commune',
+						dataIndex: 'nom_commune',
+						sorter: true,
+						sortOrder: getSortOrder('nom_commune', tableConfig.orderBy),
+						...getColumnSearchProps({
+							inputRef: searchRef,
+						}),
+						filteredValue: tableConfig.filters.nom_commune,
+						filterMultiple: true,
+					},
+					{
+						key: 'adresse_1',
+						title: 'Adresse',
+						dataIndex: 'adresse_1',
+						sorter: true,
+						sortOrder: getSortOrder('adresse_1', tableConfig.orderBy),
+						...getColumnSearchProps({
+							inputRef: searchRef,
+						}),
+						filteredValue: tableConfig.filters.adresse_1,
+						filterMultiple: true,
+					},
+					{
+						key: 'favoris',
+						title: 'Favoris',
+						dataIndex: 'favoris',
+						width: screens.xxl ? 100 : 75,
+						render: (value, record) => {
+							return (
+								<Button
+									className="favorite-button"
+									onClick={async () => {
+										await handleFavorites(record)
+									}}
+									icon={<FavoriteIcon size="1rem" weight={value ? 'fill' : 'regular'} />}
+									type="text"
+								/>
+							)
+						},
+					},
+				]
+			}
+		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[stringifiedFilters, stringifiedOrderBy, screens.xxl],
+		[stringifiedFilters, stringifiedOrderBy, screens.xxl, mapDisplayState.isHidden],
 	)
 
 	return (
