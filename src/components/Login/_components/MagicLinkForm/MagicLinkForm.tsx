@@ -56,10 +56,8 @@ export function MagicLinkForm() {
 		if (!email) return
 
 		if (confirmCode === '') {
-			console.log('sending link')
 			await sendLink(values)
 		} else {
-			console.log('verifying code')
 			await verifyCode(values)
 		}
 	}

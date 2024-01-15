@@ -87,7 +87,6 @@ export function Table(props: ITableProps) {
 	}, [tableRef, localStorage])
 
 	useEffect(() => {
-		console.log({ where: tableConfig.where })
 		const fetchData = async () => {
 			setTableConfig({ type: 'SET_LOADING', payload: { loading: true } })
 
@@ -136,32 +135,6 @@ export function Table(props: ITableProps) {
 		setTableConfig,
 	])
 
-	// useEffect(() => {
-	// 	console.log({ where: tableConfig.where })
-	// 	// This effect is used to set tableConfig.filtered fields values when
-	// 	// the user changes the filters.
-	// 	setTableConfig({
-	// 		type: 'SET_FILTERED',
-	// 		payload: {
-	// 			filtered: {
-	// 				nom_etablissement: !!tableConfig.where?.includes('nom_etablissement'),
-	// 				type_etablissement: !!tableConfig.where?.includes("type_etablissement = '"),
-	// 				nom_commune: !!tableConfig.where?.includes('nom_commune'),
-	// 				code_postal: !!tableConfig.where?.includes('code_postal'),
-	// 				adresse_1: !!tableConfig.where?.includes('adresse_1'),
-	// 			},
-	// 		},
-	// 	})
-	// }, [JSON.stringify(tableConfig.where)])
-
-	useEffect(
-		() => console.log({ filters: tableConfig.filters }),
-		[JSON.stringify(tableConfig.filters)],
-	)
-
-	// RECAP: I am trying to control the state of columns filters
-	// so that the filters input resets when clearing all filters.
-	// I tried to use the 'filtered' property of fields in getColumnSearchProps
 	const columns: ColumnsType<ISchool> = useMemo(
 		() => [
 			{
@@ -249,10 +222,6 @@ export function Table(props: ITableProps) {
 		],
 		[JSON.stringify(tableConfig.filters), screens.xxl, JSON.stringify(tableConfig.orderBy)],
 	)
-
-	useEffect(() => {
-		console.log({ columns: columns.map((c) => ({ index: c.key, filtered: c.filtered })) })
-	}, [columns])
 
 	return (
 		<AntdTable<ISchool>
