@@ -16,8 +16,8 @@ export interface ISchool {
 	adresse_1: string
 	code_postal: string
 	nom_commune: string
-	latitude: string
-	longitude: string
+	latitude: number
+	longitude: number
 	mail: string
 	telephone: string
 	favoris: boolean

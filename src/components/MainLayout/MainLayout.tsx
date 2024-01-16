@@ -1,4 +1,4 @@
-import { ArrowLeft } from '@phosphor-icons/react'
+import { ArrowLeft, MapPin } from '@phosphor-icons/react'
 import { Layout } from 'antd'
 import { useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
@@ -42,8 +42,11 @@ export function MainLayout() {
 				collapsed={isCollapsed}
 			>
 				<div className="sider__logo">
-					<img src="schoolevent_logo_white.svg" />
-					<img src="schoolevent_text_white.svg" />
+					<img alt="schoolevent_logo" src="schoolevent_logo_white.svg" />
+					{/* TODO: fix logo layout when collapsed */}
+					{isCollapsed ? null : (
+						<img alt="schoolevent_text_logo" src="schoolevent_text_white.svg" />
+					)}
 				</div>
 				<SideMenu />
 			</Sider>
@@ -54,6 +57,7 @@ export function MainLayout() {
 						onClick={toggleSider}
 						className={isCollapsed ? 'sider-trigger__collapsed' : 'sider-trigger'}
 					/>
+					<MapPin size={32} weight="duotone" />
 					<UserMenu />
 				</Header>
 				<Content className="main-layout__content">

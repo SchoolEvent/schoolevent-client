@@ -125,7 +125,7 @@ export function ContactsLayout() {
 							)}
 						</div>
 						<div className={getMapContainerClass()}>
-							<ContactsMap />
+							<ContactsMap data={tableConfig.data} />
 							<IconButton
 								className="map-btn toggle-mode-btn"
 								onClick={toggleMapState}
