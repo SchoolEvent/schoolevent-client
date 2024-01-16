@@ -5,7 +5,8 @@ import dayjs from 'dayjs'
 
 import { useSupabase } from '@utils'
 
-import { IEventFormFields, eventTypesRecord } from './EventForm-types'
+import { IEventFormFields } from '../type'
+import { eventTypesRecord } from './EventForm-types'
 
 export function EventForm() {
 	const [form] = Form.useForm()
