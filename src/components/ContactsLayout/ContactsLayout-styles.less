@@ -15,6 +15,7 @@
 
 	&__table-and-global-search {
 		height: 100%;
+
 		.ant-layout-content {
 			display: flex;
 			align-items: center;
@@ -108,13 +109,19 @@
 		}
 
 		.contacts-layout__header {
-			height: fit-content;
+			height: min-content;
 			display: flex;
 			flex-direction: column;
 			background: none;
 
 			.contacts-table__header {
 				align-self: flex-end;
+
+				.contacts-range-container {
+					display: flex;
+					flex-direction: column;
+					width: 250px;
+				}
 
 				.contacts-global-search .ant-input {
 					width: 275px;

@@ -25,4 +25,6 @@ export const INIT_TABLE_STATE: ITableConfigState = {
 	tableHeight: 0,
 	where: undefined,
 	filters: DEFAULT_FILTER_OBJECT,
+	range: null,
+	userLocation: undefined,
 }

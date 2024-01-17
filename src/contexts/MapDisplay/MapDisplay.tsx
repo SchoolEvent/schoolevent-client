@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 
 import { PropsWithChildren } from '@types'
 
+import { TUserLocation } from '../../components/ContactsLayout/_components/Table/Table-types'
 import { IMapDisplayContext, IMapDisplayState } from './MapDisplay-types'
 
 const MapDisplayContext = createContext<IMapDisplayContext>({} as IMapDisplayContext)
@@ -11,6 +12,7 @@ export function MapDisplayProvider({ children }: PropsWithChildren) {
 		state: 'split',
 		isHidden: true,
 	})
+	const [focusedPin, setFocusedPin] = useState<TUserLocation | null>(null)
 
 	const displayMap = useCallback(() => {
 		setMapDisplayState((prevState) => ({ ...prevState, isHidden: false }))
@@ -33,8 +35,10 @@ export function MapDisplayProvider({ children }: PropsWithChildren) {
 			displayMap,
 			hideMap,
 			toggleMapState,
+			focusedPin,
+			setFocusedPin,
 		}),
-		[mapDisplayState, hideMap, toggleMapState, displayMap],
+		[mapDisplayState, hideMap, toggleMapState, displayMap, focusedPin],
 	)
 
 	return <MapDisplayContext.Provider value={value}>{children}</MapDisplayContext.Provider>

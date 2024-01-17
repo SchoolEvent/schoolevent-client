@@ -117,6 +117,16 @@ export function reducer(state: ITableConfigState, action: TReducerActionType): I
 				...state,
 				filters: action.payload.filters,
 			}
+		case 'SET_RANGE':
+			return {
+				...state,
+				range: action.payload.range,
+			}
+		case 'SET_USER_LOCATION':
+			return {
+				...state,
+				userLocation: action.payload.location,
+			}
 	}
 }
 

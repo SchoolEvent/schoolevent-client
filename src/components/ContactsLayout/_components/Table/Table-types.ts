@@ -40,6 +40,8 @@ export type TReducerActionType =
 	| TSetWhereAction
 	| TResetFiltersAction
 	| TSetFiltersAction
+	| TSetRangeAction
+	| TSetUserLocationAction
 
 export interface IAPIResponse {
 	total_count: number
@@ -108,6 +110,26 @@ type TSetFiltersAction = {
 	}
 }
 
+type TSetRangeAction = {
+	type: 'SET_RANGE'
+	payload: {
+		range: number | null
+	}
+}
+
+type TSetUserLocationAction = {
+	type: 'SET_USER_LOCATION'
+	payload: {
+		location: TUserLocation | undefined
+	}
+}
+
+export interface IQueryStringBuilderParams {
+	range: number | null
+	userLocation?: { lat: number; lng: number }
+	filters?: TTableFilters
+}
+
 export interface ITableConfigState {
 	data: ISchool[]
 	loading: boolean
@@ -118,6 +140,8 @@ export interface ITableConfigState {
 	tableHeight: number
 	where?: string
 	filters: TFiltersRecord
+	range: number | null
+	userLocation?: TUserLocation
 }
 
 export interface IGetColumnSearchPropsParams {
@@ -132,8 +156,12 @@ export interface ITableProps {
 	globalSearch: string
 	tableConfigReducer: {
 		tableConfig: ITableConfigState
-		setTableConfig: React.Dispatch<TReducerActionType>
+		setTableConfig: TSetTableConfig
 	}
 }
+
+export type TUserLocation = { lat: number; lng: number }
+
+export type TSetTableConfig = React.Dispatch<TReducerActionType>
 
 export type TTableFilters = Record<string, FilterValue | null>

@@ -6,7 +6,7 @@ import {
 	ArrowsInSimple as ReduceMapIcon,
 	MagnifyingGlass as SearchIcon,
 } from '@phosphor-icons/react'
-import { Button, Input, Layout, Space } from 'antd'
+import { Button, Divider, Input, Layout, Slider, Space, Typography } from 'antd'
 import { useLayoutEffect, useReducer, useState } from 'react'
 
 import { ContactsMap, IconButton, Info } from '@components'
@@ -73,6 +73,32 @@ export function ContactsLayout() {
 				<Layout className="contacts-layout__table-and-global-search">
 					<Header className="contacts-layout__header">
 						<Space direction="horizontal" className="contacts-table__header" size="large">
+							<div className="contacts-range-container">
+								<Typography.Text>Distance maximale :</Typography.Text>
+								<Slider
+									disabled={
+										!tableConfig.userLocation ||
+										(tableConfig.userLocation.lat === 0 && tableConfig.userLocation.lng === 0)
+									}
+									defaultValue={0}
+									step={10}
+									min={0}
+									max={100}
+									onChangeComplete={(value) =>
+										setTableConfig({
+											type: 'SET_RANGE',
+											payload: { range: value === 0 ? null : value },
+										})
+									}
+									marks={{
+										0: 'Illimité',
+										100: '100 km',
+									}}
+									tooltip={{ formatter: (value) => (value === 0 ? 'Illimité' : `${value} km`) }}
+									dots
+								/>
+							</div>
+							<Divider type="vertical" />
 							<Space direction="horizontal" className="contacts-global-search">
 								<Info tooltip>
 									<Space direction="vertical">
@@ -97,6 +123,7 @@ export function ContactsLayout() {
 									}}
 								/>
 							</Space>
+							<Divider type="vertical" />
 							<Button
 								className="clear-filters-btn"
 								type="primary"
@@ -125,7 +152,7 @@ export function ContactsLayout() {
 							)}
 						</div>
 						<div className={getMapContainerClass()}>
-							<ContactsMap data={tableConfig.data} />
+							<ContactsMap data={tableConfig.data} setTableConfig={setTableConfig} />
 							<IconButton
 								className="map-btn toggle-mode-btn"
 								onClick={toggleMapState}

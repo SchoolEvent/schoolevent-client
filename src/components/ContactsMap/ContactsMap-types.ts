@@ -1,4 +1,4 @@
-import { ISchool } from '../ContactsLayout/_components/Table/Table-types'
+import { ISchool, TSetTableConfig } from '../ContactsLayout/_components/Table/Table-types'
 
 export interface IGeoLocationCoordinates {
 	lat: number
@@ -18,4 +18,5 @@ export interface IGeoLocationState {
 
 export interface IContactsMapProps {
 	data: ISchool[]
+	setTableConfig: TSetTableConfig
 }

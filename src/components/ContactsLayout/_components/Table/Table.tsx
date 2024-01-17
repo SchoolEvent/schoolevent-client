@@ -26,7 +26,7 @@ export function Table(props: ITableProps) {
 	const { globalSearch, tableConfigReducer } = props
 	const { tableConfig, setTableConfig } = tableConfigReducer
 	const { user } = useAuth()
-	const { mapDisplayState } = useMapDisplay()
+	const { mapDisplayState, setFocusedPin } = useMapDisplay()
 	const { favorites, addFavorite, deleteFavorite, doesFavoriteExist } = useFavorites()
 	const localStorage = useLocalStorage()
 	const tableRef = useRef<TableRef>(null)
@@ -106,7 +106,9 @@ export function Table(props: ITableProps) {
 				limit: tableConfig.paginationSize,
 				offset: tableConfig.offset,
 				select: SELECTED_FIELDS,
-				where,
+				where: tableConfig.range
+					? `${where} AND distance(position, geom'POINT(${tableConfig.userLocation?.lng} ${tableConfig.userLocation?.lat})', ${tableConfig.range}km)`
+					: where,
 				orderBy: tableConfig.orderBy,
 			})
 			const response: IAPIResponse = await rawResponse.json()
@@ -130,6 +132,8 @@ export function Table(props: ITableProps) {
 		tableConfig.offset,
 		tableConfig.orderBy,
 		tableConfig.where,
+		tableConfig.range,
+		tableConfig.userLocation,
 		localStorage,
 		favorites,
 		globalSearch,
@@ -322,6 +326,13 @@ export function Table(props: ITableProps) {
 					prev_page: 'Page précédente',
 				},
 			}}
+			onRow={(record) => ({
+				onClick: () => {
+					if (record.latitude && record.longitude) {
+						setFocusedPin({ lat: record.latitude, lng: record.longitude })
+					}
+				},
+			})}
 			expandable={{
 				expandedRowRender: (record) => {
 					return (
