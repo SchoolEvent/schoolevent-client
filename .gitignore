@@ -13,7 +13,10 @@ dist-ssr
 *.local
 
 # Editor directories and files
-.idea
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+**/.idea/*.iws
+**/.idea/*.iml
 .DS_Store
 *.suo
 *.ntvs*
