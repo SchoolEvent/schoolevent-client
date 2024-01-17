@@ -165,3 +165,5 @@ export type TUserLocation = { lat: number; lng: number }
 export type TSetTableConfig = React.Dispatch<TReducerActionType>
 
 export type TTableFilters = Record<string, FilterValue | null>
+
+export interface ITableControllerParams extends ITableProps {}
