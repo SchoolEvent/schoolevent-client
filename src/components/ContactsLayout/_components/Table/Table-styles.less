@@ -41,8 +41,16 @@
 	}
 
 	thead.ant-table-thead {
-		th {
-			background: #fffbf8;
+		.contacts-table__header__light {
+			th {
+				background: #fffbf8;
+			}
+		}
+
+		.contacts-table__header__dark {
+			th {
+				background: var(--ant-color-primary-bg);
+			}
 		}
 	}
 
@@ -51,6 +59,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			color: var(--ant-color-primary);
 		}
 
 		.ant-table-expanded-row {
@@ -61,17 +70,29 @@
 
 		tr.ant-table-row {
 			&.even-row {
-				td.ant-table-cell.ant-table-cell-row-hover {
+				&__light td.ant-table-cell.ant-table-cell-row-hover {
 					background: #fdf0e3;
+				}
+
+				&__dark td.ant-table-cell.ant-table-cell-row-hover {
+					background: var(--ant-color-primary-bg-hover);
 				}
 			}
 
 			&.odd-row {
-				td.ant-table-cell {
+				&__light td.ant-table-cell {
 					background: #fffbf8;
 
 					&.ant-table-cell-row-hover {
 						background: #fdf0e3;
+					}
+				}
+
+				&__dark td.ant-table-cell {
+					background: var(--ant-color-primary-bg);
+
+					&.ant-table-cell-row-hover {
+						background: var(--ant-color-primary-bg-hover);
 					}
 				}
 			}

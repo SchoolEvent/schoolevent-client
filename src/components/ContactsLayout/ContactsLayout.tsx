@@ -2,6 +2,7 @@ import {
 	Broom as ClearFiltersIcon,
 	XCircle as CloseMapIcon,
 	ArrowsOutSimple as ExpandMapIcon,
+	MapPin,
 	MapTrifold as OpenMapIcon,
 	ArrowsInSimple as ReduceMapIcon,
 	MagnifyingGlass as SearchIcon,
@@ -92,9 +93,9 @@ export function ContactsLayout() {
 									}
 									marks={{
 										0: 'Illimité',
-										100: '100 km',
+										100: '100km',
 									}}
-									tooltip={{ formatter: (value) => (value === 0 ? 'Illimité' : `${value} km`) }}
+									tooltip={{ formatter: (value) => (value === 0 ? 'Illimité' : `${value}km`) }}
 									dots
 								/>
 							</div>
@@ -152,6 +153,20 @@ export function ContactsLayout() {
 							)}
 						</div>
 						<div className={getMapContainerClass()}>
+							<Space className="map-container__legend" direction="vertical" size={2}>
+								<div className="map-container__legend__item">
+									<MapPin size={20} weight="fill" color="#4798d0" stroke="black" strokeWidth={10} />
+									<Typography.Text>Votre position</Typography.Text>
+								</div>
+								<div className="map-container__legend__item">
+									<MapPin size={20} weight="fill" color="#fcd6a4" stroke="black" strokeWidth={10} />
+									<Typography.Text>Collège</Typography.Text>
+								</div>
+								<div className="map-container__legend__item">
+									<MapPin size={20} weight="fill" color="#e34336" stroke="black" strokeWidth={10} />
+									<Typography.Text>Lycée</Typography.Text>
+								</div>
+							</Space>
 							<ContactsMap data={tableConfig.data} setTableConfig={setTableConfig} />
 							<IconButton
 								className="map-btn toggle-mode-btn"

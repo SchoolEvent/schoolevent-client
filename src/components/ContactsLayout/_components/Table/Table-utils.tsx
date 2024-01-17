@@ -317,3 +317,11 @@ export function getGlobalSearch(globalSearch: string): string | null {
 
 	return `search(nom_etablissement, '${globalSearch}') OR search(nom_commune, '${globalSearch}') OR search(code_postal, '${globalSearch}') OR search(adresse_1, '${globalSearch}')`
 }
+
+export function getRowClassname(index: number, theme: 'light' | 'dark'): string {
+	if (index % 2 === 0) {
+		return `even-row even-row__${theme}`
+	} else {
+		return `odd-row odd-row__${theme}`
+	}
+}

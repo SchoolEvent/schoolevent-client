@@ -33,7 +33,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			background: white;
+			background: var(--ant-color-bg-elevated);
 			border-radius: calc(var(--ant-border-radius) * 3) 0 0 0;
 			margin: 16px 0 0 16px;
 			padding: 16px 0 0 16px;
@@ -60,6 +60,24 @@
 
 				.leaflet-container {
 					border-radius: var(--ant-border-radius-lg);
+				}
+
+				&__legend {
+					z-index: 99;
+					position: absolute;
+					top: var(--ant-padding-sm);
+					right: calc(var(--ant-padding) + var(--ant-padding-sm));
+					padding: var(--ant-padding-xs);
+					border-radius: var(--ant-border-radius);
+					background-color: var(--ant-color-bg-layout);
+
+					&__item {
+						display: flex;
+						flex-direction: row;
+						justify-content: start;
+						align-items: center;
+						gap: 0.5rem;
+					}
 				}
 
 				&__full {

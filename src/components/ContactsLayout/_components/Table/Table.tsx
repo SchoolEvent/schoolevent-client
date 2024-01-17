@@ -3,7 +3,7 @@ import { Table as AntdTable, Button, Grid, InputRef, Space, Typography } from 'a
 import { ColumnsType, TableRef } from 'antd/lib/table'
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 
-import { useAuth, useFavorites, useMapDisplay } from '@contexts'
+import { useAuth, useFavorites, useMapDisplay, useTheme } from '@contexts'
 import { ITableStorage } from '@types'
 import { isStringEmpty, useLocalStorage } from '@utils'
 
@@ -15,6 +15,7 @@ import {
 	getColumnRadioProps,
 	getColumnSearchProps,
 	getGlobalSearch,
+	getRowClassname,
 	getSortOrder,
 } from './Table-utils'
 
@@ -32,6 +33,7 @@ export function Table(props: ITableProps) {
 	const tableRef = useRef<TableRef>(null)
 	const searchRef = useRef<InputRef>(null)
 	const screens = useBreakpoint()
+	const { theme } = useTheme()
 
 	const handleFavorites = async (record: ISchool) => {
 		if (user) {
@@ -300,7 +302,8 @@ export function Table(props: ITableProps) {
 			rowKey={(record) =>
 				`${record.identifiant_de_l_etablissement}-${record.nom_commune}-${record.code_postal}`
 			}
-			rowClassName={(_record, index) => (index % 2 === 0 ? 'even-row' : 'odd-row')}
+			onHeaderRow={() => ({ className: `contacts-table__header__${theme}` })}
+			rowClassName={(_record, index) => getRowClassname(index, theme)}
 			scroll={{ y: tableConfig.tableHeight }}
 			className="contacts-table"
 			columns={columns}
