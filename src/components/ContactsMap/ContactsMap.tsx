@@ -1,4 +1,5 @@
-import { Space } from 'antd'
+import { Plus as NewIcon } from '@phosphor-icons/react'
+import { Button, Space, Typography } from 'antd'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useEffect, useMemo, useRef } from 'react'
@@ -8,8 +9,10 @@ import MarkerClusterGroup from 'react-leaflet-cluster'
 import collegeMapPin from '@assets/college-map-pin.svg'
 import lyceeMapPin from '@assets/lycee-map-pin.svg'
 import userMapPin from '@assets/user-map-pin.svg'
+import { useTheme } from '@contexts'
 
 import { TUserLocation } from '../ContactsLayout/_components/Table/Table-types'
+import { CopyableText } from '../CopyableText/CopyableText'
 import { IContactsMapProps } from './ContactsMap-types'
 import { MAP_UTILS, useGeoLocation } from './ContactsMap-utils'
 import { MapReloader } from './_components/MapReloader/MapReloader'
@@ -36,6 +39,7 @@ export function ContactsMap(props: IContactsMapProps) {
 
 	const location = useGeoLocation()
 	const mapRef = useRef(null)
+	const { theme } = useTheme()
 
 	const userLocation: TUserLocation = useMemo(
 		() => ({
@@ -70,11 +74,28 @@ export function ContactsMap(props: IContactsMapProps) {
 								icon={school.type_etablissement === 'Lycée' ? lyceePinIcon : collegePinIcon}
 								title={school.nom_etablissement}
 							>
-								<Popup>
-									<Space direction="vertical">
-										<span>{school.nom_etablissement}</span>
-										<span>{school.type_etablissement}</span>
-										<span>{school.adresse_1}</span>
+								<Popup className={`map-popup map-popup__${theme}`}>
+									<Space direction="vertical" size="small">
+										<Space direction="vertical" size={0}>
+											<Typography.Text strong>{school.nom_etablissement}</Typography.Text>
+											<Typography.Text type="secondary">
+												{school.type_etablissement}
+											</Typography.Text>
+										</Space>
+										<Typography.Text>
+											{school.adresse_1}, {school.code_postal} {school.nom_commune}
+										</Typography.Text>
+										{school.telephone && <CopyableText label="Tél" text={school.telephone} />}
+										{school.mail && <CopyableText label="Email" text={school.mail} />}
+										<Button
+											type="primary"
+											className="create-btn"
+											icon={<NewIcon size={16} />}
+											block
+											disabled
+										>
+											Créer un suivi
+										</Button>
 									</Space>
 								</Popup>
 							</Marker>

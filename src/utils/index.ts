@@ -1,5 +1,6 @@
 export { capitalize } from './capitalize'
 export { isStringEmpty } from './isStringEmpty'
+export { useCopyToClipboard } from './useCopyToClipboard'
 export { useDebounce } from './useDebounce'
 export { useLocalStorage, getLocalStorage } from './localStorage'
 export { useSupabase } from './useSupabase'

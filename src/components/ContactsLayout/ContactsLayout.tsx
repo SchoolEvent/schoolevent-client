@@ -11,7 +11,7 @@ import { Button, Divider, Input, Layout, Slider, Space, Typography } from 'antd'
 import { useLayoutEffect, useReducer, useState } from 'react'
 
 import { ContactsMap, IconButton, Info } from '@components'
-import { useMapDisplay } from '@contexts'
+import { useMapDisplay, useTheme } from '@contexts'
 import { useDebounce } from '@utils'
 
 import { FavoritesList, Table } from './_components'
@@ -27,22 +27,25 @@ export function ContactsLayout() {
 	const [globalSearch, setGlobalSearch] = useState<string>('')
 	const debouncedGlobalSearch = useDebounce<string>(globalSearch, 750)
 	const { displayMap, hideMap, toggleMapState, mapDisplayState } = useMapDisplay()
+	const { theme } = useTheme()
 
 	const getMapContainerClass = () => {
+		const defaultCls = 'map-container map-container__' + theme
+
 		if (mapDisplayState.isHidden) {
-			return 'map-container__hidden'
+			return defaultCls + ' ' + 'map-container__hidden'
 		} else if (mapDisplayState.state === 'full') {
-			return 'map-container__full'
+			return defaultCls + ' ' + 'map-container__full'
 		} else {
-			return 'map-container'
+			return defaultCls
 		}
 	}
 
 	const getTableContainerClass = () => {
 		if (mapDisplayState.isHidden) {
-			return 'table-container__full'
+			return 'table-container table-container__full'
 		} else if (mapDisplayState.state === 'full') {
-			return 'table-container__hidden'
+			return 'table-container table-container__hidden'
 		} else {
 			return 'table-container'
 		}
