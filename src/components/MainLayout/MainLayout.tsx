@@ -42,10 +42,10 @@ export function MainLayout() {
 				collapsed={isCollapsed}
 			>
 				<div className="sider__logo">
-					<img alt="schoolevent_logo" src="schoolevent_logo_white.svg" />
+					<img alt="schoolevent_logo" src="/schoolevent_logo_white.svg" />
 					{/* TODO: fix logo layout when collapsed */}
 					{isCollapsed ? null : (
-						<img alt="schoolevent_text_logo" src="schoolevent_text_white.svg" />
+						<img alt="schoolevent_text_logo" src="/schoolevent_text_white.svg" />
 					)}
 				</div>
 				<SideMenu />
