@@ -1,3 +1,4 @@
+export { BasicLayout } from './BasicLayout/BasicLayout'
 export { CalendarLayout } from './Calendar/CalendarLayout'
 export { ContactsLayout } from './ContactsLayout/ContactsLayout'
 export { ContactsMap } from './ContactsMap/ContactsMap'
