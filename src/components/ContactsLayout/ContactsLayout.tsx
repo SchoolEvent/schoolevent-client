@@ -10,11 +10,11 @@ import {
 import { Button, Divider, Input, Layout, Slider, Space, Typography } from 'antd'
 import { useLayoutEffect, useReducer, useState } from 'react'
 
-import { BasicLayout, ContactsMap, IconButton, Info } from '@components'
+import { BasicLayout, ContactsMap, FavoritesList, IconButton, Info } from '@components'
 import { useMapDisplay, useTheme } from '@contexts'
 import { useDebounce } from '@utils'
 
-import { FavoritesList, Table } from './_components'
+import { Table } from './_components/Table/Table'
 import { INIT_TABLE_STATE } from './_components/Table/Table-constants'
 import { reducer } from './_components/Table/Table-utils'
 
