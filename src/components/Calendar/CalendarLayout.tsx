@@ -1,6 +1,6 @@
 import { Layout } from 'antd'
 
-import { Calendar } from './_components'
+import { Calendar, CalendarList } from './_components'
 
 import './CalendarLayout-styles.less'
 
@@ -12,6 +12,7 @@ export function CalendarLayout() {
 			<Header>Calendrier</Header>
 			<Layout>
 				<Sider width={250}>
+					<CalendarList />
 				</Sider>
 				<Content>
 					<Calendar />
