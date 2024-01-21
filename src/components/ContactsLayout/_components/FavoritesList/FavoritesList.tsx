@@ -10,6 +10,9 @@ import { useAuth, useFavorites } from '@contexts'
 
 import './FavoritesList-styles.less'
 
+/**
+ * This component **MUST** be wrapped in a `FavoritesProvider` context.
+ */
 export function FavoritesList() {
 	const [search, setSearch] = useState('')
 	const { favorites, loading, deleteFavorite } = useFavorites()
