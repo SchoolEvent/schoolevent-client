@@ -1,6 +1,5 @@
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
-import { Badge, Button, ConfigProvider, Modal, Select } from 'antd'
-import { Calendar as AntCalendar } from 'antd'
+import { Calendar as AntCalendar, Badge, Button, ConfigProvider, Modal, Select } from 'antd'
 import { BadgeProps } from 'antd/lib/badge'
 import frFR from 'antd/lib/locale/fr_FR'
 import dayjs, { Dayjs } from 'dayjs'
@@ -9,13 +8,18 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { Appointment, appointments } from '../appointment.tsx'
 
+import './Calendar-styles.less'
+
 const Calendar = () => {
 	const [isModalVisible, setIsModalVisible] = useState(false)
 	const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
 	const [currentDate, setCurrentDate] = useState(dayjs())
 
 	const currentYear = dayjs().year()
-	const years = useMemo(() => Array.from({ length: 6 }, (_, i) => currentYear + i), [currentYear])
+	const years = useMemo(
+		() => Array.from({ length: 7 }, (_, i) => currentYear - 1 + i),
+		[currentYear],
+	)
 
 	const getListData = (value: Dayjs) => {
 		return appointments.filter((appointment) => {
@@ -93,7 +97,7 @@ const Calendar = () => {
 			}
 
 			return (
-				<div style={{ padding: 20, display: 'flex', alignItems: 'center' }}>
+				<div className="calendarHeader">
 					<Button size="small" onClick={handlePrevMonth}>
 						<LeftOutlined />
 					</Button>
