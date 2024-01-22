@@ -46,13 +46,13 @@ const Calendar = () => {
 		)
 	}
 
-	const handlePrevMonth = () => {
-		setCurrentDate(currentDate.subtract(1, 'month'))
-	}
+	const handlePrevMonth = useCallback(() => {
+		setCurrentDate((currentDate) => currentDate.subtract(1, 'month'))
+	}, [])
 
-	const handleNextMonth = () => {
-		setCurrentDate(currentDate.add(1, 'month'))
-	}
+	const handleNextMonth = useCallback(() => {
+		setCurrentDate((currentDate) => currentDate.add(1, 'month'))
+	}, [])
 
 	const handleYearSelectChange = useCallback(
 		(newYear: string) => {
