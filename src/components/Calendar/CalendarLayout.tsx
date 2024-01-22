@@ -9,14 +9,12 @@ const { Content, Sider } = Layout
 export function CalendarLayout() {
 	return (
 		<Layout className="calendar-layout">
-			<Layout>
-				<Sider width={250}>
-					<CalendarList />
-				</Sider>
-				<Content>
-					<Calendar />
-				</Content>
-			</Layout>
+			<Sider width={250}>
+				<CalendarList />
+			</Sider>
+			<Content>
+				<Calendar />
+			</Content>
 		</Layout>
 	)
 }
