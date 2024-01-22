@@ -11,7 +11,7 @@ export interface Appointment {
 
 export const appointments: Appointment[] = [
 	{
-		type: 'test',
+		type: '',
 		name: 'Rencontre Etudiante Esiee-it',
 		description: 'Rencontre avec plein d étudiants.',
 		position: 'Pontoise',
@@ -19,7 +19,15 @@ export const appointments: Appointment[] = [
 		participant: 'Nicolas',
 	},
 	{
-		type: 'test',
+		type: '',
+		name: 'Rencontre Etudiante ESCP',
+		description: 'Rencontre avec plein d étudiants.',
+		position: 'Paris',
+		date: dayjs('2024-01-10'),
+		participant: 'Mathieu',
+	},
+	{
+		type: '',
 		name: 'JPO ESCP',
 		description: 'Rencontre avec les étudiants pour les lycées.',
 		position: 'Paris',
@@ -27,7 +35,7 @@ export const appointments: Appointment[] = [
 		participant: 'Nicolas',
 	},
 	{
-		type: 'test',
+		type: '',
 		name: 'Salon SUP de Vente',
 		description: 'Salon avec des entrepreneurs et des patrons.',
 		position: 'Pontoise',
