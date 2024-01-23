@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ConfigProvider, theme as themeAlg } from 'antd'
 import frFR from 'antd/lib/locale/fr_FR'
 import { useEffect, useState } from 'react'
@@ -6,9 +7,18 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import { MainLayout } from '@components'
 import { AuthProvider, useTheme } from '@contexts'
-import { calendarRoute, contactsRoute, eventsRoute, loginRoute, noMatchRoute } from '@routes'
+import {
+	appointmentsRoute,
+	calendarRoute,
+	contactsRoute,
+	eventsRoute,
+	loginRoute,
+	noMatchRoute,
+} from '@routes'
 
 import './App.less'
+
+const queryClient = new QueryClient()
 
 function App() {
 	const [faviconHref, setFaviconHref] = useState<string>('')
@@ -24,11 +34,13 @@ function App() {
 		{
 			path: '/',
 			element: (
-				<AuthProvider>
-					<MainLayout />
-				</AuthProvider>
+				<QueryClientProvider client={queryClient}>
+					<AuthProvider>
+						<MainLayout />
+					</AuthProvider>
+				</QueryClientProvider>
 			),
-			children: [contactsRoute, calendarRoute, eventsRoute],
+			children: [contactsRoute, calendarRoute, eventsRoute, appointmentsRoute],
 		},
 	])
 

@@ -1,3 +1,4 @@
+export { AppointmentsLayout } from './AppointmentsLayout/AppointmentsLayout'
 export { BasicLayout } from './BasicLayout/BasicLayout'
 export { CalendarLayout } from './Calendar/CalendarLayout'
 export { ContactsLayout } from './ContactsLayout/ContactsLayout'

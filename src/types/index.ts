@@ -8,3 +8,4 @@ export type PropsWithChildren<P = object> = P & { children: ReactNode }
 
 export * from './localStorage'
 export * from './useCopyToClipboard'
+export * from './appointments'

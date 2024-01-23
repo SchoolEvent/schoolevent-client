@@ -1,0 +1,18 @@
+.basic-layout.appointments-layout {
+	padding: var(--ant-padding) 0 var(--ant-padding) var(--ant-padding);
+
+	.drop-zones-container {
+		height: 100%;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--ant-padding-lg);
+	}
+
+	.appointments-content {
+		background: var(--ant-color-bg-elevated);
+		border-radius: calc(var(--ant-border-radius) * 3) 0 0 0;
+		margin: var(--ant-margin) 0 0 var(--ant-margin);
+		padding: var(--ant-padding);
+		box-shadow: 0 0 30px rgba(130, 130, 130, 0.15);
+	}
+}
