@@ -15,11 +15,15 @@ import './FavoritesList-styles.less'
  */
 export function FavoritesList() {
 	const [search, setSearch] = useState('')
-	const { favorites, loading, deleteFavorite } = useFavorites()
+	const { favorites, loading, removeFavorite } = useFavorites()
 	const { user } = useAuth()
 
 	if (!user) {
 		return null
+	}
+
+	if (loading) {
+		return <LoadingList />
 	}
 
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,9 +31,9 @@ export function FavoritesList() {
 	}
 
 	const filteredFavorites = favorites.filter((favorite) => {
-		const matchName = favorite.name.toLowerCase().includes(search.toLowerCase())
-		const matchCity = favorite.city.toLowerCase().includes(search.toLowerCase())
-		const matchPostalCode = favorite.postalCode.toLowerCase().includes(search.toLowerCase())
+		const matchName = favorite.school_name.toLowerCase().includes(search.toLowerCase())
+		const matchCity = favorite.school_city.toLowerCase().includes(search.toLowerCase())
+		const matchPostalCode = favorite.school_postal_code.toLowerCase().includes(search.toLowerCase())
 
 		return matchName || matchCity || matchPostalCode
 	})
@@ -48,11 +52,11 @@ export function FavoritesList() {
 					<List.Item key={item.id}>
 						<List.Item.Meta
 							className="favorites-list__item"
-							title={item.name}
+							title={item.school_name}
 							description={
 								<Flex justify="space-between">
 									<i>
-										{item.city} - {item.postalCode}
+										{item.school_city} - {item.school_postal_code}
 									</i>
 									<Popconfirm
 										title="Supprimer des favoris ?"
@@ -60,7 +64,7 @@ export function FavoritesList() {
 										okType="danger"
 										okText="Supprimer"
 										okButtonProps={{ danger: true }}
-										onConfirm={() => deleteFavorite(item.id, user.id)}
+										onConfirm={() => removeFavorite(item.school_id)}
 										cancelText="Annuler"
 										icon={<WarningCircle className="warning-icon" size="1rem" />}
 									>
@@ -77,6 +81,15 @@ export function FavoritesList() {
 					</List.Item>
 				)}
 			/>
+		</Space>
+	)
+}
+
+function LoadingList() {
+	return (
+		<Space className="favorites-list" direction="vertical">
+			<Input placeholder="Rechercher des favoris" prefix={<SearchIcon />} />
+			<List dataSource={[]} loading />
 		</Space>
 	)
 }

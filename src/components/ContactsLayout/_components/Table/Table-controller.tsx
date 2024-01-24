@@ -24,7 +24,7 @@ export function useController(params: ITableControllerParams) {
 	const { tableConfig, setTableConfig } = tableConfigReducer
 	const { user } = useAuth()
 	const { mapDisplayState } = useMapDisplay()
-	const { favorites, addFavorite, deleteFavorite, doesFavoriteExist } = useFavorites()
+	const { favorites, addFavorite, removeFavorite, doesFavoriteExist } = useFavorites()
 	const localStorage = useLocalStorage()
 	const tableRef = useRef<TableRef>(null)
 	const searchRef = useRef<InputRef>(null)
@@ -35,13 +35,13 @@ export function useController(params: ITableControllerParams) {
 			const exists = await doesFavoriteExist(record.identifiant_de_l_etablissement, user.id)
 
 			if (exists) {
-				await deleteFavorite(record.identifiant_de_l_etablissement, user.id)
+				removeFavorite(record.identifiant_de_l_etablissement)
 			} else {
-				await addFavorite(user.id, {
-					id: record.identifiant_de_l_etablissement,
-					name: record.nom_etablissement,
-					city: record.nom_commune,
-					postalCode: record.code_postal,
+				addFavorite({
+					school_id: record.identifiant_de_l_etablissement,
+					school_name: record.nom_etablissement,
+					school_city: record.nom_commune,
+					school_postal_code: record.code_postal,
 				})
 			}
 		}
@@ -113,7 +113,7 @@ export function useController(params: ITableControllerParams) {
 			// We add the 'favoris' field to the data
 			const data = response.results.map((school) => ({
 				...school,
-				favoris: favorites.some((fav) => fav.id === school.identifiant_de_l_etablissement),
+				favoris: favorites.some((fav) => fav.school_id === school.identifiant_de_l_etablissement),
 			}))
 
 			setTableConfig({

@@ -1,10 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { createContext, useCallback, useContext, useMemo } from 'react'
 
 import { useAuth } from '@contexts'
 import { PropsWithChildren } from '@types'
 import { useSupabase } from '@utils'
 
 import { IFavorite, IFavoriteContactsContext } from './FavoriteContacts-types'
+import { addFavorite, fetchFavorites, removeFavorite } from './FavoriteContacts-utils'
 
 const FavoriteContactsContext = createContext<IFavoriteContactsContext>(
 	{} as IFavoriteContactsContext,
@@ -12,80 +14,45 @@ const FavoriteContactsContext = createContext<IFavoriteContactsContext>(
 
 export function FavoriteContactsProvider({ children }: PropsWithChildren) {
 	const { user } = useAuth()
-	const [favorites, setFavorites] = useState<IFavorite[]>([])
-	const [loading, setLoading] = useState(true)
 	const supabase = useSupabase()
+	const queryClient = useQueryClient()
 
-	const fetchFavorites = useCallback(async () => {
-		if (user) {
-			setLoading(true)
-			const { data } = await supabase.from('favorites').select('*').eq('user_id', user.id)
+	const {
+		data: response,
+		isLoading,
+		refetch,
+	} = useQuery({
+		queryKey: ['favorites', { userId: user?.id }],
+		queryFn: async () => await fetchFavorites({ supabase, userId: user?.id }),
+	})
 
-			if (data) {
-				setFavorites(
-					data.map(({ school_city, school_name, school_postal_code, school_id }) => ({
-						id: school_id,
-						name: school_name,
-						city: school_city,
-						postalCode: school_postal_code,
-					})),
-				)
-			} else {
-				setFavorites([])
-			}
-		}
-
-		setLoading(false)
-	}, [supabase, user])
-
-	useEffect(() => {
-		fetchFavorites()
-	}, [fetchFavorites])
-
-	/**
-	 * Deletes a favorite from the database.
-	 * Refreshes the favorites list.
-	 */
-	const deleteFavorite = useCallback(
-		async (id: string, userId: string) => {
-			await supabase.from('favorites').delete().eq('user_id', userId).eq('school_id', id)
-			fetchFavorites()
+	const addFav = useMutation({
+		mutationFn: async (favorite: Omit<IFavorite, 'id' | 'user_id'>) =>
+			await addFavorite({ favorite, supabase, userId: user?.id }),
+		onSuccess: () => {
+			queryClient.refetchQueries({ queryKey: ['favorites', { userId: user?.id }] })
 		},
-		[supabase, fetchFavorites],
-	)
+	})
 
-	/**
-	 * Adds a favorite to the database.
-	 * Refreshes the favorites list.
-	 */
-	const addFavorite = useCallback(
-		async (userId: string, favorite: IFavorite) => {
-			const { id, name, city, postalCode } = favorite
-
-			await supabase.from('favorites').insert({
-				user_id: userId,
-				school_id: id,
-				school_name: name,
-				school_city: city,
-				school_postal_code: postalCode,
-			})
-
-			fetchFavorites()
+	const deleteFav = useMutation({
+		mutationFn: async (school_id: string) =>
+			await removeFavorite({ school_id, supabase, userId: user?.id }),
+		onSuccess: () => {
+			queryClient.refetchQueries({ queryKey: ['favorites', { userId: user?.id }] })
 		},
-		[supabase, fetchFavorites],
-	)
+	})
 
 	/**
 	 * Verifies if a favorite exists in the database.
 	 * Returns true if it exists, false otherwise.
 	 */
 	const doesFavoriteExist = useCallback(
-		async (id: string, userId: string) => {
+		async (school_id: string, userId: string) => {
 			const { data } = await supabase
 				.from('favorites')
 				.select('*')
 				.eq('user_id', userId)
-				.eq('school_id', id)
+				.eq('school_id', school_id)
 
 			if (data && data.length > 0) {
 				return true
@@ -98,15 +65,14 @@ export function FavoriteContactsProvider({ children }: PropsWithChildren) {
 
 	const value: IFavoriteContactsContext = useMemo(
 		() => ({
-			favorites,
-			setFavorites,
-			loading,
-			addFavorite,
-			deleteFavorite,
+			favorites: ((response?.data ?? []) as IFavorite[]) ?? [],
+			loading: isLoading,
+			addFavorite: addFav.mutate,
+			removeFavorite: deleteFav.mutate,
 			doesFavoriteExist,
-			refresh: fetchFavorites,
+			refresh: refetch,
 		}),
-		[favorites, loading, fetchFavorites, addFavorite, deleteFavorite, doesFavoriteExist],
+		[response?.data, isLoading, addFav.mutate, deleteFav.mutate, doesFavoriteExist, refetch],
 	)
 
 	return (
