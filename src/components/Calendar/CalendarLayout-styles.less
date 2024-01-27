@@ -1,27 +1,31 @@
 .calendar-layout {
-  height: 100%;
+	height: 100%;
 
-  .ant-layout-sider {
-    margin-top: 16px;
-    background: none;
-    padding: 16px 0 16px 16px;
+	.ant-layout-sider {
+		margin-top: 16px;
+		background: none;
+		padding: 16px 0 16px 16px;
 
-    &-children {
-      height: fit-content;
-      width: 100%;
-      font-weight: bold;
-    }
-  }
+		&-children {
+			height: fit-content;
+			width: 100%;
+			font-weight: bold;
+		}
+	}
 
-  .ant-layout-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: white;
-    border-radius: 30px 30px 0 0;
-    margin: 16px 16px 0 16px;
-    padding: 16px;
-    gap: 10px;
-    box-shadow: 0 0 30px rgba(130, 130, 130, 0.15);
-  }
+	.ant-layout-content {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: white;
+		border-radius: calc(var(--ant-border-radius) * 3) 0 0 0;
+		margin: 16px 0 0 16px;
+		padding: 16px 0 0 16px;
+		gap: 10px;
+		box-shadow: 0 0 30px rgba(130, 130, 130, 0.15);
+
+		.events-calendar {
+			height: 100%;
+		}
+	}
 }

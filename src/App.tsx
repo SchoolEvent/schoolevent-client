@@ -1,11 +1,12 @@
 import { ConfigProvider, theme as themeAlg } from 'antd'
+import frFR from 'antd/lib/locale/fr_FR'
 import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import { MainLayout } from '@components'
 import { AuthProvider, useTheme } from '@contexts'
-import { contactsRoute, loginRoute, noMatchRoute, calendarRoute, eventsRoute } from '@routes'
+import { calendarRoute, contactsRoute, eventsRoute, loginRoute, noMatchRoute } from '@routes'
 
 import './App.less'
 
@@ -38,6 +39,7 @@ function App() {
 				token: { colorPrimary: '#FE8E06' },
 				algorithm: theme === 'dark' ? themeAlg.darkAlgorithm : themeAlg.defaultAlgorithm,
 			}}
+			locale={frFR}
 		>
 			<Helmet>
 				<link rel="icon" href={faviconHref} />

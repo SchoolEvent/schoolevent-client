@@ -1,10 +1,11 @@
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
-import { Calendar as AntCalendar, Badge, Button, ConfigProvider, Modal, Select } from 'antd'
+import { Calendar as AntCalendar, Badge, Modal, Select, Space } from 'antd'
 import { BadgeProps } from 'antd/lib/badge'
-import frFR from 'antd/lib/locale/fr_FR'
 import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/fr'
 import { useCallback, useMemo, useState } from 'react'
+
+import { IconButton } from '@components'
 
 import { Appointment, appointments } from '../appointment.tsx'
 
@@ -97,13 +98,16 @@ const Calendar = () => {
 			}
 
 			return (
-				<div className="calendarHeader">
-					<Button size="small" onClick={handlePrevMonth}>
-						<LeftOutlined />
-					</Button>
+				<Space className="events-calendar__header">
+					<IconButton
+						type="primary"
+						size="small"
+						icon={<LeftOutlined />}
+						onClick={handlePrevMonth}
+					/>
 					<Select
 						size="small"
-						dropdownMatchSelectWidth={false}
+						popupMatchSelectWidth={false}
 						className="my-year-select"
 						onChange={handleYearSelectChange}
 						value={String(currentDate.year())}
@@ -116,17 +120,20 @@ const Calendar = () => {
 					</Select>
 					<Select
 						size="small"
-						dropdownMatchSelectWidth={false}
+						popupMatchSelectWidth={false}
 						className="my-month-select"
 						onChange={handleMonthSelectChange}
 						value={String(currentDate.month())}
 					>
 						{monthOptions}
 					</Select>
-					<Button size="small" onClick={handleNextMonth}>
-						<RightOutlined />
-					</Button>
-				</div>
+					<IconButton
+						type="primary"
+						size="small"
+						icon={<RightOutlined />}
+						onClick={handleNextMonth}
+					/>
+				</Space>
 			)
 		},
 		[
@@ -144,15 +151,16 @@ const Calendar = () => {
 	}
 
 	return (
-		<ConfigProvider locale={frFR}>
+		<>
 			<AntCalendar
+				className="events-calendar"
 				headerRender={headerRender}
 				value={currentDate}
-				dateCellRender={dateCellRender}
+				cellRender={dateCellRender}
 			/>
 			<Modal
 				title="Les détails de l'événement :"
-				visible={isModalVisible}
+				open={isModalVisible}
 				onCancel={handleCancel}
 				footer={null}
 			>
@@ -167,7 +175,7 @@ const Calendar = () => {
 					</div>
 				)}
 			</Modal>
-		</ConfigProvider>
+		</>
 	)
 }
 
