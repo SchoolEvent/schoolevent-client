@@ -15,3 +15,7 @@ export interface IDropZoneProps {
 	title: string
 	columnStatus: TAppointmentStatus
 }
+
+export interface IModalProps {
+	appointmentId: string
+}

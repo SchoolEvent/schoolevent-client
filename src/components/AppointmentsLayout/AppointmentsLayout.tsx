@@ -1,16 +1,14 @@
-import { Modal } from 'antd'
 import { useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 
 import { BasicLayout, FavoritesList } from '@components'
 
-import { DropZone } from './_components'
+import { DropZone, Modal } from './_components'
 
 import './AppointmentsLayout-styles.less'
 
 export function AppointmentsLayout() {
 	const [params, setParams] = useSearchParams()
-	const navigate = useNavigate()
 
 	const id = params.get('id')
 	const isIdValid = !!(id && !Number.isNaN(Number(id)))
@@ -22,19 +20,6 @@ export function AppointmentsLayout() {
 		}
 	}, [id, isIdValid, params, setParams])
 
-	const displayModal = () => (
-		<Modal
-			onCancel={() => {
-				navigate('/appointments')
-			}}
-			footer={null}
-			open
-		>
-			<p>Modal</p>
-			<pre>{id}</pre>
-		</Modal>
-	)
-
 	return (
 		<BasicLayout
 			className="appointments-layout"
@@ -42,7 +27,7 @@ export function AppointmentsLayout() {
 			contentClassName="appointments-content"
 		>
 			<div className="drop-zones-container">
-				{isIdValid && displayModal()}
+				{isIdValid && <Modal appointmentId={id} />}
 				<DropZone
 					title="À contacter"
 					columnStatus="to_contact"
