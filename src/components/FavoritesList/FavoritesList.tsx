@@ -1,12 +1,16 @@
 import {
 	Trash as DeleteIcon,
+	DotsThreeVertical as MoreIcon,
+	Plus as PlusIcon,
 	MagnifyingGlass as SearchIcon,
-	WarningCircle,
 } from '@phosphor-icons/react'
-import { Button, Flex, Input, List, Popconfirm, Space } from 'antd'
+import { Dropdown, Flex, Input, List, Space, Typography } from 'antd'
+import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { useState } from 'react'
 
 import { useAuth, useFavorites } from '@contexts'
+
+import { IconButton } from '../IconButton/IconButton'
 
 import './FavoritesList-styles.less'
 
@@ -38,8 +42,26 @@ export function FavoritesList() {
 		return matchName || matchCity || matchPostalCode
 	})
 
+	const getMenuItems = (school_id: string): ItemType[] => [
+		{
+			key: 'create-follow-up',
+			label: 'Créer un suivi',
+			icon: <PlusIcon size={16} weight="bold" />,
+		},
+		{
+			key: 'delete-favorite',
+			label: 'Supprimer des favoris',
+			icon: <DeleteIcon size={16} weight="bold" />,
+			danger: true,
+			onClick: () => removeFavorite(school_id),
+		},
+	]
+
 	return (
 		<Space className="favorites-list" direction="vertical">
+			<Typography.Title className="favorites-list__title" level={5}>
+				Établissements favoris
+			</Typography.Title>
 			<Input
 				placeholder="Rechercher des favoris"
 				prefix={<SearchIcon />}
@@ -58,7 +80,10 @@ export function FavoritesList() {
 									<i>
 										{item.school_city} - {item.school_postal_code}
 									</i>
-									<Popconfirm
+									<Dropdown menu={{ items: getMenuItems(item.school_id) }} trigger={['click']}>
+										<IconButton type="text" icon={<MoreIcon size={16} weight="bold" />} />
+									</Dropdown>
+									{/* <Popconfirm
 										title="Supprimer des favoris ?"
 										placement="right"
 										okType="danger"
@@ -74,7 +99,7 @@ export function FavoritesList() {
 											type="text"
 											danger
 										/>
-									</Popconfirm>
+									</Popconfirm> */}
 								</Flex>
 							}
 						/>
