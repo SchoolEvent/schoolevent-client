@@ -1,0 +1,45 @@
+.new-appointment-modal {
+	&__form {
+		&__status-and-type,
+		&__phone-and-mail {
+			width: 100%;
+			display: grid;
+			gap: var(--ant-margin);
+			grid-template-columns: 1fr 1fr;
+
+			.ant-form-item {
+				margin-bottom: 0;
+			}
+		}
+
+		&__postal-code-and-city {
+			width: 100%;
+			display: grid;
+			gap: var(--ant-margin);
+			grid-template-columns: 25% auto;
+			align-items: center;
+
+			.ant-skeleton .ant-skeleton-input {
+				min-width: unset;
+			}
+		}
+
+		&__contacted-and-planned-date {
+			width: 100%;
+			display: grid;
+			gap: var(--ant-margin);
+			grid-template-columns: 1fr 1fr;
+			align-items: center;
+		}
+
+		> .ant-form-item:last-of-type {
+			margin-bottom: 0;
+		}
+
+		&__submit-button {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+	}
+}

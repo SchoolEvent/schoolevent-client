@@ -7,6 +7,7 @@ import {
 import { Dropdown, Flex, Input, List, Space, Typography } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { useAuth, useFavorites } from '@contexts'
 
@@ -21,6 +22,7 @@ export function FavoritesList() {
 	const [search, setSearch] = useState('')
 	const { favorites, loading, removeFavorite } = useFavorites()
 	const { user } = useAuth()
+	const navigate = useNavigate()
 
 	if (!user) {
 		return null
@@ -47,6 +49,7 @@ export function FavoritesList() {
 			key: 'create-follow-up',
 			label: 'Créer un suivi',
 			icon: <PlusIcon size={16} weight="bold" />,
+			onClick: () => navigate(`/appointments?action=new&school_id=${school_id}`),
 		},
 		{
 			key: 'delete-favorite',
@@ -83,23 +86,6 @@ export function FavoritesList() {
 									<Dropdown menu={{ items: getMenuItems(item.school_id) }} trigger={['click']}>
 										<IconButton type="text" icon={<MoreIcon size={16} weight="bold" />} />
 									</Dropdown>
-									{/* <Popconfirm
-										title="Supprimer des favoris ?"
-										placement="right"
-										okType="danger"
-										okText="Supprimer"
-										okButtonProps={{ danger: true }}
-										onConfirm={() => removeFavorite(item.school_id)}
-										cancelText="Annuler"
-										icon={<WarningCircle className="warning-icon" size="1rem" />}
-									>
-										<Button
-											className="favorite-delete-button"
-											icon={<DeleteIcon size="1rem" />}
-											type="text"
-											danger
-										/>
-									</Popconfirm> */}
 								</Flex>
 							}
 						/>

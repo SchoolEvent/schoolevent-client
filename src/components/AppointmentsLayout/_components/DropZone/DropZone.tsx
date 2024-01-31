@@ -3,7 +3,7 @@ import { Typography } from 'antd'
 import classNames from 'classnames'
 import { useDrop } from 'react-dnd'
 
-import { IAppointment } from '@types'
+import { TAppointment } from '@types'
 import { useSupabase } from '@utils'
 
 import { IDropZoneProps } from '../../AppointmentsLayout-types'
@@ -21,7 +21,10 @@ export function DropZone(props: IDropZoneProps) {
 	 * Fetch appointments of status <columnStatus>
 	 */
 	const fetchAppointments = async () =>
-		await supabase.from('appointments').select('*', { count: 'exact' }).eq('status', columnStatus)
+		await supabase
+			.from('appointments')
+			.select('*', { count: 'exact' })
+			.eq('apt_status', columnStatus)
 
 	const { data: response } = useQuery({
 		queryKey: ['appointments', { status: columnStatus }],
@@ -31,10 +34,10 @@ export function DropZone(props: IDropZoneProps) {
 	/**
 	 * Update appointment status to <columnStatus>
 	 */
-	const updateAppointment = async (appointment: IAppointment) =>
+	const updateAppointment = async (appointment: TAppointment) =>
 		await supabase
 			.from('appointments')
-			.update({ ...appointment, status: columnStatus })
+			.update({ ...appointment, apt_status: columnStatus })
 			.eq('id', appointment.id)
 
 	const mutation = useMutation({
@@ -46,7 +49,7 @@ export function DropZone(props: IDropZoneProps) {
 
 	const [, drop] = useDrop({
 		accept: accepts,
-		drop: (item: IAppointment) => {
+		drop: (item: TAppointment) => {
 			mutation.mutate(item)
 		},
 	})

@@ -1,16 +1,12 @@
+import { Database } from './supabase'
+
 export const appointmentStatusRecord = {
-	TO_CONTACT: 'to_contact',
-	CONTACTED: 'contacted',
-	PLANNED: 'planned',
-	DONE: 'done',
+	to_contact: 'À contacter',
+	contacted: 'Contacté',
+	planned: 'Rendez-vous planifié',
+	done: 'Bilan',
 } as const
 
-export type TAppointmentStatus =
-	(typeof appointmentStatusRecord)[keyof typeof appointmentStatusRecord]
+export type TAppointmentStatus = Database['public']['Enums']['appointment_status']
 
-export interface IAppointment {
-	id: number
-	school_name: string
-	status: TAppointmentStatus
-	created_at: string
-}
+export type TAppointment = Database['public']['Tables']['appointments']['Row']

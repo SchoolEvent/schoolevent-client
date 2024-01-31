@@ -22,7 +22,7 @@ export function DragItem({ appointment }: IDragItemProps) {
 			className="drag-item"
 			style={{ opacity: isDragging ? 0.5 : 1, cursor: 'pointer' }}
 			onClick={() => {
-				navigate(`/appointments?id=${appointment.id}`)
+				navigate(`/appointments?action=view&id=${appointment.id}`)
 			}}
 		>
 			<Typography.Text strong>{appointment.school_name}</Typography.Text>

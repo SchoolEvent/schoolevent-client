@@ -1,24 +1,12 @@
-import { useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
-
 import { BasicLayout, FavoritesList } from '@components'
 
-import { DropZone, Modal } from './_components'
+import { useController } from './AppointmentLayout-controller'
+import { DropZone } from './_components'
 
 import './AppointmentsLayout-styles.less'
 
 export function AppointmentsLayout() {
-	const [params, setParams] = useSearchParams()
-
-	const id = params.get('id')
-	const isIdValid = !!(id && !Number.isNaN(Number(id)))
-
-	useEffect(() => {
-		if (id && !isIdValid) {
-			params.delete('id')
-			setParams(params)
-		}
-	}, [id, isIdValid, params, setParams])
+	const { renderModal } = useController()
 
 	return (
 		<BasicLayout
@@ -27,7 +15,7 @@ export function AppointmentsLayout() {
 			contentClassName="appointments-content"
 		>
 			<div className="drop-zones-container">
-				{isIdValid && <Modal appointmentId={Number(id)} />}
+				{renderModal()}
 				<DropZone
 					title="À contacter"
 					columnStatus="to_contact"
