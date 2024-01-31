@@ -1,6 +1,7 @@
 import { Plus as PlusIcon } from '@phosphor-icons/react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
+	App,
 	Button,
 	DatePicker,
 	Divider,
@@ -12,6 +13,7 @@ import {
 	message,
 } from 'antd'
 import locale from 'antd/lib/date-picker/locale/fr_FR'
+import { useMemo } from 'react'
 
 import { Info } from '@components'
 import { appointmentStatusRecord } from '@types'
@@ -30,6 +32,7 @@ import './NewAppointmentModal-styles.less'
 export function NewAppointmentModal(props: INewAppointmentModalProps) {
 	const { school_id } = props
 
+	const { notification } = App.useApp()
 	const supabase = useSupabase()
 	const queryClient = useQueryClient()
 	const [form] = Form.useForm()
@@ -45,7 +48,7 @@ export function NewAppointmentModal(props: INewAppointmentModalProps) {
 			return data
 		},
 		onError: (error) => {
-			message.error(error.message, 7)
+			notification.error({ message: error.message, duration: 5 })
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['appointments'] })
@@ -54,13 +57,35 @@ export function NewAppointmentModal(props: INewAppointmentModalProps) {
 	})
 
 	// Fetch school data by id
-	const { data, isLoading } = useQuery({
+	const { data, isLoading, isSuccess } = useQuery({
 		queryKey: ['school', school_id],
 		queryFn: async () =>
 			fetch(
 				`${GOUV_API_URL}?timezone=Europe%2FParis&where=identifiant_de_l_etablissement="${school_id}"&select=${SELECTED_FIELDS}`,
 			).then((res) => res.json()),
 	})
+
+	const formKey = useMemo(() => {
+		return isSuccess ? 'form' : 'loading'
+	}, [isSuccess])
+
+	const initialValues = useMemo(() => {
+		if (data?.results) {
+			return {
+				apt_status: 'to_contact',
+				school_name: data.results[0].nom_etablissement,
+				school_address: data.results[0].adresse_1,
+				school_postal_code: data.results[0].code_postal,
+				school_city: data.results[0].nom_commune,
+				contact_phone: data.results[0].telephone,
+				contact_email: data.results[0].mail,
+			}
+		} else {
+			return {
+				apt_status: 'to_contact',
+			}
+		}
+	}, [data])
 
 	return (
 		<Modal title="Nouveau rendez-vous" className="new-appointment-modal">
@@ -69,20 +94,12 @@ export function NewAppointmentModal(props: INewAppointmentModalProps) {
 				//
 				// In our case, the form won't re-render when the data is fetched, so we
 				// need to force it to re-render by changing its key.
-				key={`new-appointment-form${isLoading ? '__loading' : ''}`}
+				key={formKey}
 				className="new-appointment-modal__form"
 				layout="vertical"
 				form={form}
 				onFinish={mutate}
-				initialValues={{
-					apt_status: 'to_contact',
-					school_name: data?.results[0].nom_etablissement,
-					school_address: data?.results[0].adresse_1,
-					school_postal_code: data?.results[0].code_postal,
-					school_city: data?.results[0].nom_commune,
-					contact_phone: data?.results[0].telephone,
-					contact_email: data?.results[0].mail,
-				}}
+				initialValues={initialValues}
 			>
 				<div className="new-appointment-modal__form__status-and-type">
 					<Form.Item

@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ConfigProvider, theme as themeAlg } from 'antd'
+import { App as AppProvider, ConfigProvider, theme as themeAlg } from 'antd'
 import frFR from 'antd/lib/locale/fr_FR'
 import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
@@ -45,19 +45,21 @@ function App() {
 	])
 
 	return (
-		<ConfigProvider
-			theme={{
-				cssVar: true,
-				token: { colorPrimary: '#FE8E06' },
-				algorithm: theme === 'dark' ? themeAlg.darkAlgorithm : themeAlg.defaultAlgorithm,
-			}}
-			locale={frFR}
-		>
-			<Helmet>
-				<link rel="icon" href={faviconHref} />
-			</Helmet>
-			<RouterProvider router={router} />
-		</ConfigProvider>
+		<AppProvider notification={{ placement: 'bottomRight', maxCount: 3, stack: { threshold: 2 } }}>
+			<ConfigProvider
+				theme={{
+					cssVar: true,
+					token: { colorPrimary: '#FE8E06' },
+					algorithm: theme === 'dark' ? themeAlg.darkAlgorithm : themeAlg.defaultAlgorithm,
+				}}
+				locale={frFR}
+			>
+				<Helmet>
+					<link rel="icon" href={faviconHref} />
+				</Helmet>
+				<RouterProvider router={router} />
+			</ConfigProvider>
+		</AppProvider>
 	)
 }
 
