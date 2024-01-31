@@ -63,12 +63,15 @@ export interface Database {
         Row: {
           apt_status: Database["public"]["Enums"]["appointment_status"]
           apt_type: string | null
+          assignees: string[] | null
+          attachements: string[] | null
           contact_email: string | null
           contact_name: string | null
           contact_phone: string | null
           contacted_date: string | null
           created_at: string
           id: number
+          note: string | null
           planned_date: string | null
           school_address: string
           school_city: string
@@ -78,12 +81,15 @@ export interface Database {
         Insert: {
           apt_status: Database["public"]["Enums"]["appointment_status"]
           apt_type?: string | null
+          assignees?: string[] | null
+          attachements?: string[] | null
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
           contacted_date?: string | null
           created_at?: string
           id?: number
+          note?: string | null
           planned_date?: string | null
           school_address: string
           school_city: string
@@ -93,12 +99,15 @@ export interface Database {
         Update: {
           apt_status?: Database["public"]["Enums"]["appointment_status"]
           apt_type?: string | null
+          assignees?: string[] | null
+          attachements?: string[] | null
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
           contacted_date?: string | null
           created_at?: string
           id?: number
+          note?: string | null
           planned_date?: string | null
           school_address?: string
           school_city?: string
