@@ -59,6 +59,54 @@ export interface Database {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          apt_status: Database["public"]["Enums"]["appointment_status"]
+          apt_type: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          contacted_date: string | null
+          created_at: string
+          id: number
+          planned_date: string | null
+          school_address: string
+          school_city: string
+          school_name: string
+          school_postal_code: string
+        }
+        Insert: {
+          apt_status: Database["public"]["Enums"]["appointment_status"]
+          apt_type?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contacted_date?: string | null
+          created_at?: string
+          id?: number
+          planned_date?: string | null
+          school_address: string
+          school_city: string
+          school_name: string
+          school_postal_code: string
+        }
+        Update: {
+          apt_status?: Database["public"]["Enums"]["appointment_status"]
+          apt_type?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contacted_date?: string | null
+          created_at?: string
+          id?: number
+          planned_date?: string | null
+          school_address?: string
+          school_city?: string
+          school_name?: string
+          school_postal_code?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           event_background: string | null
@@ -145,26 +193,33 @@ export interface Database {
           }
         ]
       }
-      test_appointments: {
+      users: {
         Row: {
           created_at: string
-          id: number
-          school_name: string
-          status: string
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          status: Database["public"]["Enums"]["user_status"]
         }
         Insert: {
           created_at?: string
-          id?: number
-          school_name: string
-          status: string
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          status: Database["public"]["Enums"]["user_status"]
         }
         Update: {
           created_at?: string
-          id?: number
-          school_name?: string
-          status?: string
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          status?: Database["public"]["Enums"]["user_status"]
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "users_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
@@ -174,7 +229,9 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      appointment_status: "to_contact" | "contacted" | "planned" | "done"
+      user_role: "student" | "manager" | "admin"
+      user_status: "online" | "idle" | "offline"
     }
     CompositeTypes: {
       [_ in never]: never
