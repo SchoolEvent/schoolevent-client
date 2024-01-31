@@ -14,7 +14,6 @@ export function Modal(props: IModalProps) {
 		<AntdModal
 			className="appointment-modal"
 			open
-			centered
 			{...modalProps}
 			onCancel={() => {
 				onCancelCallback?.()
