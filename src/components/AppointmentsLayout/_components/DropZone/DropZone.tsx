@@ -21,10 +21,7 @@ export function DropZone(props: IDropZoneProps) {
 	 * Fetch appointments of status <columnStatus>
 	 */
 	const fetchAppointments = async () =>
-		await supabase
-			.from('test_appointments')
-			.select('*', { count: 'exact' })
-			.eq('status', columnStatus)
+		await supabase.from('appointments').select('*', { count: 'exact' }).eq('status', columnStatus)
 
 	const { data: response } = useQuery({
 		queryKey: ['appointments', { status: columnStatus }],
@@ -36,7 +33,7 @@ export function DropZone(props: IDropZoneProps) {
 	 */
 	const updateAppointment = async (appointment: IAppointment) =>
 		await supabase
-			.from('test_appointments')
+			.from('appointments')
 			.update({ ...appointment, status: columnStatus })
 			.eq('id', appointment.id)
 

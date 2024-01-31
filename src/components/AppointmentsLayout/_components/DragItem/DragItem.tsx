@@ -8,7 +8,7 @@ export function DragItem({ appointment }: IDragItemProps) {
 	const navigate = useNavigate()
 
 	const [{ isDragging }, drag] = useDrag({
-		type: appointment.status,
+		type: appointment.apt_status,
 		collect: (monitor) => ({
 			isDragging: monitor.isDragging(),
 		}),
@@ -27,7 +27,7 @@ export function DragItem({ appointment }: IDragItemProps) {
 		>
 			<Typography.Text strong>{appointment.school_name}</Typography.Text>
 			<Typography.Text>{appointment.created_at}</Typography.Text>
-			<Typography.Text>{appointment.status}</Typography.Text>
+			<Typography.Text>{appointment.apt_status}</Typography.Text>
 		</Space>
 	)
 }

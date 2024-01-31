@@ -5,7 +5,7 @@ import { useAuth } from '@contexts'
 import { PropsWithChildren } from '@types'
 import { useSupabase } from '@utils'
 
-import { IFavorite, IFavoriteContactsContext } from './FavoriteContacts-types'
+import { IFavoriteContactsContext, TFavorite } from './FavoriteContacts-types'
 import { addFavorite, fetchFavorites, removeFavorite } from './FavoriteContacts-utils'
 
 const FavoriteContactsContext = createContext<IFavoriteContactsContext>(
@@ -27,7 +27,7 @@ export function FavoriteContactsProvider({ children }: PropsWithChildren) {
 	})
 
 	const addFav = useMutation({
-		mutationFn: async (favorite: Omit<IFavorite, 'id' | 'user_id'>) =>
+		mutationFn: async (favorite: Omit<TFavorite, 'id' | 'user_id'>) =>
 			await addFavorite({ favorite, supabase, userId: user?.id }),
 		onSuccess: () => {
 			queryClient.refetchQueries({ queryKey: ['favorites', { userId: user?.id }] })
@@ -65,7 +65,7 @@ export function FavoriteContactsProvider({ children }: PropsWithChildren) {
 
 	const value: IFavoriteContactsContext = useMemo(
 		() => ({
-			favorites: ((response?.data ?? []) as IFavorite[]) ?? [],
+			favorites: ((response?.data ?? []) as TFavorite[]) ?? [],
 			loading: isLoading,
 			addFavorite: addFav.mutate,
 			removeFavorite: deleteFav.mutate,

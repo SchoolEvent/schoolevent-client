@@ -1,16 +1,9 @@
 import { PostgrestSingleResponse } from '@supabase/supabase-js'
 import { UseMutateFunction } from '@tanstack/react-query'
 
-import { TSupabase } from '@types'
+import { Database, TSupabase } from '@types'
 
-export interface IFavorite {
-	id: string
-	school_city: string
-	school_id: string
-	school_name: string
-	school_postal_code: string
-	user_id: string
-}
+export type TFavorite = Database['public']['Tables']['favorites']['Row']
 
 export interface IFavoritesQueryParams {
 	supabase: TSupabase
@@ -19,7 +12,7 @@ export interface IFavoritesQueryParams {
 
 export interface IAddFavoriteParams {
 	supabase: TSupabase
-	favorite: Omit<IFavorite, 'id' | 'user_id'>
+	favorite: Omit<TFavorite, 'id' | 'user_id'>
 	userId: string | undefined
 }
 
@@ -30,7 +23,7 @@ export interface IDeleteFavoriteParams {
 }
 
 export interface IFavoriteContactsContext {
-	favorites: IFavorite[]
+	favorites: TFavorite[]
 	loading: boolean
 	/** Removes a favorite from the database. */
 	removeFavorite: UseMutateFunction<PostgrestSingleResponse<null>, Error, string, unknown>
@@ -38,7 +31,7 @@ export interface IFavoriteContactsContext {
 	addFavorite: UseMutateFunction<
 		PostgrestSingleResponse<null>,
 		Error,
-		Omit<IFavorite, 'id' | 'user_id'>,
+		Omit<TFavorite, 'id' | 'user_id'>,
 		unknown
 	>
 	/** Verifies if a favorite exists in the database. Returns true if it exists, false otherwise. */

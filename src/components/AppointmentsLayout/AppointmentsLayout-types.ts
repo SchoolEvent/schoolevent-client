@@ -1,21 +1,16 @@
-import { TAppointmentStatus } from '@types'
+import { Database } from '@types'
 
 export interface IDragItemProps {
-	appointment: {
-		id: number
-		school_name: string
-		status: string
-		created_at: string
-	}
+	appointment: Database['public']['Tables']['appointments']['Row']
 }
 
 export interface IDropZoneProps {
-	accepts: TAppointmentStatus[]
+	accepts: Database['public']['Enums']['appointment_status'][]
 	className?: string
 	title: string
-	columnStatus: TAppointmentStatus
+	columnStatus: Database['public']['Enums']['appointment_status']
 }
 
 export interface IModalProps {
-	appointmentId: string
+	appointmentId: Database['public']['Tables']['appointments']['Row']['id']
 }

@@ -27,7 +27,7 @@ export function AppointmentsLayout() {
 			contentClassName="appointments-content"
 		>
 			<div className="drop-zones-container">
-				{isIdValid && <Modal appointmentId={id} />}
+				{isIdValid && <Modal appointmentId={Number(id)} />}
 				<DropZone
 					title="À contacter"
 					columnStatus="to_contact"
