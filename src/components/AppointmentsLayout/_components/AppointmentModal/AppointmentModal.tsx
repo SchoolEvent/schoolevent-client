@@ -1,43 +1,16 @@
-import { Plus as PlusIcon } from '@phosphor-icons/react'
-import { useQuery } from '@tanstack/react-query'
-import { Button, Skeleton, Space, Typography } from 'antd'
+import { TAppointmentModalProps } from '../../AppointmentsLayout-types'
+import { EditModal, NewModal, ViewModal } from './_components'
 
-import { useSupabase } from '@utils'
+import './AppointmentModal-styles.less'
 
-import { Modal } from '..'
+export function AppointmentModal(props: TAppointmentModalProps) {
+	const { mode, appointmentId, schoolId } = props
 
-import { IAppointmentModalProps } from '../../AppointmentsLayout-types'
+	if (mode === 'view') {
+		return <ViewModal appointmentId={appointmentId} />
+	} else if (mode === 'edit') {
+		return <EditModal appointmentId={appointmentId} />
+	}
 
-export function AppointmentModal(props: IAppointmentModalProps) {
-	const { appointmentId } = props
-
-	const supabase = useSupabase()
-
-	const { data: response, isLoading } = useQuery({
-		queryKey: ['appointments', appointmentId],
-		queryFn: async () => await supabase.from('appointments').select().eq('id', appointmentId),
-	})
-
-	return (
-		<Modal
-			title={
-				isLoading ? (
-					<Skeleton.Input style={{ height: 'var(--ant-font-size-heading-4)' }} active />
-				) : (
-					response?.data?.[0].school_name
-				)
-			}
-		>
-			<Space direction="vertical" style={{ width: '100%' }}>
-				{response?.data ? <Typography.Text>{response.data[0].created_at}</Typography.Text> : null}
-				{response?.data ? <Typography.Text>{response.data[0].apt_status}</Typography.Text> : null}
-
-				{response?.data?.[0].apt_status === 'planned' && (
-					<Button type="primary" className="create-event-btn" icon={<PlusIcon size={16} />} block>
-						Créer l'évènement
-					</Button>
-				)}
-			</Space>
-		</Modal>
-	)
+	return <NewModal schoolId={schoolId} />
 }

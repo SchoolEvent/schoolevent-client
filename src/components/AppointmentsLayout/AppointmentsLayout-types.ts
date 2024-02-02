@@ -17,11 +17,25 @@ export interface IModalProps extends Omit<ModalProps, 'open' | 'centered' | 'onC
 	onCancelCallback?: () => void
 }
 
-export interface IAppointmentModalProps {
-	appointmentId: Database['public']['Tables']['appointments']['Row']['id']
-	mode: 'edit' | 'view'
+export type TAppointmentModalProps =
+	| INewAppointmentModalProps
+	| IEditAppointmentModalProps
+	| IViewAppointmentModalProps
+
+interface INewAppointmentModalProps {
+	mode: 'new'
+	appointmentId?: never
+	schoolId: string | null
 }
 
-export interface INewAppointmentModalProps {
-	school_id: Database['public']['Tables']['favorites']['Row']['school_id']
+interface IEditAppointmentModalProps {
+	mode: 'edit'
+	appointmentId: string | null
+	schoolId?: never
+}
+
+interface IViewAppointmentModalProps {
+	mode: 'view'
+	appointmentId: string | null
+	schoolId?: never
 }

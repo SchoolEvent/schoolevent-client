@@ -1,14 +1,15 @@
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import { AppointmentModal, NewAppointmentModal } from './_components'
+import { getIsActionValid } from './AppointmentLayout-utils'
+import { AppointmentModal } from './_components'
 
 export function useController() {
 	const [searchParams, setSearchParams] = useSearchParams()
 
 	// Check if action type is valid
 	const action = searchParams.get('action')
-	const isActionValid = !!(action && ['new', 'edit', 'view'].includes(action))
+	const isActionValid = getIsActionValid(action)
 
 	// Check if the id is valid
 	const id = searchParams.get('id')
@@ -42,19 +43,16 @@ export function useController() {
 	}, [id, isIdValid, action, isActionValid, searchParams, setSearchParams])
 
 	const renderModal = () => {
-		if (!isActionValid) {
-			return null
-		} else if (action !== 'new' && !isIdValid) {
+		if (!isActionValid || (action !== 'new' && !isIdValid)) {
 			return null
 		}
 
-		switch (action) {
-			case 'new':
-				return <NewAppointmentModal school_id={String(school_id)} />
-			default:
-				return (
-					<AppointmentModal appointmentId={Number(id)} mode={action === 'edit' ? 'edit' : 'view'} />
-				)
+		if (action === 'view') {
+			return <AppointmentModal appointmentId={id} mode={action} />
+		} else if (action === 'new') {
+			return <AppointmentModal schoolId={school_id} mode={action} />
+		} else {
+			return <AppointmentModal appointmentId={id} mode={action} />
 		}
 	}
 
