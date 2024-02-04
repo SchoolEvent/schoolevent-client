@@ -41,13 +41,25 @@ export function DropZone(props: IDropZoneProps) {
 	 * Update appointment status to <columnStatus>
 	 */
 	const updateAppointment = async (appointment: TAppointment) => {
-		// TODO: refactor this to update the date only if the status is 'contacted' or 'planned',
-		// and to update the status only if the status is different from the current one
+		// It should update the contacted/planned date only if the appointment
+		// is not already contacted/planned.
+		const shouldUpdate =
+			(columnStatus === 'contacted' && !appointment.contacted_date) ||
+			(columnStatus === 'planned' && !appointment.planned_date)
+
 		const currentDate = dayjs().tz('Europe/Paris').toISOString()
-		const updatedAppointment =
-			columnStatus === 'contacted' || columnStatus === 'planned'
-				? { apt_status: columnStatus, contacted_date: currentDate }
-				: { apt_status: columnStatus }
+
+		let updatedAppointment: Partial<
+			Pick<TAppointment, 'apt_status' | 'contacted_date' | 'planned_date'>
+		> = { apt_status: columnStatus }
+
+		if (shouldUpdate && columnStatus === 'contacted') {
+			updatedAppointment = { ...updatedAppointment, contacted_date: currentDate }
+		}
+
+		if (shouldUpdate && columnStatus === 'planned') {
+			updatedAppointment = { ...updatedAppointment, planned_date: currentDate }
+		}
 
 		return await supabase.from('appointments').update(updatedAppointment).eq('id', appointment.id)
 	}
