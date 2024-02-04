@@ -4,7 +4,7 @@ import { EditModal, NewModal, ViewModal } from './_components'
 import './AppointmentModal-styles.less'
 
 export function AppointmentModal(props: TAppointmentModalProps) {
-	const { mode, appointmentId, schoolId } = props
+	const { mode, appointmentId, schoolId, status } = props
 
 	if (mode === 'view') {
 		return <ViewModal appointmentId={appointmentId} />
@@ -12,5 +12,5 @@ export function AppointmentModal(props: TAppointmentModalProps) {
 		return <EditModal appointmentId={appointmentId} />
 	}
 
-	return <NewModal schoolId={schoolId} />
+	return <NewModal schoolId={schoolId} status={status} />
 }

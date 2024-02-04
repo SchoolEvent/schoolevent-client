@@ -10,11 +10,14 @@ import {
 	SELECTED_FIELDS,
 } from '../../../../../ContactsLayout/_components/Table/Table-constants'
 import { ISchool } from '../../../../../ContactsLayout/_components/Table/Table-types'
+import { INewModalProps } from '../../../../AppointmentsLayout-types'
 import { Modal } from '../../../Modal/Modal'
 import { Form } from '../Form/Form'
 import { IFormValues } from '../Form/Form-types'
 
-export function NewModal({ schoolId }: { schoolId: string | null }) {
+export function NewModal(props: INewModalProps) {
+	const { schoolId, status } = props
+
 	const supabase = useSupabase()
 	const queryClient = useQueryClient()
 	const navigate = useNavigate()
@@ -61,7 +64,7 @@ export function NewModal({ schoolId }: { schoolId: string | null }) {
 			const school = data.results[0] as ISchool
 
 			return {
-				apt_status: 'to_contact',
+				apt_status: status ? status : 'to_contact',
 				school_name: school.nom_etablissement,
 				school_address: school.adresse_1,
 				school_postal_code: school.code_postal,
@@ -70,9 +73,9 @@ export function NewModal({ schoolId }: { schoolId: string | null }) {
 				contact_email: school.mail,
 			} as Partial<IFormValues>
 		} else {
-			return undefined
+			return { apt_status: status ? status : 'to_contact' }
 		}
-	}, [data])
+	}, [data, status])
 
 	return (
 		<Modal className="appointment-modal appointment-modal--new" title="Nouveau rendez-vous">

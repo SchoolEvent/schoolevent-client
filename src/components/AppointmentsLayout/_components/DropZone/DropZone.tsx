@@ -1,3 +1,4 @@
+import { Plus } from '@phosphor-icons/react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Typography } from 'antd'
 import classNames from 'classnames'
@@ -5,10 +6,12 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 import { useDrop } from 'react-dnd'
+import { useNavigate } from 'react-router-dom'
 
 import { TAppointment } from '@types'
 import { useSupabase } from '@utils'
 
+import { IconButton } from '../../../IconButton/IconButton'
 import { IDropZoneProps } from '../../AppointmentsLayout-types'
 import { DragItem } from '../DragItem/DragItem'
 
@@ -20,6 +23,7 @@ dayjs.extend(timezone)
 export function DropZone(props: IDropZoneProps) {
 	const { columnStatus, title, className, accepts } = props
 
+	const navigate = useNavigate()
 	const supabase = useSupabase()
 	const queryClient = useQueryClient()
 
@@ -47,7 +51,7 @@ export function DropZone(props: IDropZoneProps) {
 			(columnStatus === 'contacted' && !appointment.contacted_date) ||
 			(columnStatus === 'planned' && !appointment.planned_date)
 
-		const currentDate = dayjs().tz('Europe/Paris').toISOString()
+		const currentDate = dayjs().tz().toISOString()
 
 		let updatedAppointment: Partial<
 			Pick<TAppointment, 'apt_status' | 'contacted_date' | 'planned_date'>
@@ -93,6 +97,14 @@ export function DropZone(props: IDropZoneProps) {
 					<DragItem key={appointment.id} appointment={appointment} />
 				))}
 			</div>
+			<IconButton
+				title="Nouveau suivi"
+				className="new-apt-btn"
+				type="dashed"
+				icon={<Plus size={16} />}
+				onClick={() => navigate(`/appointments?action=new&status=${columnStatus}`)}
+				block
+			/>
 		</div>
 	)
 }

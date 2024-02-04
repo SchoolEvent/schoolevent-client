@@ -11,6 +11,9 @@ import {
 	Tabs,
 	Typography,
 } from 'antd'
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 
 import { Info } from '@components'
 
@@ -18,8 +21,19 @@ import { appointmentStatusRecord } from '../../../../../../types/appointments'
 import { DateField } from '../DateField/DateField'
 import { IFormValues, TFormProps, submitButtonLabel } from './Form-types'
 
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 export function Form(props: TFormProps) {
 	const { isLoading, isPending, onFinish, initialValues, mode } = props
+
+	if (initialValues?.apt_status === 'contacted' && !initialValues?.contacted_date) {
+		initialValues.contacted_date = dayjs().tz().toISOString()
+	}
+
+	if (initialValues?.apt_status === 'planned' && !initialValues?.planned_date) {
+		initialValues.planned_date = dayjs().tz().toISOString()
+	}
 
 	const [form] = AntdForm.useForm()
 

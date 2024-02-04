@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import { getIsActionValid } from './AppointmentLayout-utils'
+import { getIsActionValid, getIsStatusValid } from './AppointmentLayout-utils'
 import { AppointmentModal } from './_components'
 
 export function useController() {
@@ -17,6 +17,10 @@ export function useController() {
 
 	// Get the school id
 	const school_id = searchParams.get('school_id')
+
+	// Get the status of the appointment
+	const status = searchParams.get('status')
+	const isStatusValid = getIsStatusValid(status)
 
 	useEffect(() => {
 		// Flag to check if the search params should be updated
@@ -50,7 +54,13 @@ export function useController() {
 		if (action === 'view') {
 			return <AppointmentModal appointmentId={id} mode={action} />
 		} else if (action === 'new') {
-			return <AppointmentModal schoolId={school_id} mode={action} />
+			return (
+				<AppointmentModal
+					schoolId={school_id}
+					status={isStatusValid ? status : null}
+					mode={action}
+				/>
+			)
 		} else {
 			return <AppointmentModal appointmentId={id} mode={action} />
 		}

@@ -26,16 +26,24 @@ interface INewAppointmentModalProps {
 	mode: 'new'
 	appointmentId?: never
 	schoolId: string | null
+	status: Database['public']['Enums']['appointment_status'] | null
 }
 
 interface IEditAppointmentModalProps {
 	mode: 'edit'
 	appointmentId: string | null
 	schoolId?: never
+	status?: never
 }
 
 interface IViewAppointmentModalProps {
 	mode: 'view'
 	appointmentId: string | null
 	schoolId?: never
+	status?: never
+}
+
+export interface INewModalProps {
+	schoolId: string | null
+	status: Database['public']['Enums']['appointment_status'] | null
 }
