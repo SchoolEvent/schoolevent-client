@@ -70,8 +70,9 @@ export function DropZone(props: IDropZoneProps) {
 
 	const mutation = useMutation({
 		mutationFn: updateAppointment,
-		onSuccess: () => {
+		onSuccess: (_, { id }) => {
 			queryClient.refetchQueries({ queryKey: ['appointments'] })
+			queryClient.invalidateQueries({ queryKey: ['appointment', { appointmentId: id }] })
 		},
 	})
 
