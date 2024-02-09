@@ -11,7 +11,8 @@
 		"lint:fix": "npx eslint --fix --format=pretty src/ --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
 		"format:check": "prettier ./src --check",
 		"format:fix": "prettier ./src --write",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"cypress:open": "cypress open"
 	},
 	"dependencies": {
 		"@phosphor-icons/react": "2.0.14",
