@@ -31,6 +31,6 @@
 			"@contexts": ["./src/contexts/index.ts"]
 		}
 	},
-	"include": ["src"],
+	"include": ["cypress", "src"],
 	"references": [{ "path": "./tsconfig.node.json" }]
 }
