@@ -34,7 +34,7 @@ export function getItems(role: Database['public']['Enums']['user_role'] | null) 
 				{
 					key: 'menu-events',
 					icon: <EventsIcon size="1rem" />,
-					label: <Link to="/events">Évènements</Link>,
+					label: <Link to="/events">Événements</Link>,
 				},
 			]
 		case 'admin':
@@ -63,7 +63,7 @@ export function getItems(role: Database['public']['Enums']['user_role'] | null) 
 				{
 					key: 'menu-events',
 					icon: <EventsIcon size="1rem" />,
-					label: <Link to="/events">Évènements</Link>,
+					label: <Link to="/events">Événements</Link>,
 				},
 				{
 					key: 'menu-students',
