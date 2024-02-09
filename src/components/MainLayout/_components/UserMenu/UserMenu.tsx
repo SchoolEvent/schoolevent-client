@@ -31,20 +31,28 @@ export function UserMenu() {
 	}
 
 	const getFullname = (email: string) => {
-		const fullname = email.split('@').shift()!.split('.')
-		fullname[0] = capitalize(fullname[0])
-		fullname[1] = capitalize(fullname[1])
+		const splittedEmail = email.split('@')
 
-		return fullname.join(' ')
+		if (splittedEmail[0].includes('.')) {
+			const fullname = splittedEmail.shift()!.split('.')
+			fullname[0] = capitalize(fullname[0])
+			fullname[1] = capitalize(fullname[1])
+
+			const name = fullname.join(' ')
+
+			return { name, initials: name.split(' ')[0].charAt(0) + name.split(' ')[1].charAt(0) }
+		} else {
+			const name = capitalize(splittedEmail[0])
+			return { name, initials: name.charAt(0) }
+		}
 	}
 
-	const fullname = getFullname(user.email!)
-	const initials = fullname.split(' ')[0].charAt(0) + fullname.split(' ')[1].charAt(0)
+	const { name, initials } = getFullname(user.email!)
 
 	return (
 		<Space direction="horizontal" className={`user-menu${isOpen ? ' user-menu__active' : ''}`}>
 			<Avatar>{initials}</Avatar>
-			{fullname}
+			{name}
 			<Dropdown
 				menu={{ items }}
 				className="user-menu__dropdown"
