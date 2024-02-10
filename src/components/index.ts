@@ -1,6 +1,6 @@
 export { AppointmentsLayout } from './AppointmentsLayout/AppointmentsLayout'
 export { BasicLayout } from './BasicLayout/BasicLayout'
-export { CalendarLayout } from './Calendar/CalendarLayout'
+export { CalendarLayout } from './CalendarLayout/CalendarLayout'
 export { ContactsLayout } from './ContactsLayout/ContactsLayout'
 export { ContactsMap } from './ContactsMap/ContactsMap'
 export { CopyableText } from './CopyableText/CopyableText'
