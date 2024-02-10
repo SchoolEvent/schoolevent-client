@@ -1,6 +1,6 @@
 import { BasicLayout, FavoritesList } from '@components'
 
-import { useController } from './AppointmentLayout-controller'
+import { useController } from './AppointmentsLayout-controller'
 import { DropZone } from './_components'
 
 import './AppointmentsLayout-styles.less'

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
-import { getIsActionValid, getIsStatusValid } from './AppointmentLayout-utils'
+import { getIsActionValid, getIsStatusValid } from './AppointmentsLayout-utils'
 import { AppointmentModal } from './_components'
 
 export function useController() {
