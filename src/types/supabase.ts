@@ -61,7 +61,7 @@ export interface Database {
     Tables: {
       appointments: {
         Row: {
-          apt_status: Database["public"]["Enums"]["appointment_status"]
+          apt_status: Database["public"]["Enums"]["apt_status"]
           apt_type: string | null
           assignees: string[] | null
           attachements: string[] | null
@@ -79,7 +79,7 @@ export interface Database {
           school_postal_code: string
         }
         Insert: {
-          apt_status: Database["public"]["Enums"]["appointment_status"]
+          apt_status: Database["public"]["Enums"]["apt_status"]
           apt_type?: string | null
           assignees?: string[] | null
           attachements?: string[] | null
@@ -97,7 +97,7 @@ export interface Database {
           school_postal_code: string
         }
         Update: {
-          apt_status?: Database["public"]["Enums"]["appointment_status"]
+          apt_status?: Database["public"]["Enums"]["apt_status"]
           apt_type?: string | null
           assignees?: string[] | null
           attachements?: string[] | null
@@ -207,19 +207,16 @@ export interface Database {
           created_at: string
           id: string
           role: Database["public"]["Enums"]["user_role"]
-          status: Database["public"]["Enums"]["user_status"]
         }
         Insert: {
           created_at?: string
           id: string
           role: Database["public"]["Enums"]["user_role"]
-          status: Database["public"]["Enums"]["user_status"]
         }
         Update: {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["user_role"]
-          status?: Database["public"]["Enums"]["user_status"]
         }
         Relationships: [
           {
@@ -238,7 +235,7 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
-      appointment_status: "to_contact" | "contacted" | "planned" | "done"
+      apt_status: "to_contact" | "contacted" | "planned"
       user_role: "student" | "manager" | "admin"
       user_status: "online" | "idle" | "offline"
     }
