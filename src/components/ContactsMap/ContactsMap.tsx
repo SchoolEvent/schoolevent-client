@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css'
 import { useEffect, useMemo, useRef } from 'react'
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
+import { useNavigate } from 'react-router-dom'
 
 import collegeMapPin from '@assets/college-map-pin.svg'
 import lyceeMapPin from '@assets/lycee-map-pin.svg'
@@ -37,6 +38,7 @@ const collegePinIcon = L.icon({
 export function ContactsMap(props: IContactsMapProps) {
 	const { data, setTableConfig } = props
 
+	const navigate = useNavigate()
 	const location = useGeoLocation()
 	const mapRef = useRef(null)
 	const { theme } = useTheme()
@@ -91,8 +93,12 @@ export function ContactsMap(props: IContactsMapProps) {
 											type="primary"
 											className="create-btn"
 											icon={<NewIcon size={16} />}
+											onClick={() => {
+												navigate(
+													`/appointments?action=new&school_id=${school.identifiant_de_l_etablissement}`,
+												)
+											}}
 											block
-											disabled
 										>
 											Créer un suivi
 										</Button>
