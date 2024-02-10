@@ -158,9 +158,10 @@ export function useController(params: ITableControllerParams) {
 					},
 					{
 						key: 'type_etablissement',
-						title: "Type d'établissement",
+						title: 'Type',
 						dataIndex: 'type_etablissement',
 						sorter: true,
+						width: screens.xxl ? 110 : 90,
 						sortOrder: getSortOrder('type_etablissement', tableConfig.orderBy),
 						...getColumnRadioProps({
 							options: [
@@ -187,7 +188,7 @@ export function useController(params: ITableControllerParams) {
 						key: 'code_postal',
 						title: 'Code postal',
 						dataIndex: 'code_postal',
-						width: screens.xxl ? 175 : 150,
+						width: screens.xxl ? 160 : 140,
 						sorter: true,
 						sortOrder: getSortOrder('code_postal', tableConfig.orderBy),
 						...getColumnSearchProps({
