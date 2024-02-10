@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client'
 
 import { ThemeProvider } from '@contexts'
 
-import App from './App.tsx'
+import App from './App'
 
 import './index.css'
 

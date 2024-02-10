@@ -4,7 +4,7 @@ import { useAuth } from '@contexts'
 import { PropsWithChildren } from '@types'
 import { getAllowedRoutes } from '@utils'
 
-export function ProtectedRoute({ children }: PropsWithChildren) {
+export function ProtectedRoute({ children }: PropsWithChildren): React.ReactElement {
 	const { role } = useAuth()
 	const location = useLocation()
 
@@ -19,5 +19,5 @@ export function ProtectedRoute({ children }: PropsWithChildren) {
 		return <Navigate to="/" />
 	}
 
-	return children
+	return <>{children}</>
 }

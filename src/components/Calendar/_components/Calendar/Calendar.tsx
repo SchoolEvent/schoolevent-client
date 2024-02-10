@@ -7,7 +7,7 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { IconButton } from '@components'
 
-import { Appointment, appointments } from '../appointment.tsx'
+import { Appointment, appointments } from '../appointment'
 
 import './Calendar-styles.less'
 
