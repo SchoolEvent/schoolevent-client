@@ -3,7 +3,6 @@
 
 	.ant-layout-sider {
 		margin-top: 16px;
-		background: none;
 		padding: 16px 0 16px 16px;
 
 		&-children {
@@ -17,15 +16,19 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: white;
+		background: var(--ant-color-bg-elevated);
 		border-radius: calc(var(--ant-border-radius) * 3) 0 0 0;
 		margin: 16px 0 0 16px;
 		padding: 16px 0 0 16px;
 		gap: 10px;
 		box-shadow: 0 0 30px rgba(130, 130, 130, 0.15);
+	}
 
-		.events-calendar {
+	.basic-layout__content.calendar-layout__content {
+		.ant-picker-calendar {
 			height: 100%;
+			display: grid;
+			grid-template-rows: auto 1fr;
 		}
 	}
 }

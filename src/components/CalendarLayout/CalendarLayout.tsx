@@ -1,20 +1,17 @@
-import { Layout } from 'antd'
+import { BasicLayout } from '@components'
 
 import { Calendar, CalendarList } from './_components'
 
 import './CalendarLayout-styles.less'
 
-const { Content, Sider } = Layout
-
 export function CalendarLayout() {
 	return (
-		<Layout className="calendar-layout">
-			<Sider width={250}>
-				<CalendarList />
-			</Sider>
-			<Content>
-				<Calendar />
-			</Content>
-		</Layout>
+		<BasicLayout
+			className="calendar-layout"
+			contentClassName="calendar-layout__content"
+			sider={<CalendarList />}
+		>
+			<Calendar />
+		</BasicLayout>
 	)
 }
