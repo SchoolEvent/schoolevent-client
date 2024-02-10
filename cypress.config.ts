@@ -1,6 +1,7 @@
 import { defineConfig } from 'cypress'
 
 export default defineConfig({
+	projectId: 'pccnxg',
 	defaultCommandTimeout: 10_000,
 	pageLoadTimeout: 10_000,
 	requestTimeout: 10_000,
