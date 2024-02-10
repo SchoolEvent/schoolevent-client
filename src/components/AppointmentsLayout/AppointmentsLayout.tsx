@@ -19,26 +19,20 @@ export function AppointmentsLayout() {
 				<DropZone
 					title="À contacter"
 					columnStatus="to_contact"
-					accepts={['contacted', 'planned', 'done']}
+					accepts={['contacted', 'planned']}
 					className="drop-zone__to-contact"
 				/>
 				<DropZone
 					title="Contacté"
 					columnStatus="contacted"
-					accepts={['to_contact', 'planned', 'done']}
+					accepts={['to_contact', 'planned']}
 					className="drop-zone__contacted"
 				/>
 				<DropZone
 					title="Rendez-vous planifié"
 					columnStatus="planned"
-					accepts={['to_contact', 'contacted', 'done']}
+					accepts={['to_contact', 'contacted']}
 					className="drop-zone__planned"
-				/>
-				<DropZone
-					title="Bilan"
-					columnStatus="done"
-					accepts={['to_contact', 'contacted', 'planned']}
-					className="drop-zone__done"
 				/>
 			</div>
 		</BasicLayout>
