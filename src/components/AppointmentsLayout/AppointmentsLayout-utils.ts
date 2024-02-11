@@ -10,7 +10,7 @@ export function getIsActionValid(action: string | null): action is 'new' | 'edit
 
 export function getIsStatusValid(
 	status: string | null,
-): status is Database['public']['Enums']['appointment_status'] {
+): status is Database['public']['Enums']['apt_status'] {
 	if (status === null) {
 		return false
 	}

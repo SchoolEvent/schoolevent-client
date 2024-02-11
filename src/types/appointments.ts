@@ -7,6 +7,6 @@ export const appointmentStatusRecord = {
 	done: 'Bilan',
 } as const
 
-export type TAppointmentStatus = Database['public']['Enums']['appointment_status']
+export type TAppointmentStatus = Database['public']['Enums']['apt_status']
 
 export type TAppointment = Database['public']['Tables']['appointments']['Row']

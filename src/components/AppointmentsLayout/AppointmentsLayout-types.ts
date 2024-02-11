@@ -7,10 +7,10 @@ export interface IDragItemProps {
 }
 
 export interface IDropZoneProps {
-	accepts: Database['public']['Enums']['appointment_status'][]
+	accepts: Database['public']['Enums']['apt_status'][]
 	className?: string
 	title: string
-	columnStatus: Database['public']['Enums']['appointment_status']
+	columnStatus: Database['public']['Enums']['apt_status']
 }
 
 export interface IModalProps extends Omit<ModalProps, 'open' | 'centered' | 'onCancel'> {
@@ -26,7 +26,7 @@ interface INewAppointmentModalProps {
 	mode: 'new'
 	appointmentId?: never
 	schoolId: string | null
-	status: Database['public']['Enums']['appointment_status'] | null
+	status: Database['public']['Enums']['apt_status'] | null
 }
 
 interface IEditAppointmentModalProps {
@@ -45,5 +45,5 @@ interface IViewAppointmentModalProps {
 
 export interface INewModalProps {
 	schoolId: string | null
-	status: Database['public']['Enums']['appointment_status'] | null
+	status: Database['public']['Enums']['apt_status'] | null
 }
