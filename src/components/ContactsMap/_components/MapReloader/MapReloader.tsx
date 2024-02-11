@@ -17,11 +17,15 @@ export function MapReloader(props: IMapReloaderProps) {
 		}
 	}, [mapDisplayState, map])
 
+	// Used to fly to the user's location when the map is displayed.
 	useEffect(() => {
 		if (typeof userLocation[0] === 'number' && typeof userLocation[1] === 'number') {
-			map.setView(userLocation, 12)
+			!mapDisplayState.isHidden && map.flyTo(userLocation, 12, { duration: 1 })
 		}
-	}, [userLocation, map])
+		// We are using JSON.stringify to compare the previous and current userLocation.
+		// This is a hacky way to compare arrays in JavaScript.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [JSON.stringify(userLocation), map, mapDisplayState.isHidden])
 
 	useEffect(() => {
 		if (focusedPin && !mapDisplayState.isHidden) {

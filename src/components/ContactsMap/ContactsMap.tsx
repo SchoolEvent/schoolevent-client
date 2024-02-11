@@ -1,5 +1,5 @@
 import { Plus as NewIcon } from '@phosphor-icons/react'
-import { Button, Space, Typography } from 'antd'
+import { Button, Space, Spin, Typography } from 'antd'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useEffect, useMemo, useRef } from 'react'
@@ -48,7 +48,7 @@ export function ContactsMap(props: IContactsMapProps) {
 			lat: location.geoLocationCoordinates.lat,
 			lng: location.geoLocationCoordinates.lng,
 		}),
-		[location],
+		[location.geoLocationCoordinates.lat, location.geoLocationCoordinates.lng],
 	)
 
 	useEffect(() => {
@@ -56,7 +56,13 @@ export function ContactsMap(props: IContactsMapProps) {
 	}, [userLocation, setTableConfig])
 
 	return (
-		<MapContainer scrollWheelZoom={true} ref={mapRef}>
+		<MapContainer
+			center={userLocation}
+			zoom={14}
+			scrollWheelZoom={true}
+			placeholder={<Spin size="large" />}
+			ref={mapRef}
+		>
 			<MapReloader userLocation={[userLocation.lat, userLocation.lng]} />
 			<TileLayer attribution={MAP_UTILS.attribution} url={MAP_UTILS.url} />
 			{location.loaded && !location.error && (
