@@ -64,7 +64,7 @@ export function ContactsMap(props: IContactsMapProps) {
 					<Popup>Vous</Popup>
 				</Marker>
 			)}
-			<MarkerClusterGroup chunkedLoading>
+			<MarkerClusterGroup chunkedLoading maxClusterRadius={30}>
 				{data.map((school, i) => {
 					if (school.latitude && school.longitude) {
 						return (
