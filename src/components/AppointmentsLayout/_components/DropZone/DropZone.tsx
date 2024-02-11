@@ -93,10 +93,12 @@ export function DropZone(props: IDropZoneProps) {
 					{response?.count}
 				</Typography.Title>
 			</div>
-			<div className="drop-zone__drop-zone" ref={drop}>
-				{response?.data?.map((appointment) => (
-					<DragItem key={appointment.id} appointment={appointment} />
-				))}
+			<div className="drop-zone__list-container" ref={drop}>
+				<div className="drop-zone__list-container__list">
+					{response?.data?.map((appointment) => (
+						<DragItem key={appointment.id} appointment={appointment} />
+					))}
+				</div>
 			</div>
 			<IconButton
 				title="Nouveau suivi"
