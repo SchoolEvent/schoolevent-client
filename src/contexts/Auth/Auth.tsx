@@ -15,6 +15,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
 	const supabase = useSupabase()
 
 	useEffect(() => {
+		if (authState && authState.user) {
+			setLoading(false)
+		} else {
+			setLoading(true)
+		}
+	}, [authState])
+
+	useEffect(() => {
 		supabase.auth.getSession().then(async ({ data: { session } }) => {
 			if (session?.user) {
 				await handleUserSession({ supabase, user: session?.user, setAuthState })
@@ -28,8 +36,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
 			if (session?.user) {
 				await handleUserSession({ supabase, user: session?.user, setAuthState })
 			}
-
-			setLoading(false)
 		})
 
 		return () => {
