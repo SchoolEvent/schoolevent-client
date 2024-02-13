@@ -2,14 +2,18 @@ import { UploadOutlined } from '@ant-design/icons'
 import { Button, DatePicker, Form, Input, Select, TimePicker, Upload } from 'antd'
 import { DefaultOptionType } from 'antd/es/select'
 import dayjs from 'dayjs'
+import short from 'short-uuid'
 
+import { useAuth } from '@contexts'
 import { useSupabase } from '@utils'
 
-import { IEventFormFields } from '../type'
-import { eventTypesRecord } from './EventForm-types'
+import { IEventFormFields, eventTypesRecord } from './EventForm-types'
+import { getFileExtension } from './EventForm-utils'
 
 export function EventForm() {
+	const translator = short()
 	const [form] = Form.useForm()
+	const { user } = useAuth()
 
 	const formatDate = 'DD/MM/YYYY'
 	const date = dayjs(Date.now())
@@ -17,18 +21,24 @@ export function EventForm() {
 	const supabase = useSupabase()
 
 	const createEvent = async (value: IEventFormFields) => {
+		const { event_background, ...values } = value
+
 		let backgroundUrl: string | null = null
 
-		if (value.event_background && value.event_background.file) {
+		if (event_background?.file) {
+			const fileExtension = getFileExtension(event_background.file.name)
+			const fileId = translator.new()
+
 			const { data, error } = await supabase.storage
 				.from('pictures')
-				.upload(value.event_background.file.name, value.event_background.file)
+				.upload(`background_${fileId}.${fileExtension}`, event_background.file)
 
-			backgroundUrl = error !== null ? null : data?.path
+			backgroundUrl = error ? null : data.path
 		}
 
 		await supabase.from('events').insert({
-			...value,
+			...values,
+			event_creator_id: user?.id ?? null,
 			event_background: backgroundUrl,
 			event_time: dayjs(value.event_time).format(formatTime),
 		})
@@ -111,7 +121,7 @@ export function EventForm() {
 			</Form.Item>
 
 			<Form.Item<IEventFormFields> label="Image de fond" name="event_background">
-				<Upload beforeUpload={() => false}>
+				<Upload beforeUpload={() => false} accept="image/png, image/jpeg">
 					<Button icon={<UploadOutlined />}>Sélectionner une image</Button>
 				</Upload>
 			</Form.Item>
