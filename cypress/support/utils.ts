@@ -32,11 +32,15 @@ export function getButtonFromLabel(label: string) {
 
 /**
  * Login with the given credentials or the default admin credentials.
+ *
+ * The second parameter is used to navigate to the login page if `true`. Default = `false`
  */
-export function login(params = ADMIN_USER) {
+export function login(params = ADMIN_USER, shouldNavigate = false) {
 	const { email, password } = params
 
-	cy.visit(`${BASE_URL}/login`)
+	if (shouldNavigate) {
+		cy.visit(`${BASE_URL}/login`)
+	}
 
 	getInputFromLabel('Email').type(email)
 	getInputFromLabel('Mot de passe').type(password)

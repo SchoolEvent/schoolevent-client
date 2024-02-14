@@ -1,6 +1,5 @@
 import { Button, Form, Input } from 'antd'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 import { useSupabase } from '@utils'
 
@@ -10,7 +9,6 @@ export function LoginForm() {
 	const [isSubmittable, setIsSubmittable] = useState(false)
 	const [form] = Form.useForm()
 	const supabase = useSupabase()
-	const navigate = useNavigate()
 
 	const onFinish = async (values: ILoginFormFields) => {
 		const { email, password } = values
@@ -25,8 +23,6 @@ export function LoginForm() {
 		}
 
 		form.resetFields()
-
-		navigate('/')
 	}
 
 	const values = Form.useWatch([], form)

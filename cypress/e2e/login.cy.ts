@@ -1,4 +1,5 @@
 import {
+	ADMIN_USER,
 	APPOINTMENTS_URL,
 	BASE_URL,
 	CALENDAR_URL,
@@ -15,23 +16,12 @@ import {
 	getInputFromLabel,
 	login,
 	logout,
-	useServiceSupabase,
 } from '../support/utils'
 
 // TODO: write tests to check that the UI adapts to the user's role
 describe('Login', () => {
-	const supabase = useServiceSupabase()
-
-	before(() => {
-		supabase.auth.signOut()
-	})
-
-	afterEach(() => {
-		supabase.auth.signOut()
-	})
-
 	it('allows to login with school email', () => {
-		login(MANAGER_USER)
+		login(MANAGER_USER, true)
 
 		cy.url().should('eq', `${BASE_URL}/`)
 	})
@@ -50,7 +40,7 @@ describe('Login', () => {
 
 	it('displays side menu items based on user role', () => {
 		// As admin
-		login()
+		login(ADMIN_USER, true)
 
 		cy.get('.main-layout__sider').within(() => {
 			SIDE_MENU_LABELS.admin.shouldHaveAccessTo.forEach((label) => {
@@ -86,7 +76,7 @@ describe('Login', () => {
 	})
 
 	it('allows access to all routes for admin role', () => {
-		login()
+		login(ADMIN_USER, true)
 
 		// This assertion is necessary to ensure that the login was successful.
 		// If we execute the cy.visit(), it will try to navigate before the login is complete.
@@ -114,7 +104,7 @@ describe('Login', () => {
 	})
 
 	it('allows access to all routes for manager role', () => {
-		login(MANAGER_USER)
+		login(MANAGER_USER, true)
 
 		// This assertion is necessary to ensure that the login was successful.
 		// If we execute the cy.visit(), it will try to navigate before the login is complete.
@@ -142,7 +132,7 @@ describe('Login', () => {
 	})
 
 	it('allows access to home and events routes for student role', () => {
-		login(STUDENT_USER)
+		login(STUDENT_USER, true)
 
 		// This assertion is necessary to ensure that the login was successful.
 		// If we execute the cy.visit(), it will try to navigate before the login is complete.

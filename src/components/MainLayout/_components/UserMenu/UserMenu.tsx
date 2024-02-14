@@ -2,7 +2,6 @@ import { CaretDown as CaretDownIcon, SignOut as SignOutIcon } from '@phosphor-ic
 import { Avatar, Dropdown, Space } from 'antd'
 import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 import { useAuth } from '@contexts'
 import { capitalize } from '@utils'
@@ -12,7 +11,6 @@ import './UserMenu-styles.less'
 export function UserMenu() {
 	const [isOpen, setIsOpen] = useState<boolean>(false)
 	const { signOut, user } = useAuth()
-	const navigate = useNavigate()
 
 	const items: ItemType[] = [
 		{
@@ -21,7 +19,6 @@ export function UserMenu() {
 			label: 'Déconnexion',
 			onClick: () => {
 				signOut()
-				navigate('/login')
 			},
 		},
 	]
