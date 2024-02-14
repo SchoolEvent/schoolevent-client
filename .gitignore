@@ -25,5 +25,6 @@ dist-ssr
 *.sw?
 
 
-# Cypress screenshots
+# Cypress
+cypress.env.json
 cypress/screenshots/*
