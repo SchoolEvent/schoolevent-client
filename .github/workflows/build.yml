@@ -23,7 +23,7 @@ jobs:
       - name: Install NodeJS
         uses: actions/setup-node@v4
         with:
-          node-version: lts
+          node-version: lts/*
 
       - name: Code Checkout
         uses: actions/checkout@v4
