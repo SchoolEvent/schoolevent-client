@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress'
+import { unlinkSync } from 'fs'
 
 export default defineConfig({
 	projectId: 'pccnxg',
@@ -9,7 +10,13 @@ export default defineConfig({
 	viewportHeight: 900,
 	e2e: {
 		setupNodeEvents(on, config) {
-			// implement node event listeners here
+			on('after:spec', (_spec, results) => {
+				// Do we have failures?
+				if (results && results.video && results.stats.failures === 0) {
+					// Delete the video if the spec passed
+					unlinkSync(results.video)
+				}
+			})
 		},
 	},
 })
