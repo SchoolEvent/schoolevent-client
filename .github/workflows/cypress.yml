@@ -31,6 +31,8 @@ jobs:
           record: true
           parallel: true
         env:
+          CYPRESS_SUPABASE_URL: ${{ secrets.CYPRESS_SUPABASE_URL }}
+          CYPRESS_SUPABASE_SERVICE_KEY: ${{ secrets.CYPRESS_SUPABASE_SERVICE_KEY }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
