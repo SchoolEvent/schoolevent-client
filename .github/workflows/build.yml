@@ -1,4 +1,4 @@
-name: Lint
+name: Build
 
 permissions:
   pull-requests: write
@@ -16,8 +16,8 @@ on:
       - develop
 
 jobs:
-  linting:
-    name: Linting
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Install NodeJS
@@ -31,5 +31,5 @@ jobs:
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Code Linting
-        run: yarn run lint
+      - name: Build
+        run: yarn run build
