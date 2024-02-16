@@ -1,7 +1,6 @@
 .event-form-layout {
 	background: var(--ant-color-bg-elevated);
 	border-radius: calc(var(--ant-border-radius) * 3) 0 0 0;
-	margin: var(--ant-padding) 0 0 var(--ant-padding);
 	padding: var(--ant-padding);
 	box-shadow: 0 0 30px rgba(130, 130, 130, 0.15);
 	display: flex;
@@ -12,18 +11,88 @@
 	}
 
 	.event-form {
+		display: grid;
+		grid-template-rows: min-content auto min-content;
+		overflow: hidden;
+		overflow-y: auto;
+		height: 100%;
+		scrollbar-width: none;
+
 		&__header {
+			position: relative;
 			border-radius: var(--ant-border-radius-lg);
 			width: 100%;
-			height: calc(var(--ant-control-height-lg) * 4);
-			background: var(--ant-layout-sider-bg);
+			max-width: 800px;
+			min-width: 490px;
+			height: calc(var(--ant-control-height-lg) * 6);
+			margin: 0 auto;
+			background-size: cover;
+			background-position: center;
+
+			.ant-form-item {
+				&.event-title-input {
+					height: max-content;
+					width: max-content;
+					margin: 0;
+					position: absolute;
+					top: 50%;
+					bottom: 50%;
+					left: 50%;
+					right: 50%;
+					transform: translate(-50%, -50%);
+
+					h2 {
+						background: rgba(0, 0, 0, 0.75);
+						padding: var(--ant-padding-xs);
+						border-radius: var(--ant-border-radius);
+					}
+
+					.ant-typography-edit-content {
+						background: rgba(0, 0, 0, 0.75);
+						border-radius: var(--ant-border-radius-lg);
+					}
+				}
+
+				&.upload-background-btn {
+					width: fit-content;
+					position: absolute;
+					margin: 0;
+					left: var(--ant-padding-xs);
+					bottom: var(--ant-padding-xs);
+
+					.ant-upload-wrapper {
+						display: flex;
+						flex-direction: row;
+						align-items: center;
+
+						background: rgba(0, 0, 0, 0.75);
+						border-radius: var(--ant-border-radius);
+
+						&:has(.ant-upload-list-item) {
+							padding-right: var(--ant-padding-xs);
+							gap: var(--ant-padding-xs);
+						}
+
+						.ant-upload-list-item {
+							margin: 0;
+						}
+					}
+				}
+			}
 		}
 
-		&__body {
+		&__body,
+		&__footer {
 			width: 50%;
 			min-width: 490px;
 			max-width: 650px;
 			margin: 0 auto;
+		}
+
+		&__body {
+			overflow: hidden;
+			overflow-y: auto;
+			scrollbar-width: none;
 		}
 	}
 }
