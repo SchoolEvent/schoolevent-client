@@ -4,13 +4,14 @@ import { ItemType } from 'antd/lib/menu/hooks/useItems'
 import { useState } from 'react'
 
 import { useAuth } from '@contexts'
-import { capitalize } from '@utils'
+import { capitalize, useSupabase } from '@utils'
 
 import './UserMenu-styles.less'
 
 export function UserMenu() {
 	const [isOpen, setIsOpen] = useState<boolean>(false)
-	const { signOut, user } = useAuth()
+	const { user } = useAuth()
+	const supabase = useSupabase()
 
 	const items: ItemType[] = [
 		{
@@ -18,7 +19,7 @@ export function UserMenu() {
 			icon: <SignOutIcon size="1rem" />,
 			label: 'Déconnexion',
 			onClick: () => {
-				signOut()
+				supabase.auth.signOut()
 			},
 		},
 	]

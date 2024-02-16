@@ -8,9 +8,7 @@ export function ProtectedRoute({ children }: PropsWithChildren): React.ReactElem
 	const { role } = useAuth()
 	const location = useLocation()
 
-	if (!role) {
-		return <Navigate to="/login" />
-	}
+	if (!role) return <></>
 
 	const pathname = location.pathname.split('/').filter((i) => i)
 	const allowedRoutes = getAllowedRoutes(role)

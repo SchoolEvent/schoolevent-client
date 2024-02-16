@@ -1,3 +1,5 @@
+import { Session, User } from '@supabase/supabase-js'
+import { useQuery } from '@tanstack/react-query'
 import { Spin } from 'antd'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -5,13 +7,14 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { PropsWithChildren } from '@types'
 import { useSupabase } from '@utils'
 
-import { IAuthContext } from './Auth-types'
-import { handleUserSession } from './Auth-utils'
+import { IAuthContext, TRole } from './Auth-types'
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext)
 
 export function AuthProvider({ children }: PropsWithChildren) {
-	const [authState, setAuthState] = useState<Pick<IAuthContext, 'user' | 'role'> | null>(null)
+	const [session, setSession] = useState<Session | null>(null)
+	const [user, setUser] = useState<User | null>(null)
+	const [role, setRole] = useState<TRole | null>(null)
 	const [loading, setLoading] = useState(true)
 	const supabase = useSupabase()
 	const navigate = useNavigate()
@@ -19,31 +22,76 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
 	const pathname = location.pathname.split('/').filter((i) => i)
 
-	useEffect(() => {
-		supabase.auth.getSession().then(async ({ data: { session } }) => {
-			await handleUserSession({ supabase, session, setAuthState })
-		})
+	useQuery({
+		queryKey: ['user-role'],
+		queryFn: async () => {
+			const { data: userObject, error } = await supabase
+				.from('users')
+				.select('role')
+				.eq('id', session!.user.id)
+				.single()
 
-		// Listen for changes on auth state (logged in, signed out, etc.)
+			if (error) {
+				throw error
+			}
+
+			if (userObject) {
+				setRole(userObject.role)
+			}
+
+			return userObject
+		},
+		enabled: session !== null && role === null,
+	})
+
+	useEffect(() => {
 		const {
 			data: { subscription },
-		} = supabase.auth.onAuthStateChange(async (event, session) => {
+		} = supabase.auth.onAuthStateChange((event, newSession) => {
+			console.log({ event, newSession })
+			setSession(newSession)
+			setUser(newSession?.user ?? null)
+			setLoading(false)
+
 			if (event === 'SIGNED_OUT') {
-				setAuthState(null)
-
+				console.log('SIGNED_OUT')
 				navigate('/login')
-
-				setLoading(false)
-			} else if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
-				await handleUserSession({ supabase, session, setAuthState })
-
+			} else if (event === 'SIGNED_IN' || (event === 'INITIAL_SESSION' && newSession)) {
 				if (pathname[0] === 'login') {
+					console.log('pathname', pathname)
 					navigate('/')
 				}
-
-				setLoading(false)
 			}
 		})
+
+		const getSession = async () => {
+			const {
+				data: { session },
+				error,
+			} = await supabase.auth.getSession()
+
+			if (error) {
+				throw error
+			}
+
+			if (session) {
+				const { data: userObject } = await supabase
+					.from('users')
+					.select('role')
+					.eq('id', session.user.id)
+					.single()
+
+				if (userObject) {
+					setRole(userObject.role)
+				}
+			}
+
+			setSession(session)
+			setUser(session?.user ?? null)
+			setLoading(false)
+		}
+
+		getSession()
 
 		return () => {
 			subscription.unsubscribe()
@@ -52,16 +100,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
 	const value: IAuthContext = useMemo(
 		() => ({
-			signIn: async (data) => {
-				await supabase.auth.signInWithPassword(data)
-			},
-			signOut: async (options) => {
-				await supabase.auth.signOut(options)
-			},
-			user: authState?.user ?? null,
-			role: authState?.role ?? null,
+			session,
+			user,
+			role,
 		}),
-		[authState], // eslint-disable-line react-hooks/exhaustive-deps
+		[session, user, role],
 	)
 
 	return (

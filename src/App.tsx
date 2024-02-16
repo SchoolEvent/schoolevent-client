@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { Helmet } from 'react-helmet'
-import { BrowserRouter, Link, Outlet, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Link, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 
 import {
 	AppointmentsLayout,
@@ -44,70 +44,71 @@ function App() {
 					<link rel="icon" href={faviconHref} />
 				</Helmet>
 				<BrowserRouter>
-					<AuthProvider>
-						<Routes>
-							<Route
-								path="/"
-								element={
-									<QueryClientProvider client={queryClient}>
+					<QueryClientProvider client={queryClient}>
+						<AuthProvider>
+							<Routes>
+								<Route path="*" element={<Navigate to="/" />} />
+								<Route
+									path="/"
+									element={
 										<FavoriteContactsProvider>
 											<MainLayout />
 										</FavoriteContactsProvider>
-									</QueryClientProvider>
-								}
-							>
-								<Route
-									path="contacts"
-									element={
-										<ProtectedRoute>
-											<Helmet>
-												<title>SchoolEvent | Contacts</title>
-											</Helmet>
-											<MapDisplayProvider>
-												<ContactsLayout />
-											</MapDisplayProvider>
-										</ProtectedRoute>
-									}
-								/>
-								<Route
-									path="calendar"
-									element={
-										<ProtectedRoute>
-											<Helmet>
-												<title>SchoolEvent | Calendier</title>
-											</Helmet>
-											<CalendarLayout />
-										</ProtectedRoute>
-									}
-								/>
-								<Route
-									path="events"
-									element={
-										<ProtectedRoute>
-											<Outlet />
-										</ProtectedRoute>
 									}
 								>
-									<Route index element={<Link to="/events/new">new event</Link>} />
-									<Route path="new" element={<EventForm />} />
+									<Route
+										path="contacts"
+										element={
+											<ProtectedRoute>
+												<Helmet>
+													<title>SchoolEvent | Contacts</title>
+												</Helmet>
+												<MapDisplayProvider>
+													<ContactsLayout />
+												</MapDisplayProvider>
+											</ProtectedRoute>
+										}
+									/>
+									<Route
+										path="calendar"
+										element={
+											<ProtectedRoute>
+												<Helmet>
+													<title>SchoolEvent | Calendier</title>
+												</Helmet>
+												<CalendarLayout />
+											</ProtectedRoute>
+										}
+									/>
+									<Route
+										path="events"
+										element={
+											<ProtectedRoute>
+												<Outlet />
+											</ProtectedRoute>
+										}
+									>
+										<Route index element={<Link to="/events/new">new event</Link>} />
+										<Route path="new" element={<EventForm />} />
+									</Route>
+									<Route
+										path="appointments"
+										element={
+											<ProtectedRoute>
+												<Helmet>
+													<title>SchoolEvent | Rendez-vous</title>
+												</Helmet>
+												<DndProvider backend={HTML5Backend}>
+													<AppointmentsLayout />
+												</DndProvider>
+											</ProtectedRoute>
+										}
+									/>
 								</Route>
-								<Route
-									path="appointments"
-									element={
-										<ProtectedRoute>
-											<Helmet>
-												<title>SchoolEvent | Rendez-vous</title>
-											</Helmet>
-											<DndProvider backend={HTML5Backend}>
-												<AppointmentsLayout />
-											</DndProvider>
-										</ProtectedRoute>
-									}
-								/>
-							</Route>
-							<Route path="/login" element={<Login />} />
-						</Routes>
-					</AuthProvider>
+								<Route path="/login" element={<Login />} />
+							</Routes>
+						</AuthProvider>
+					</QueryClientProvider>
 				</BrowserRouter>
 			</ConfigProvider>
 		</AppProvider>
