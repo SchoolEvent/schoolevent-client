@@ -118,39 +118,39 @@ export interface Database {
       }
       events: {
         Row: {
+          event_address: string
           event_background: string | null
-          event_creator_id: string | null
-          event_date: string | null
-          event_description: string | null
-          event_name: string | null
-          event_participant_id: string | null
-          event_position: string | null
-          event_time: string | null
-          event_type: string | null
+          event_creator_id: string
+          event_date: string
+          event_description: string
+          event_duration: number
+          event_school_name: string
+          event_title: string
+          event_type: string
           id: number
         }
         Insert: {
+          event_address: string
           event_background?: string | null
-          event_creator_id?: string | null
-          event_date?: string | null
-          event_description?: string | null
-          event_name?: string | null
-          event_participant_id?: string | null
-          event_position?: string | null
-          event_time?: string | null
-          event_type?: string | null
+          event_creator_id: string
+          event_date: string
+          event_description: string
+          event_duration: number
+          event_school_name: string
+          event_title: string
+          event_type: string
           id?: number
         }
         Update: {
+          event_address?: string
           event_background?: string | null
-          event_creator_id?: string | null
-          event_date?: string | null
-          event_description?: string | null
-          event_name?: string | null
-          event_participant_id?: string | null
-          event_position?: string | null
-          event_time?: string | null
-          event_type?: string | null
+          event_creator_id?: string
+          event_date?: string
+          event_description?: string
+          event_duration?: number
+          event_school_name?: string
+          event_title?: string
+          event_type?: string
           id?: number
         }
         Relationships: [
@@ -159,10 +159,35 @@ export interface Database {
             columns: ["event_creator_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
+          }
+        ]
+      }
+      events_participants: {
+        Row: {
+          event_id: number
+          id: number
+          user_id: string
+        }
+        Insert: {
+          event_id: number
+          id?: number
+          user_id: string
+        }
+        Update: {
+          event_id?: number
+          id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_participants_event_id_fkey"
+            columns: ["event_id"]
+            referencedRelation: "events"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "events_event_participant_id_fkey"
-            columns: ["event_participant_id"]
+            foreignKeyName: "events_participants_user_id_fkey"
+            columns: ["user_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
