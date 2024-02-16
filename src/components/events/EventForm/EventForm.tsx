@@ -6,7 +6,11 @@ import './EventForm-styles.less'
 
 export function EventForm() {
 	return (
-		<BasicLayout className="event-form-layout" contentClassName="event-form-layout__content">
+		<BasicLayout
+			className="event-form-layout"
+			contentClassName="event-form-layout__content"
+			// sider={<ShortEventsList />}
+		>
 			<Form />
 		</BasicLayout>
 	)
