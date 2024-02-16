@@ -1,0 +1,29 @@
+.event-form-layout {
+	background: var(--ant-color-bg-elevated);
+	border-radius: calc(var(--ant-border-radius) * 3) 0 0 0;
+	margin: var(--ant-padding) 0 0 var(--ant-padding);
+	padding: var(--ant-padding);
+	box-shadow: 0 0 30px rgba(130, 130, 130, 0.15);
+	display: flex;
+	align-items: center;
+
+	&__content {
+		width: 100%;
+	}
+
+	.event-form {
+		&__header {
+			border-radius: var(--ant-border-radius-lg);
+			width: 100%;
+			height: calc(var(--ant-control-height-lg) * 4);
+			background: var(--ant-layout-sider-bg);
+		}
+
+		&__body {
+			width: 50%;
+			min-width: 490px;
+			max-width: 650px;
+			margin: 0 auto;
+		}
+	}
+}

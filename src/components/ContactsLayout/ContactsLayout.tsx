@@ -22,6 +22,7 @@ import './ContactsLayout-styles.less'
 
 const { Content, Header } = Layout
 
+// TODO: fix sider overflow
 export function ContactsLayout() {
 	const [tableConfig, setTableConfig] = useReducer(reducer, INIT_TABLE_STATE)
 	const [globalSearch, setGlobalSearch] = useState<string>('')
