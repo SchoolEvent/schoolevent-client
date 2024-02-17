@@ -1,25 +1,10 @@
-import { Card, Segmented } from 'antd'
-import { SegmentedValue } from 'antd/lib/segmented'
-import { useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Card } from 'antd'
 
-import { LoginForm, MagicLinkForm } from './_components'
+import { LoginForm } from './_components'
 
 import './Login-styles.less'
 
 export function Login() {
-	const [searchParams, setSearchParams] = useSearchParams()
-
-	const handleAuthTypeChange = (value: SegmentedValue) => {
-		setSearchParams({ magiclink: value === 'magiclink' ? 'true' : 'false' })
-	}
-
-	useEffect(() => {
-		if (!searchParams.get('magiclink')) {
-			setSearchParams({ magiclink: 'false' })
-		}
-	}, [searchParams, setSearchParams])
-
 	return (
 		<div className="login-container">
 			<div className="login-container__hero">
@@ -31,16 +16,7 @@ export function Login() {
 			</div>
 			<div className="login-container__form">
 				<Card title={<h2>Connexion</h2>}>
-					<Segmented
-						options={[
-							{ label: 'Password', value: 'password' },
-							{ label: 'Magic Link', value: 'magiclink' },
-						]}
-						onChange={handleAuthTypeChange}
-						value={searchParams.get('magiclink') === 'true' ? 'magiclink' : 'password'}
-						block
-					/>
-					{searchParams.get('magiclink') === 'true' ? <MagicLinkForm /> : <LoginForm />}
+					<LoginForm />
 				</Card>
 			</div>
 		</div>
