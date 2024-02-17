@@ -2,7 +2,7 @@ import { Session, User } from '@supabase/supabase-js'
 import { useQuery } from '@tanstack/react-query'
 import { Spin } from 'antd'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { PropsWithChildren } from '@types'
 import { useSupabase } from '@utils'
@@ -18,9 +18,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
 	const [loading, setLoading] = useState(true)
 	const supabase = useSupabase()
 	const navigate = useNavigate()
-	const location = useLocation()
 
-	const pathname = location.pathname.split('/').filter((i) => i)
+	useEffect(() => {
+		if (role) {
+			navigate('/')
+		}
+	}, [role]) // eslint-disable-line react-hooks/exhaustive-deps
 
 	useQuery({
 		queryKey: ['user-role'],
@@ -54,12 +57,19 @@ export function AuthProvider({ children }: PropsWithChildren) {
 			setLoading(false)
 
 			if (event === 'SIGNED_OUT') {
-				console.log('SIGNED_OUT')
 				navigate('/login')
 			} else if (event === 'SIGNED_IN' || (event === 'INITIAL_SESSION' && newSession)) {
-				if (pathname[0] === 'login') {
-					console.log('pathname', pathname)
-					navigate('/')
+				if (newSession) {
+					supabase
+						.from('users')
+						.select('role')
+						.eq('id', newSession.user.id)
+						.single()
+						.then(({ data: userObject }) => {
+							if (userObject) {
+								setRole(userObject.role)
+							}
+						})
 				}
 			}
 		})
