@@ -1,5 +1,6 @@
 export { capitalize } from './capitalize'
 export { getAllowedRoutes } from './getAllowedRoutes'
+export { getNameFromEmail } from './getNameFromEmail'
 export { isStringEmpty } from './isStringEmpty'
 export { useCopyToClipboard } from './useCopyToClipboard'
 export { useDebounce } from './useDebounce'
