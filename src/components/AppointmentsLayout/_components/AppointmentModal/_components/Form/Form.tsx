@@ -17,7 +17,7 @@ import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { Info } from '@components'
-import { useSupabase } from '@utils'
+import { getNameFromEmail, useSupabase } from '@utils'
 
 import { appointmentStatusRecord } from '../../../../../../types/appointments'
 import { DateField } from '../DateField/DateField'
@@ -166,11 +166,16 @@ export function Form(props: TFormProps) {
 						) : (
 							<Select
 								loading={isFetching}
-								options={assignees?.map((assignee) => ({
-									label: assignee.email,
-									value: assignee.id,
-									title: assignee.email,
-								}))}
+								options={assignees?.map((assignee) => {
+									const { name } = getNameFromEmail(assignee.email)
+
+									return {
+										label: `${name} (${assignee.email})`,
+										title: `${name} (${assignee.email})`,
+										value: assignee.id,
+									}
+								})}
+								allowClear
 							/>
 						)}
 					</AntdForm.Item>
