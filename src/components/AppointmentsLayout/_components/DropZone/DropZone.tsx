@@ -8,6 +8,7 @@ import utc from 'dayjs/plugin/utc'
 import { useDrop } from 'react-dnd'
 import { useNavigate } from 'react-router-dom'
 
+import { useAuth } from '@contexts'
 import { TAppointment } from '@types'
 import { useSupabase } from '@utils'
 
@@ -23,6 +24,7 @@ dayjs.extend(timezone)
 export function DropZone(props: IDropZoneProps) {
 	const { columnStatus, title, className, accepts } = props
 
+	const { user } = useAuth()
 	const navigate = useNavigate()
 	const supabase = useSupabase()
 	const queryClient = useQueryClient()
@@ -35,6 +37,7 @@ export function DropZone(props: IDropZoneProps) {
 			.from('appointments')
 			.select('*', { count: 'exact' })
 			.eq('apt_status', columnStatus)
+			.or(`assignee.eq.${user!.id},author_id.eq.${user!.id}`)
 
 	const { data: response } = useQuery({
 		queryKey: ['appointments', { status: columnStatus }],

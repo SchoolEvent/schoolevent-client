@@ -1,6 +1,6 @@
 import { TAppointment } from '@types'
 
-export interface IFormValues extends Omit<TAppointment, 'id'> {}
+export interface IFormValues extends Omit<TAppointment, 'id' | 'author_id'> {}
 
 export type TFormProps = IFormEditOrNewModeProps | IFormViewModeProps
 

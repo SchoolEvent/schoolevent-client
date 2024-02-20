@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { LoadingError } from '@components'
+import { useAuth } from '@contexts'
 import { useSupabase } from '@utils'
 
 import { Modal } from '../../../Modal/Modal'
@@ -11,6 +12,7 @@ import { Form } from '../Form/Form'
 import { IFormValues } from '../Form/Form-types'
 
 export function EditModal({ appointmentId }: { appointmentId: string | null }) {
+	const { user } = useAuth()
 	const supabase = useSupabase()
 	const queryClient = useQueryClient()
 	const navigate = useNavigate()
@@ -27,6 +29,7 @@ export function EditModal({ appointmentId }: { appointmentId: string | null }) {
 				.from('appointments')
 				.update(values)
 				.eq('id', appointmentId)
+				.or(`assignee.eq.${user!.id},author_id.eq.${user!.id}`)
 
 			if (error) {
 				throw error

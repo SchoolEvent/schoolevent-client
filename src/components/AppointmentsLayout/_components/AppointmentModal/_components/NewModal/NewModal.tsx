@@ -3,6 +3,7 @@ import { App } from 'antd'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import { useAuth } from '@contexts'
 import { useSupabase } from '@utils'
 
 import {
@@ -18,6 +19,7 @@ import { IFormValues } from '../Form/Form-types'
 export function NewModal(props: INewModalProps) {
 	const { schoolId, status } = props
 
+	const { user } = useAuth()
 	const supabase = useSupabase()
 	const queryClient = useQueryClient()
 	const navigate = useNavigate()
@@ -26,7 +28,9 @@ export function NewModal(props: INewModalProps) {
 	// Create appointment
 	const { mutate, isPending } = useMutation({
 		mutationFn: async (values: IFormValues) => {
-			const { data, error } = await supabase.from('appointments').insert(values)
+			const { data, error } = await supabase
+				.from('appointments')
+				.insert({ ...values, author_id: user!.id })
 
 			if (error) {
 				throw error
