@@ -1,4 +1,5 @@
 import { Plus as PlusIcon } from '@phosphor-icons/react'
+import { useQuery } from '@tanstack/react-query'
 import {
 	Form as AntdForm,
 	Button,
@@ -16,6 +17,7 @@ import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
 import { Info } from '@components'
+import { useSupabase } from '@utils'
 
 import { appointmentStatusRecord } from '../../../../../../types/appointments'
 import { DateField } from '../DateField/DateField'
@@ -26,6 +28,23 @@ dayjs.extend(timezone)
 
 export function Form(props: TFormProps) {
 	const { isLoading, isPending, onFinish, initialValues, mode } = props
+
+	const supabase = useSupabase()
+
+	const { data: assignees, isFetching } = useQuery({
+		queryKey: ['assignees'],
+		queryFn: async () => {
+			const { data, error } = await supabase.from('users').select('id,email').eq('role', 'manager')
+
+			if (error) {
+				throw error
+			}
+
+			return data
+		},
+		placeholderData: [],
+		staleTime: 1000 * 10,
+	})
 
 	if (initialValues?.apt_status === 'contacted' && !initialValues?.contacted_date) {
 		initialValues.contacted_date = dayjs().tz().toISOString()
@@ -142,7 +161,18 @@ export function Form(props: TFormProps) {
 				<Col span={8}>
 					{/** TODO: once the api is ready, implement the assignee search */}
 					<AntdForm.Item name="assignee" label="Assigné">
-						{isLoading ? <Skeleton.Input active block /> : <Select disabled />}
+						{isLoading ? (
+							<Skeleton.Input active block />
+						) : (
+							<Select
+								loading={isFetching}
+								options={assignees?.map((assignee) => ({
+									label: assignee.email,
+									value: assignee.id,
+									title: assignee.email,
+								}))}
+							/>
+						)}
 					</AntdForm.Item>
 					<AntdForm.Item
 						name="apt_status"
