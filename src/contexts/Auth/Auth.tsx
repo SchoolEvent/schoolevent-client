@@ -59,7 +59,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 			setSession(newSession)
 			setUser(newSession?.user ?? null)
 
-			if (event === 'SIGNED_OUT') {
+			if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !newSession)) {
 				navigate('/login')
 			} else if (event === 'SIGNED_IN' || (event === 'INITIAL_SESSION' && newSession)) {
 				if (newSession) {
