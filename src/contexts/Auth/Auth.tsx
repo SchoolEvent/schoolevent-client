@@ -2,10 +2,10 @@ import { Session, User } from '@supabase/supabase-js'
 import { useQuery } from '@tanstack/react-query'
 import { Spin } from 'antd'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { PropsWithChildren } from '@types'
-import { useSupabase } from '@utils'
+import { usePrevious, useSupabase } from '@utils'
 
 import { IAuthContext, TRole } from './Auth-types'
 
@@ -18,14 +18,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
 	const [loading, setLoading] = useState(true)
 	const supabase = useSupabase()
 	const navigate = useNavigate()
-	const location = useLocation()
-
-	const pathname = location.pathname.split('/').filter((i) => i)
+	const prevRole = usePrevious(role)
 
 	useEffect(() => {
 		if (role) {
 			setLoading(false)
-			pathname[0] === 'login' && navigate('/')
+			prevRole !== role && navigate('/')
 		}
 	}, [role]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -55,11 +53,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
 		const {
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange((event, newSession) => {
-			console.log({ event, newSession })
 			setSession(newSession)
 			setUser(newSession?.user ?? null)
 
 			if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !newSession)) {
+				setRole(null)
 				navigate('/login')
 			} else if (event === 'SIGNED_IN' || (event === 'INITIAL_SESSION' && newSession)) {
 				if (newSession) {
