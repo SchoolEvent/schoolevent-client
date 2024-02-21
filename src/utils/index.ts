@@ -1,4 +1,6 @@
 export { capitalize } from './capitalize'
+export { fetchAddressCompletion } from './fetchAddressCompletion'
+export { fetchGeoIP } from './fetchGeoIP'
 export { getAllowedRoutes } from './getAllowedRoutes'
 export { getNameFromEmail } from './getNameFromEmail'
 export { isStringEmpty } from './isStringEmpty'

@@ -1,7 +1,8 @@
-import { Plus as PlusIcon } from '@phosphor-icons/react'
+import { Plus as PlusIcon, Check as SaveIcon } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import {
 	Form as AntdForm,
+	AutoComplete,
 	Button,
 	Col,
 	Divider,
@@ -15,9 +16,17 @@ import {
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { Info } from '@components'
-import { getNameFromEmail, useSupabase } from '@utils'
+import {
+	fetchAddressCompletion,
+	fetchGeoIP,
+	getNameFromEmail,
+	useDebounce,
+	useSupabase,
+} from '@utils'
 
 import { appointmentStatusRecord } from '../../../../../../types/appointments'
 import { DateField } from '../DateField/DateField'
@@ -29,7 +38,26 @@ dayjs.extend(timezone)
 export function Form(props: TFormProps) {
 	const { isLoading, isPending, onFinish, initialValues, mode } = props
 
+	const [form] = AntdForm.useForm()
+	const [addressSearch, setAddressSearch] = useState(initialValues?.school_address ?? '')
+	const debouncedSearch = useDebounce(addressSearch, 500)
+
 	const supabase = useSupabase()
+	const navigate = useNavigate()
+
+	const { data: userLocation } = useQuery({ queryKey: ['user-geoip'], queryFn: fetchGeoIP })
+
+	const { data: addressCompletion } = useQuery({
+		queryKey: ['addresse-completion', { search: debouncedSearch }],
+		queryFn: async () =>
+			await fetchAddressCompletion(
+				debouncedSearch,
+				userLocation,
+				form.getFieldValue('school_postal_code'),
+			),
+		enabled: !!debouncedSearch && !!userLocation,
+		initialData: [],
+	})
 
 	const { data: assignees, isFetching } = useQuery({
 		queryKey: ['assignees'],
@@ -54,8 +82,7 @@ export function Form(props: TFormProps) {
 		initialValues.planned_date = dayjs().tz().toISOString()
 	}
 
-	const [form] = AntdForm.useForm()
-
+	// TODO: set the form to read only if the mode is view
 	return (
 		<AntdForm<IFormValues>
 			// Changing the key of an element in React will force it to re-render.
@@ -69,7 +96,7 @@ export function Form(props: TFormProps) {
 			initialValues={initialValues}
 		>
 			<Row>
-				<Col span={14}>
+				<Col span={12}>
 					<Tabs
 						defaultActiveKey="1"
 						items={[
@@ -92,7 +119,19 @@ export function Form(props: TFormProps) {
 											label="Adresse"
 											rules={[{ required: true }]}
 										>
-											{isLoading ? <Skeleton.Input active block /> : <Input allowClear />}
+											{isLoading ? (
+												<Skeleton.Input active block />
+											) : (
+												<AutoComplete
+													value={addressSearch}
+													onSearch={(value) => setAddressSearch(value)}
+													onSelect={(value) => setAddressSearch(value)}
+													options={addressCompletion?.map((address) => ({
+														label: address.label,
+														value: address.name,
+													}))}
+												/>
+											)}
 										</AntdForm.Item>
 
 										<AntdForm.Item
@@ -137,7 +176,7 @@ export function Form(props: TFormProps) {
 										{isLoading ? (
 											<Skeleton.Input active block />
 										) : (
-											<Input.TextArea autoSize allowClear />
+											<Input.TextArea autoSize={{ minRows: 13, maxRows: 13 }} allowClear />
 										)}
 									</AntdForm.Item>
 								),
@@ -158,14 +197,19 @@ export function Form(props: TFormProps) {
 					<Divider type="vertical" style={{ height: '100%' }} />
 				</Col>
 
-				<Col span={8}>
-					{/** TODO: once the api is ready, implement the assignee search */}
+				<Col span={10}>
 					<AntdForm.Item name="assignee" label="Assigné">
 						{isLoading ? (
 							<Skeleton.Input active block />
 						) : (
 							<Select
 								loading={isFetching}
+								showSearch
+								filterOption={(input, option) => {
+									if (!option) return false
+
+									return option.label.toLowerCase().includes(input.toLowerCase())
+								}}
 								options={assignees?.map((assignee) => {
 									const { name } = getNameFromEmail(assignee.email)
 
@@ -250,21 +294,37 @@ export function Form(props: TFormProps) {
 				</Col>
 			</Row>
 
-			{mode !== 'view' && (
-				<AntdForm.Item>
-					<Button
-						className="appointment-modal__form__submit-button"
-						htmlType="submit"
-						type="primary"
-						icon={mode === 'new' ? <PlusIcon /> : undefined}
-						disabled={isLoading}
-						loading={isPending}
-						block
-					>
-						{submitButtonLabel[mode]}
-					</Button>
-				</AntdForm.Item>
-			)}
+			<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} className="appointment-modal__form__footer">
+				<Col span={mode !== 'view' ? 10 : 24}>
+					<AntdForm.Item>
+						<Button
+							onClick={() => {
+								navigate('/appointments')
+							}}
+							block
+						>
+							Annuler
+						</Button>
+					</AntdForm.Item>
+				</Col>
+				{mode !== 'view' && (
+					<Col span={14}>
+						<AntdForm.Item>
+							<Button
+								className="appointment-modal__form__footer__submit-button"
+								htmlType="submit"
+								type="primary"
+								icon={mode === 'new' ? <PlusIcon size={16} /> : <SaveIcon size={16} />}
+								disabled={isLoading}
+								loading={isPending}
+								block
+							>
+								{submitButtonLabel[mode]}
+							</Button>
+						</AntdForm.Item>
+					</Col>
+				)}
+			</Row>
 		</AntdForm>
 	)
 }

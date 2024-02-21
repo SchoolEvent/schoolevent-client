@@ -20,6 +20,7 @@ export function Modal(props: IModalProps) {
 				navigate('/appointments')
 			}}
 			footer={footer}
+			width={700}
 		>
 			{children}
 		</AntdModal>

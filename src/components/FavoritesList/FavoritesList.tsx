@@ -71,6 +71,7 @@ export function FavoritesList() {
 				onChange={handleSearchChange}
 			/>
 			<List
+				locale={{ emptyText: 'Aucun favoris' }}
 				dataSource={filteredFavorites}
 				loading={loading}
 				renderItem={(item) => (

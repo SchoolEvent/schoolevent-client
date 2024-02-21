@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { PropsWithChildren } from '@types'
-import { usePrevious, useSupabase } from '@utils'
+import { useSupabase } from '@utils'
 
 import { IAuthContext, TRole } from './Auth-types'
 
@@ -18,12 +18,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
 	const [loading, setLoading] = useState(true)
 	const supabase = useSupabase()
 	const navigate = useNavigate()
-	const prevRole = usePrevious(role)
 
 	useEffect(() => {
 		if (role) {
 			setLoading(false)
-			prevRole !== role && navigate('/')
 		}
 	}, [role]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -53,6 +51,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
 		const {
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange((event, newSession) => {
+			const pathname = window.location.pathname.split('/').filter((i) => i)
+
 			setSession(newSession)
 			setUser(newSession?.user ?? null)
 
@@ -69,6 +69,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
 						.then(({ data: userObject }) => {
 							if (userObject) {
 								setRole(userObject.role)
+
+								if (pathname.includes('login')) {
+									navigate('/')
+								}
 							}
 						})
 				}

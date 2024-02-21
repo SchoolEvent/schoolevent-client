@@ -26,11 +26,11 @@ import short from 'short-uuid'
 
 import { IconButton } from '@components'
 import { useAuth, useTheme } from '@contexts'
-import { useDebounce, useSupabase } from '@utils'
+import { fetchAddressCompletion, fetchGeoIP, useDebounce, useSupabase } from '@utils'
 
 import { IEventFormFields, eventTypesRecord } from '../../EventForm-types'
 import { getFileExtension } from '../../EventForm-utils'
-import { fetchAddressCompletion, fetchGeoIP, getFilePathFromUrl } from './Form-utils'
+import { getFilePathFromUrl } from './Form-utils'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -55,6 +55,7 @@ export function Form() {
 		queryKey: ['addresse-completion', { search: debouncedSearch }],
 		queryFn: async () => await fetchAddressCompletion(debouncedSearch, userLocation),
 		enabled: !!debouncedSearch && !!userLocation,
+		initialData: [],
 	})
 
 	const createEvent = async (value: IEventFormFields) => {
@@ -242,11 +243,7 @@ export function Form() {
 					<AutoComplete
 						onSearch={(value) => setAddressSearch(value)}
 						onSelect={(value) => setAddressSearch(value)}
-						options={
-							addressCompletion
-								? addressCompletion.map((address) => ({ label: address, value: address }))
-								: []
-						}
+						options={addressCompletion.map((address) => ({ label: address, value: address }))}
 					/>
 				</AntdForm.Item>
 
