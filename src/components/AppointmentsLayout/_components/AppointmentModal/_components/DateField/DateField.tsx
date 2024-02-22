@@ -17,7 +17,7 @@ dayjs.locale(local_fr)
 export function DateField(props: IDateFieldProps) {
 	const { value, label, viewMode, showTime, block } = props
 
-	const date = dayjs(value)
+	const date = value ? dayjs(value) : undefined
 	const format = showTime ? 'dddd DD MMMM YYYY à HH:mm' : 'dddd DD MMMM YYYY'
 	const pickerFormat = showTime ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'
 
@@ -25,14 +25,14 @@ export function DateField(props: IDateFieldProps) {
 		return (
 			<Space className={getClassname({ viewMode, block })}>
 				{label && <Typography.Text>{label} :</Typography.Text>}
-				<Typography.Text>{date.format(format)}</Typography.Text>
+				<Typography.Text>{date ? date.format(format) : null}</Typography.Text>
 			</Space>
 		)
 	} else {
 		return (
 			<DatePicker
 				className={getClassname({ viewMode, block })}
-				value={value ? date : undefined}
+				value={date}
 				showTime={showTime}
 				format={pickerFormat}
 				locale={pickerLocale}

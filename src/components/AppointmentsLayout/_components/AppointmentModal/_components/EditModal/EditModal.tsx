@@ -53,7 +53,7 @@ export function EditModal({ appointmentId }: { appointmentId: string | null }) {
 	})
 
 	// Fetch appointment
-	const { data, isLoading, isSuccess, error } = useQuery({
+	const { data, isFetching, error } = useQuery({
 		queryKey: ['appointment', { appointmentId }],
 		queryFn: async () => {
 			if (!appointmentId) {
@@ -75,8 +75,8 @@ export function EditModal({ appointmentId }: { appointmentId: string | null }) {
 	})
 
 	const formKey = useMemo(() => {
-		return isSuccess ? 'new-apt-form' : 'new-apt-form-loading'
-	}, [isSuccess])
+		return isFetching ? 'new-apt-form-loading' : 'new-apt-form'
+	}, [isFetching])
 
 	const initialValues: Partial<IFormValues> | undefined = useMemo(() => {
 		return data
@@ -85,14 +85,14 @@ export function EditModal({ appointmentId }: { appointmentId: string | null }) {
 	return (
 		<Modal
 			className="appointment-modal appointment-modal--edit"
-			title={isLoading ? <Skeleton.Input active /> : data?.school_name}
+			title={isFetching ? <Skeleton.Input active /> : data?.school_name}
 		>
 			{error ? (
 				<LoadingError error={error.message} />
 			) : (
 				<Form
 					key={formKey}
-					isLoading={isLoading}
+					isLoading={isFetching}
 					isPending={isPending}
 					onFinish={mutate}
 					initialValues={initialValues}

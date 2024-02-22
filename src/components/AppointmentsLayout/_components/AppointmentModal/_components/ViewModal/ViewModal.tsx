@@ -16,7 +16,12 @@ export function ViewModal(props: IViewModalProps) {
 	const supabase = useSupabase()
 
 	// Fetch appointment
-	const { data, isLoading, isSuccess, error } = useQuery({
+	const {
+		data: appointment,
+		isLoading,
+		isSuccess,
+		error,
+	} = useQuery({
 		queryKey: ['appointment', { appointmentId }],
 		queryFn: async () => {
 			if (!appointmentId) {
@@ -42,27 +47,32 @@ export function ViewModal(props: IViewModalProps) {
 	}, [isSuccess])
 
 	const initialValues: Partial<IFormValues> | undefined = useMemo(() => {
-		if (data) {
-			const appointment = data
-
+		if (appointment) {
 			return {
 				apt_status: appointment.apt_status,
+				apt_type: appointment.apt_type,
 				school_name: appointment.school_name,
 				school_address: appointment.school_address,
 				school_postal_code: appointment.school_postal_code,
 				school_city: appointment.school_city,
+				contact_name: appointment.contact_name,
 				contact_phone: appointment.contact_phone,
 				contact_email: appointment.contact_email,
+				assignee: appointment.assignee,
+				note: appointment.note,
+				attachements: appointment.attachements,
+				contacted_date: appointment.contacted_date ?? undefined,
+				planned_date: appointment.planned_date ?? undefined,
 			} as Partial<IFormValues>
 		} else {
 			return undefined
 		}
-	}, [data])
+	}, [appointment])
 
 	return (
 		<Modal
 			className="appointment-modal appointment-modal--view"
-			title={isLoading ? <Skeleton.Input active /> : data?.school_name}
+			title={isLoading ? <Skeleton.Input active /> : appointment?.school_name}
 		>
 			{error ? (
 				<LoadingError error={error.message} />

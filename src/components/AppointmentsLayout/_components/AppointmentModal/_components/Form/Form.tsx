@@ -74,15 +74,16 @@ export function Form(props: TFormProps) {
 		staleTime: 1000 * 10,
 	})
 
-	if (initialValues?.apt_status === 'contacted' && !initialValues?.contacted_date) {
-		initialValues.contacted_date = dayjs().tz().toISOString()
+	// If in new mode, set the contacted_date or the planned_date to the current date
+	if (mode === 'new') {
+		if (initialValues?.apt_status === 'contacted' && !initialValues?.contacted_date) {
+			initialValues.contacted_date = dayjs().tz().toISOString()
+		}
+		if (initialValues?.apt_status === 'planned' && !initialValues?.planned_date) {
+			initialValues.planned_date = dayjs().tz().toISOString()
+		}
 	}
 
-	if (initialValues?.apt_status === 'planned' && !initialValues?.planned_date) {
-		initialValues.planned_date = dayjs().tz().toISOString()
-	}
-
-	// TODO: set the form to read only if the mode is view
 	return (
 		<AntdForm<IFormValues>
 			// Changing the key of an element in React will force it to re-render.
@@ -111,7 +112,11 @@ export function Form(props: TFormProps) {
 											label="Établissement"
 											rules={[{ required: true }]}
 										>
-											{isLoading ? <Skeleton.Input active block /> : <Input allowClear />}
+											{isLoading ? (
+												<Skeleton.Input active block />
+											) : (
+												<Input readOnly={mode === 'view'} allowClear />
+											)}
 										</AntdForm.Item>
 
 										<AntdForm.Item
@@ -123,6 +128,7 @@ export function Form(props: TFormProps) {
 												<Skeleton.Input active block />
 											) : (
 												<AutoComplete
+													// TODO: add readonly
 													value={addressSearch}
 													onSearch={(value) => setAddressSearch(value)}
 													onSelect={(value) => setAddressSearch(value)}
@@ -139,10 +145,18 @@ export function Form(props: TFormProps) {
 											label="Code postal"
 											rules={[{ required: true }]}
 										>
-											{isLoading ? <Skeleton.Input active block /> : <Input allowClear />}
+											{isLoading ? (
+												<Skeleton.Input active block />
+											) : (
+												<Input readOnly={mode === 'view'} allowClear />
+											)}
 										</AntdForm.Item>
 										<AntdForm.Item name="school_city" label="Ville" rules={[{ required: true }]}>
-											{isLoading ? <Skeleton.Input active block /> : <Input allowClear />}
+											{isLoading ? (
+												<Skeleton.Input active block />
+											) : (
+												<Input readOnly={mode === 'view'} allowClear />
+											)}
 										</AntdForm.Item>
 									</>
 								),
@@ -154,15 +168,27 @@ export function Form(props: TFormProps) {
 								children: (
 									<>
 										<AntdForm.Item name="contact_name" label="Nom du contact">
-											{isLoading ? <Skeleton.Input active block /> : <Input allowClear />}
+											{isLoading ? (
+												<Skeleton.Input active block />
+											) : (
+												<Input readOnly={mode === 'view'} allowClear />
+											)}
 										</AntdForm.Item>
 
 										<AntdForm.Item name="contact_phone" label="Téléphone">
-											{isLoading ? <Skeleton.Input active block /> : <Input allowClear />}
+											{isLoading ? (
+												<Skeleton.Input active block />
+											) : (
+												<Input readOnly={mode === 'view'} allowClear />
+											)}
 										</AntdForm.Item>
 
 										<AntdForm.Item name="contact_email" label="Email">
-											{isLoading ? <Skeleton.Input active block /> : <Input allowClear />}
+											{isLoading ? (
+												<Skeleton.Input active block />
+											) : (
+												<Input readOnly={mode === 'view'} allowClear />
+											)}
 										</AntdForm.Item>
 									</>
 								),
@@ -176,7 +202,11 @@ export function Form(props: TFormProps) {
 										{isLoading ? (
 											<Skeleton.Input active block />
 										) : (
-											<Input.TextArea autoSize={{ minRows: 13, maxRows: 13 }} allowClear />
+											<Input.TextArea
+												autoSize={{ minRows: 13, maxRows: 13 }}
+												readOnly={mode === 'view'}
+												allowClear
+											/>
 										)}
 									</AntdForm.Item>
 								),
@@ -203,8 +233,8 @@ export function Form(props: TFormProps) {
 							<Skeleton.Input active block />
 						) : (
 							<Select
+								// TODO: add readonly
 								loading={isFetching}
-								showSearch
 								filterOption={(input, option) => {
 									if (!option) return false
 
@@ -219,6 +249,7 @@ export function Form(props: TFormProps) {
 										value: assignee.id,
 									}
 								})}
+								showSearch
 								allowClear
 							/>
 						)}
@@ -232,6 +263,7 @@ export function Form(props: TFormProps) {
 							<Skeleton.Input active block />
 						) : (
 							<Select
+								// TODO: add readonly
 								options={Object.entries(appointmentStatusRecord).map(([key, value]) => ({
 									key,
 									label: value,
@@ -243,7 +275,11 @@ export function Form(props: TFormProps) {
 					</AntdForm.Item>
 
 					<AntdForm.Item name="apt_type" label="Type de rendez-vous">
-						{isLoading ? <Skeleton.Input active block /> : <Input allowClear />}
+						{isLoading ? (
+							<Skeleton.Input active block />
+						) : (
+							<Input readOnly={mode === 'view'} allowClear />
+						)}
 					</AntdForm.Item>
 
 					<AntdForm.Item

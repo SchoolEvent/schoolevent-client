@@ -61,17 +61,21 @@ export function FavoritesList() {
 	]
 
 	return (
-		<Space className="favorites-list" direction="vertical">
+		<div className="favorites-list">
 			<Typography.Title className="favorites-list__title" level={5}>
 				Établissements favoris
 			</Typography.Title>
 			<Input
+				className="favorites-list__search"
 				placeholder="Rechercher des favoris"
 				prefix={<SearchIcon />}
 				onChange={handleSearchChange}
 			/>
 			<List
-				locale={{ emptyText: 'Aucun favoris' }}
+				className="favorites-list__list"
+				locale={{
+					emptyText: 'Aucun favoris',
+				}}
 				dataSource={filteredFavorites}
 				loading={loading}
 				renderItem={(item) => (
@@ -93,7 +97,7 @@ export function FavoritesList() {
 					</List.Item>
 				)}
 			/>
-		</Space>
+		</div>
 	)
 }
 
