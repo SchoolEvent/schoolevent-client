@@ -142,7 +142,7 @@ export type Database = {
           event_duration: number
           event_school_name: string
           event_title: string
-          event_type: string
+          event_type: Database["public"]["Enums"]["event_type"]
           id: number
         }
         Insert: {
@@ -154,7 +154,7 @@ export type Database = {
           event_duration: number
           event_school_name: string
           event_title: string
-          event_type: string
+          event_type: Database["public"]["Enums"]["event_type"]
           id?: number
         }
         Update: {
@@ -166,7 +166,7 @@ export type Database = {
           event_duration?: number
           event_school_name?: string
           event_title?: string
-          event_type?: string
+          event_type?: Database["public"]["Enums"]["event_type"]
           id?: number
         }
         Relationships: []
@@ -266,6 +266,8 @@ export type Database = {
     }
     Enums: {
       apt_status: "to_contact" | "contacted" | "planned"
+      event_type: "open_day" | "presentation" | "conference"
+      mood: "open_day" | "presentation" | "conference"
       user_role: "student" | "manager" | "admin"
       user_status: "online" | "idle" | "offline"
     }
