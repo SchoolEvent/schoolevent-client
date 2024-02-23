@@ -32,8 +32,16 @@
 		// This trick allows to clip the list items behind the inner border
 		outline: var(--ant-padding-sm) solid var(--ant-color-bg-layout);
 		outline-offset: calc(var(--ant-padding-sm) * -1);
+		transition:
+			outline 150ms ease-in-out,
+			outline-offset 250ms ease-in-out;
 		// Hide scroll bar
 		scrollbar-width: none;
+
+		&--hover {
+			outline: var(--ant-padding-xxs) solid var(--ant-color-primary);
+			outline-offset: calc(var(--ant-padding-xxs) * -1);
+		}
 
 		&__list {
 			display: flex;

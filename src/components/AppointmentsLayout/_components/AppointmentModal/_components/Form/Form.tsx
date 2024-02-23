@@ -2,13 +2,11 @@ import { Plus as PlusIcon, Check as SaveIcon } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import {
 	Form as AntdForm,
-	AutoComplete,
 	Button,
 	Col,
 	Divider,
 	Input,
 	Row,
-	Select,
 	Skeleton,
 	Tabs,
 	Typography,
@@ -19,7 +17,7 @@ import utc from 'dayjs/plugin/utc'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { Info } from '@components'
+import { AutoCompleteField, Info, SelectField } from '@components'
 import {
 	fetchAddressCompletion,
 	fetchGeoIP,
@@ -77,10 +75,10 @@ export function Form(props: TFormProps) {
 	// If in new mode, set the contacted_date or the planned_date to the current date
 	if (mode === 'new') {
 		if (initialValues?.apt_status === 'contacted' && !initialValues?.contacted_date) {
-			initialValues.contacted_date = dayjs().tz().toISOString()
+			initialValues.contacted_date = dayjs().tz()
 		}
 		if (initialValues?.apt_status === 'planned' && !initialValues?.planned_date) {
-			initialValues.planned_date = dayjs().tz().toISOString()
+			initialValues.planned_date = dayjs().tz()
 		}
 	}
 
@@ -127,8 +125,8 @@ export function Form(props: TFormProps) {
 											{isLoading ? (
 												<Skeleton.Input active block />
 											) : (
-												<AutoComplete
-													// TODO: add readonly
+												<AutoCompleteField
+													readOnly={mode === 'view'}
 													value={addressSearch}
 													onSearch={(value) => setAddressSearch(value)}
 													onSelect={(value) => setAddressSearch(value)}
@@ -232,13 +230,13 @@ export function Form(props: TFormProps) {
 						{isLoading ? (
 							<Skeleton.Input active block />
 						) : (
-							<Select
-								// TODO: add readonly
+							<SelectField
+								readOnly={mode === 'view'}
 								loading={isFetching}
 								filterOption={(input, option) => {
 									if (!option) return false
 
-									return option.label.toLowerCase().includes(input.toLowerCase())
+									return (option.label as string).toLowerCase().includes(input.toLowerCase())
 								}}
 								options={assignees?.map((assignee) => {
 									const { name } = getNameFromEmail(assignee.email)
@@ -262,8 +260,8 @@ export function Form(props: TFormProps) {
 						{isLoading ? (
 							<Skeleton.Input active block />
 						) : (
-							<Select
-								// TODO: add readonly
+							<SelectField
+								readOnly={mode === 'view'}
 								options={Object.entries(appointmentStatusRecord).map(([key, value]) => ({
 									key,
 									label: value,
@@ -298,11 +296,7 @@ export function Form(props: TFormProps) {
 						{isLoading ? (
 							<Skeleton.Input active block />
 						) : (
-							<DateField
-								value={form.getFieldValue('contacted_date')}
-								viewMode={mode === 'view'}
-								block
-							/>
+							<DateField readOnly={mode === 'view'} block />
 						)}
 					</AntdForm.Item>
 
@@ -320,11 +314,7 @@ export function Form(props: TFormProps) {
 						{isLoading ? (
 							<Skeleton.Input active block />
 						) : (
-							<DateField
-								value={form.getFieldValue('planned_date')}
-								viewMode={mode === 'view'}
-								block
-							/>
+							<DateField readOnly={mode === 'view'} block />
 						)}
 					</AntdForm.Item>
 				</Col>
@@ -350,7 +340,13 @@ export function Form(props: TFormProps) {
 								className="appointment-modal__form__footer__submit-button"
 								htmlType="submit"
 								type="primary"
-								icon={mode === 'new' ? <PlusIcon size={16} /> : <SaveIcon size={16} />}
+								icon={
+									mode === 'new' ? (
+										<PlusIcon size={16} weight="bold" />
+									) : (
+										<SaveIcon size={16} weight="bold" />
+									)
+								}
 								disabled={isLoading}
 								loading={isPending}
 								block

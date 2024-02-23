@@ -5,7 +5,7 @@ import local_fr from 'dayjs/locale/fr'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
-import { IDateFieldProps } from './DateField-types'
+import { TDateFieldProps } from './DateField-types'
 import { getClassname } from './DateField-utils'
 
 import './DateField-styles.less'
@@ -14,16 +14,16 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.locale(local_fr)
 
-export function DateField(props: IDateFieldProps) {
-	const { value, label, viewMode, showTime, block } = props
+export function DateField(props: TDateFieldProps) {
+	const { readOnly, label, block, ...restProps } = props
 
-	const date = value ? dayjs(value) : undefined
-	const format = showTime ? 'dddd DD MMMM YYYY à HH:mm' : 'dddd DD MMMM YYYY'
-	const pickerFormat = showTime ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'
+	const date = restProps.value ? dayjs(restProps.value) : undefined
+	const format = restProps.showTime ? 'dddd DD MMMM YYYY à HH:mm' : 'dddd DD MMMM YYYY'
+	const pickerFormat = restProps.showTime ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'
 
-	if (viewMode) {
+	if (readOnly) {
 		return (
-			<Space className={getClassname({ viewMode, block })}>
+			<Space className={getClassname({ readOnly, block })}>
 				{label && <Typography.Text>{label} :</Typography.Text>}
 				<Typography.Text>{date ? date.format(format) : null}</Typography.Text>
 			</Space>
@@ -31,9 +31,8 @@ export function DateField(props: IDateFieldProps) {
 	} else {
 		return (
 			<DatePicker
-				className={getClassname({ viewMode, block })}
-				value={date}
-				showTime={showTime}
+				{...restProps}
+				className={getClassname({ readOnly, block })}
 				format={pickerFormat}
 				locale={pickerLocale}
 			/>

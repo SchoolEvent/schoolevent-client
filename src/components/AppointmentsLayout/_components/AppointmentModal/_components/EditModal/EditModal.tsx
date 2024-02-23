@@ -1,5 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { App, Skeleton } from 'antd'
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -10,6 +13,9 @@ import { useSupabase } from '@utils'
 import { Modal } from '../../../Modal/Modal'
 import { Form } from '../Form/Form'
 import { IFormValues } from '../Form/Form-types'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export function EditModal({ appointmentId }: { appointmentId: string | null }) {
 	const { user } = useAuth()
@@ -27,7 +33,11 @@ export function EditModal({ appointmentId }: { appointmentId: string | null }) {
 
 			const { data, error } = await supabase
 				.from('appointments')
-				.update(values)
+				.update({
+					...values,
+					contacted_date: values.contacted_date?.toISOString() ?? null,
+					planned_date: values.planned_date?.toISOString() ?? null,
+				})
 				.eq('id', appointmentId)
 				.or(`assignee.eq.${user!.id},author_id.eq.${user!.id}`)
 
@@ -53,7 +63,11 @@ export function EditModal({ appointmentId }: { appointmentId: string | null }) {
 	})
 
 	// Fetch appointment
-	const { data, isFetching, error } = useQuery({
+	const {
+		data: appointment,
+		isFetching,
+		error,
+	} = useQuery({
 		queryKey: ['appointment', { appointmentId }],
 		queryFn: async () => {
 			if (!appointmentId) {
@@ -79,13 +93,17 @@ export function EditModal({ appointmentId }: { appointmentId: string | null }) {
 	}, [isFetching])
 
 	const initialValues: Partial<IFormValues> | undefined = useMemo(() => {
-		return data
-	}, [data])
+		return {
+			...appointment,
+			contacted_date: appointment?.contacted_date ? dayjs(appointment.contacted_date) : undefined,
+			planned_date: appointment?.planned_date ? dayjs(appointment.planned_date) : undefined,
+		}
+	}, [appointment])
 
 	return (
 		<Modal
 			className="appointment-modal appointment-modal--edit"
-			title={isFetching ? <Skeleton.Input active /> : data?.school_name}
+			title={isFetching ? <Skeleton.Input active /> : appointment?.school_name}
 		>
 			{error ? (
 				<LoadingError error={error.message} />

@@ -32,16 +32,21 @@ export function DropZone(props: IDropZoneProps) {
 	/**
 	 * Fetch appointments of status <columnStatus>
 	 */
-	const fetchAppointments = async () =>
-		await supabase
-			.from('appointments')
-			.select('*', { count: 'exact' })
-			.eq('apt_status', columnStatus)
-			.or(`assignee.eq.${user!.id},author_id.eq.${user!.id}`)
-
 	const { data: response } = useQuery({
 		queryKey: ['appointments', { status: columnStatus }],
-		queryFn: fetchAppointments,
+		queryFn: async () => {
+			const { data, error, count } = await supabase
+				.from('appointments')
+				.select('*, users(id, email)', { count: 'exact' }) // This select statement allows to make a join request and get both the appointment and the assignee at the same time
+				.eq('apt_status', columnStatus)
+				.or(`assignee.eq.${user!.id},author_id.eq.${user!.id}`)
+
+			if (error) {
+				throw error
+			}
+
+			return { appointment: data, count }
+		},
 	})
 
 	/**
@@ -79,11 +84,14 @@ export function DropZone(props: IDropZoneProps) {
 		},
 	})
 
-	const [, drop] = useDrop({
+	const [{ isOver }, drop] = useDrop({
 		accept: accepts,
 		drop: (item: TAppointment) => {
 			mutation.mutate(item)
 		},
+		collect: (monitor) => ({
+			isOver: monitor.isOver(),
+		}),
 	})
 
 	return (
@@ -96,9 +104,14 @@ export function DropZone(props: IDropZoneProps) {
 					{response?.count}
 				</Typography.Title>
 			</div>
-			<div className="drop-zone__list-container" ref={drop}>
+			<div
+				className={classNames('drop-zone__list-container', {
+					'drop-zone__list-container--hover': isOver,
+				})}
+				ref={drop}
+			>
 				<div className="drop-zone__list-container__list">
-					{response?.data?.map((appointment) => (
+					{response?.appointment.map((appointment) => (
 						<DragItem key={appointment.id} appointment={appointment} />
 					))}
 				</div>

@@ -1,6 +1,12 @@
+import dayjs from 'dayjs'
+
 import { TAppointment } from '@types'
 
-export interface IFormValues extends Omit<TAppointment, 'id' | 'author_id'> {}
+export interface IFormValues
+	extends Omit<TAppointment, 'id' | 'author_id' | 'planned_date' | 'contacted_date'> {
+	contacted_date?: dayjs.Dayjs
+	planned_date?: dayjs.Dayjs
+}
 
 export type TFormProps = IFormEditOrNewModeProps | IFormViewModeProps
 

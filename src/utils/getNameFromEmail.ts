@@ -14,7 +14,7 @@ export function getNameFromEmail(email: string) {
 
 			fullname[1] = lastname.join(' ')
 		} else {
-			fullname[1] = capitalize(fullname[1])
+			fullname[1] = fullname[1].toUpperCase()
 		}
 
 		const name = fullname.join(' ')
