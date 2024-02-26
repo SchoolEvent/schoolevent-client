@@ -9,10 +9,10 @@ import { BrowserRouter, Link, Navigate, Outlet, Route, Routes } from 'react-rout
 
 import {
 	AppointmentsLayout,
+	AuthLayout,
 	CalendarLayout,
 	ContactsLayout,
 	EventForm,
-	Login,
 	MainLayout,
 	ProtectedRoute,
 } from '@components'
@@ -105,7 +105,7 @@ function App() {
 										}
 									/>
 								</Route>
-								<Route path="/login" element={<Login />} />
+								<Route path="/login" element={<AuthLayout />} />
 							</Routes>
 						</AuthProvider>
 					</QueryClientProvider>

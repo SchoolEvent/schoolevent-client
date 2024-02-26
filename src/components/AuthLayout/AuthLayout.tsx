@@ -2,9 +2,9 @@ import { Card } from 'antd'
 
 import { LoginForm } from './_components'
 
-import './Login-styles.less'
+import './AuthLayout-styles.less'
 
-export function Login() {
+export function AuthLayout() {
 	return (
 		<div className="login-container">
 			<div className="login-container__hero">
