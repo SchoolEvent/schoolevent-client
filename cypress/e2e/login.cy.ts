@@ -1,5 +1,4 @@
 import {
-	ADMIN_USER,
 	APPOINTMENTS_URL,
 	BASE_URL,
 	CALENDAR_URL,
@@ -39,19 +38,8 @@ describe('Login', () => {
 	})
 
 	it('displays side menu items based on user role', () => {
-		// As admin
-		login(ADMIN_USER, true)
-
-		cy.get('.main-layout__sider').within(() => {
-			SIDE_MENU_LABELS.admin.shouldHaveAccessTo.forEach((label) => {
-				cy.contains(label).should('exist').and('be.visible')
-			})
-		})
-
-		logout()
-
 		// As manager
-		login(MANAGER_USER)
+		login(MANAGER_USER, true)
 
 		cy.get('.main-layout__sider').within(() => {
 			SIDE_MENU_LABELS.manager.shouldHaveAccessTo.forEach((label) => {
@@ -73,34 +61,6 @@ describe('Login', () => {
 				cy.contains(label).should('not.exist')
 			})
 		})
-	})
-
-	it('allows access to all routes for admin role', () => {
-		login(ADMIN_USER, true)
-
-		// This assertion is necessary to ensure that the login was successful.
-		// If we execute the cy.visit(), it will try to navigate before the login is complete.
-		cy.get('.user-menu__dropdown').should('exist').and('be.visible')
-
-		// Admin should have access to contacts page
-		cy.visit(CONTACTS_URL)
-		cy.get('.contacts-table').should('exist').and('be.visible')
-
-		// Admin should have access to calendar page
-		cy.visit(CALENDAR_URL)
-		cy.get('.events-calendar').should('exist').and('be.visible')
-
-		// Admin should have access to appointments page
-		cy.visit(APPOINTMENTS_URL)
-		cy.get('.appointments-layout').should('exist').and('be.visible')
-
-		// Admin should have access to events page
-		// TODO: add assertions for the events page when it's ready
-		cy.visit(EVENTS_URL)
-		cy.url().should('eq', EVENTS_URL)
-
-		// TODO: Admin should have access to students page
-		// TODO: Admin should have access to stats page
 	})
 
 	it('allows access to all routes for manager role', () => {

@@ -7,10 +7,6 @@ export const EVENTS_URL = `${BASE_URL}/events`
 export const STUDENTS_URL = `${BASE_URL}/students`
 export const STATS_URL = `${BASE_URL}/statistics`
 
-export const ADMIN_USER = {
-	email: 'admin@esiee-it.fr',
-	password: 'admin',
-}
 export const MANAGER_USER = {
 	email: 'manager@esiee-it.fr',
 	password: 'manager',

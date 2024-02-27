@@ -1,22 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
-
-import { Database } from '@types'
-
-import { ADMIN_USER, BASE_URL } from '../constants'
-
-const supabaseUrl = Cypress.env('SUPABASE_URL')
-const supabaseServiceKey = Cypress.env('SUPABASE_SERVICE_KEY')
-
-const supabase = createClient<Database>(supabaseUrl, supabaseServiceKey)
-
-/**
- * WARNING: do NOT use this function in production code.
- */
-export function useServiceSupabase() {
-	if (!supabaseUrl || !supabaseServiceKey) throw new Error('Missing Supabase URL or Key')
-
-	return supabase
-}
+import { BASE_URL, MANAGER_USER } from '../constants'
 
 export function getInputFromLabel(label: string) {
 	return cy.get(`label:contains("${label}")`).parent().parent().find('input')
@@ -35,7 +17,7 @@ export function getButtonFromLabel(label: string) {
  *
  * The second parameter is used to navigate to the login page if `true`. Default = `false`
  */
-export function login(params = ADMIN_USER, shouldNavigate = false) {
+export function login(params = MANAGER_USER, shouldNavigate = false) {
 	const { email, password } = params
 
 	if (shouldNavigate) {
