@@ -30,7 +30,12 @@ export function NewModal(props: INewModalProps) {
 		mutationFn: async (values: IFormValues) => {
 			const { data, error } = await supabase
 				.from('appointments')
-				.insert({ ...values, author_id: user!.id })
+				.insert({
+					...values,
+					author_id: user!.id,
+					contacted_date: values.contacted_date?.toISOString(),
+					planned_date: values.planned_date?.toISOString(),
+				})
 
 			if (error) {
 				throw error
