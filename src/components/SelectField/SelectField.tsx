@@ -1,17 +1,27 @@
-import { Input, Select } from 'antd'
+import { Input, Select, Typography } from 'antd'
+import classNames from 'classnames'
 
 import { ISelectFieldProps } from './SelectField-types'
 
+import './SelectField-styles.less'
+
 export function SelectField(props: ISelectFieldProps) {
-	const { readOnly, ...selectProps } = props
+	const { readOnly, className, emptyText = '-', ...selectProps } = props
 
 	const readOnlyValue = selectProps.options?.find((option) => option.value === selectProps.value)
 		?.label
 
-	// TODO: set ellipsis on the input
 	if (readOnly) {
-		return <Input value={readOnlyValue as string} readOnly />
+		return readOnlyValue ? (
+			<Input
+				className={classNames('select-field--readonly', className)}
+				value={readOnlyValue as string}
+				readOnly
+			/>
+		) : (
+			<Typography.Text type="secondary">{emptyText}</Typography.Text>
+		)
 	}
 
-	return <Select {...selectProps} />
+	return <Select {...selectProps} className={classNames('select-field', className)} />
 }

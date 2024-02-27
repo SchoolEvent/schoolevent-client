@@ -2,7 +2,6 @@ import { UploadOutlined } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
 import {
 	Form as AntdForm,
-	AutoComplete,
 	Button,
 	Col,
 	ConfigProvider,
@@ -11,12 +10,10 @@ import {
 	Input,
 	InputNumber,
 	Row,
-	Select,
 	Typography,
 	Upload,
 	theme as themeAlg,
 } from 'antd'
-import { DefaultOptionType } from 'antd/es/select'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -24,12 +21,13 @@ import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import short from 'short-uuid'
 
-import { IconButton } from '@components'
+import { AutoCompleteField, IconButton, SelectField } from '@components'
 import { useAuth, useTheme } from '@contexts'
 import { fetchAddressCompletion, fetchGeoIP, useDebounce, useSupabase } from '@utils'
 
-import { IEventFormFields, eventTypesRecord } from '../../EventForm-types'
+import { IEventFormFields } from '../../EventForm-types'
 import { getFileExtension } from '../../EventForm-utils'
+import { eventTypeLabelRecord } from './Form-types'
 import { getFilePathFromUrl } from './Form-utils'
 
 dayjs.extend(utc)
@@ -81,7 +79,7 @@ export function Form() {
 			setBackgroundUrl(null)
 		}
 
-		return error ? false : true
+		return !!error
 	}, [supabase, backgroundUrl])
 
 	return (
@@ -225,11 +223,12 @@ export function Form() {
 								{ required: true, message: 'Veuillez sélectionner le type de votre événement.' },
 							]}
 						>
-							<Select
+							<SelectField
 								placeholder="Sélectionner un type"
-								options={Object.entries(eventTypesRecord).map(
-									([key, label]) => ({ label, value: key }) as DefaultOptionType,
-								)}
+								options={Object.keys(eventTypeLabelRecord).map((key) => ({
+									label: eventTypeLabelRecord[key as keyof typeof eventTypeLabelRecord],
+									value: key as keyof typeof eventTypeLabelRecord,
+								}))}
 							/>
 						</AntdForm.Item>
 					</Col>
@@ -240,10 +239,13 @@ export function Form() {
 					name="event_address"
 					rules={[{ required: true, message: "Veuillez saisir l'adresse de votre événement." }]}
 				>
-					<AutoComplete
+					<AutoCompleteField
 						onSearch={(value) => setAddressSearch(value)}
 						onSelect={(value) => setAddressSearch(value)}
-						options={addressCompletion.map((address) => ({ label: address, value: address }))}
+						options={addressCompletion.map((address) => ({
+							label: `${address.name}, ${address.postcode} ${address.city}`,
+							value: `${address.name}, ${address.postcode} ${address.city}`,
+						}))}
 					/>
 				</AntdForm.Item>
 

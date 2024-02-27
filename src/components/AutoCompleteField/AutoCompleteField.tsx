@@ -1,14 +1,26 @@
-import { AutoComplete, Input } from 'antd'
+import { AutoComplete, Input, Typography } from 'antd'
+import classNames from 'classnames'
 
 import { IAutoCompleteFieldProps } from './AutoCompleteField-types'
 
-export function AutoCompleteField(props: IAutoCompleteFieldProps) {
-	const { readOnly, ...autoCompleteProps } = props
+import './AutoCompleteField-styles.less'
 
-	// TODO: set ellipsis on the input
+export function AutoCompleteField(props: IAutoCompleteFieldProps) {
+	const { readOnly, className, emptyText = '-', ...autoCompleteProps } = props
+
 	if (readOnly) {
-		return <Input value={autoCompleteProps.value} readOnly />
+		return autoCompleteProps.value ? (
+			<Input
+				className={classNames('auto-complete-field--readonly', className)}
+				value={autoCompleteProps.value}
+				readOnly
+			/>
+		) : (
+			<Typography.Text type="secondary">{emptyText}</Typography.Text>
+		)
 	}
 
-	return <AutoComplete {...autoCompleteProps} />
+	return (
+		<AutoComplete {...autoCompleteProps} className={classNames('auto-complete-field', className)} />
+	)
 }

@@ -128,6 +128,7 @@ export function Form(props: TFormProps) {
 												<AutoCompleteField
 													readOnly={mode === 'view'}
 													value={addressSearch}
+													emptyText="Aucune adresse renseignée"
 													onSearch={(value) => setAddressSearch(value)}
 													onSelect={(value) => setAddressSearch(value)}
 													options={addressCompletion?.map((address) => ({
@@ -232,6 +233,8 @@ export function Form(props: TFormProps) {
 						) : (
 							<SelectField
 								readOnly={mode === 'view'}
+								placeholder="Sélectionner un assigné"
+								emptyText="Aucun assigné"
 								loading={isFetching}
 								filterOption={(input, option) => {
 									if (!option) return false
@@ -276,7 +279,11 @@ export function Form(props: TFormProps) {
 						{isLoading ? (
 							<Skeleton.Input active block />
 						) : (
-							<Input readOnly={mode === 'view'} allowClear />
+							<Input
+								readOnly={mode === 'view'}
+								placeholder="Ex: téléphonique, teams, ..."
+								allowClear
+							/>
 						)}
 					</AntdForm.Item>
 
