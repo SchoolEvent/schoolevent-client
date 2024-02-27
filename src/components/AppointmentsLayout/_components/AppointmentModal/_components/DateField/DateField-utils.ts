@@ -1,11 +1,11 @@
 import { IGetClassnameParams } from './DateField-types'
 
 export function getClassname(params: IGetClassnameParams) {
-	const { viewMode, block } = params
+	const { readOnly, block } = params
 
 	let classname = 'date-field'
 
-	if (viewMode) {
+	if (readOnly) {
 		classname += ' date-field--view'
 	}
 
