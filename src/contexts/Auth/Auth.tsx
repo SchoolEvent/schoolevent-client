@@ -23,7 +23,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 		if (role) {
 			setLoading(false)
 		}
-	}, [role]) // eslint-disable-line react-hooks/exhaustive-deps
+	}, [role])
 
 	useQuery({
 		queryKey: ['user-role'],
