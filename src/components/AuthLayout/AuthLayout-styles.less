@@ -1,10 +1,9 @@
 @import '../../assets/variables.less';
 
-.login-container {
+.auth-layout {
 	height: 100%;
 	width: 100%;
 	display: grid;
-	grid-template-columns: 40% 60%;
 
 	&__hero {
 		border-radius: 2rem;
@@ -12,22 +11,27 @@
 		margin: 1rem;
 		background-color: #0f1828;
 		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
 
-		img:nth-child(1) {
-			width: 200px;
-		}
+		&__logo-container {
+			height: fit-content;
+			display: flex;
+			flex-direction: column;
+			justify-items: center;
 
-		img:nth-child(2) {
-			height: 4rem;
-			width: auto;
-			margin-top: 2rem;
+			&__logo {
+				max-height: 300px;
+				height: 100%;
+				width: auto;
+			}
+
+			&__text {
+				width: 100%;
+				max-width: 500px;
+				margin-top: 2rem;
+			}
 		}
 
 		p {
-			margin-top: 6rem;
 			color: white;
 			font-size: 1.75rem;
 
@@ -37,7 +41,7 @@
 		}
 	}
 
-	&__form {
+	&__content {
 		width: 100%;
 		display: flex;
 		flex-direction: column;
@@ -65,6 +69,52 @@
 			button[type='submit'] {
 				margin-top: 2rem;
 			}
+		}
+	}
+}
+
+@media screen and (min-width: 891px) {
+	.auth-layout {
+		grid-template-columns: 40% 60%;
+
+		&__hero {
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-evenly;
+
+			p {
+				margin: 4rem 0;
+			}
+		}
+	}
+}
+
+@media screen and (max-width: 890px) {
+	.auth-layout {
+		grid-template-rows: 30% 70%;
+
+		&__hero {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 2rem;
+
+			&__logo-container {
+				max-width: 30%;
+				height: 100%;
+				display: grid;
+				grid-template-rows: 70% 30%;
+				justify-items: center;
+				align-content: center;
+			}
+
+			p {
+				margin: 0;
+			}
+		}
+
+		&__content {
+			padding: 0 1rem;
 		}
 	}
 }
