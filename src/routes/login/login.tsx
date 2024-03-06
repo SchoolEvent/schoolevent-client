@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet'
 import { RouteObject } from 'react-router-dom'
 
-import { Login } from '@components'
+import { LoginForm } from '@components'
 
 export const loginRoute: RouteObject = {
 	path: '/login',
@@ -10,7 +10,7 @@ export const loginRoute: RouteObject = {
 			<Helmet>
 				<title>SchoolEvent | Connexion</title>
 			</Helmet>
-			<Login />
+			<LoginForm />
 		</>
 	),
 }
