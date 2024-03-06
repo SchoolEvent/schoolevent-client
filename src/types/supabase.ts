@@ -227,22 +227,32 @@ export type Database = {
           school_postal_code?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "favorites_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {
+          approved: boolean | null
           created_at: string
           email: string
           id: string
           role: Database["public"]["Enums"]["user_role"]
         }
         Insert: {
+          approved?: boolean | null
           created_at?: string
           email: string
           id: string
           role: Database["public"]["Enums"]["user_role"]
         }
         Update: {
+          approved?: boolean | null
           created_at?: string
           email?: string
           id?: string
