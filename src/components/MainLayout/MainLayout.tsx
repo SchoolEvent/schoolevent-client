@@ -4,15 +4,17 @@ import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 
 import { IconButton } from '@components'
+import { useAuth } from '@contexts'
 import { useLocalStorage } from '@utils'
 
-import { SideMenu, UserMenu } from './_components'
+import { NotApproved, SideMenu, UserMenu } from './_components'
 
 import './MainLayout-styles.less'
 
 const { Content, Header, Sider } = Layout
 
 export function MainLayout() {
+	const { approved } = useAuth()
 	const localStorage = useLocalStorage()
 	const [isCollapsed, setIsCollapsed] = useState<boolean>(
 		localStorage.get('sidebar.isCollapsed', false) as boolean,
@@ -23,7 +25,7 @@ export function MainLayout() {
 		setIsCollapsed((prevState) => !prevState)
 	}
 
-	return (
+	return approved ? (
 		<Layout className="main-layout">
 			<Sider
 				className="main-layout__sider"
@@ -55,5 +57,7 @@ export function MainLayout() {
 				</Content>
 			</Layout>
 		</Layout>
+	) : (
+		<NotApproved />
 	)
 }

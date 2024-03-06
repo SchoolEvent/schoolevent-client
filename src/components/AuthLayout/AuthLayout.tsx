@@ -1,6 +1,4 @@
-import { Card } from 'antd'
-
-import { LoginForm } from './_components'
+import { Outlet } from 'react-router-dom'
 
 import './AuthLayout-styles.less'
 
@@ -11,12 +9,12 @@ export function AuthLayout() {
 				<div className="auth-layout__hero__logo-container">
 					<img
 						className="auth-layout__hero__logo-container__logo"
-						src="schoolevent_logo_white.svg"
+						src="/schoolevent_logo_white.svg"
 						alt="SchoolEvent logo"
 					/>
 					<img
 						className="auth-layout__hero__logo-container__text"
-						src="schoolevent_text_white.svg"
+						src="/schoolevent_text_white.svg"
 						alt="SchoolEvent text logo"
 					/>
 				</div>
@@ -25,9 +23,7 @@ export function AuthLayout() {
 				</p>
 			</header>
 			<div className="auth-layout__content">
-				<Card title={<h2>Connexion</h2>}>
-					<LoginForm />
-				</Card>
+				<Outlet />
 			</div>
 		</div>
 	)

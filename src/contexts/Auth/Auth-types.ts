@@ -9,6 +9,7 @@ export interface IAuthContext {
 	user: User | null
 	session: Session | null
 	role: TRole | null
+	approved: boolean
 }
 
 export interface IHandleUserSessionParams {

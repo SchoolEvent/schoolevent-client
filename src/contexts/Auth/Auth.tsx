@@ -15,6 +15,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 	const [session, setSession] = useState<Session | null>(null)
 	const [user, setUser] = useState<User | null>(null)
 	const [role, setRole] = useState<TRole | null>(null)
+	const [approved, setApproved] = useState(false)
 	const [loading, setLoading] = useState(true)
 	const supabase = useSupabase()
 	const navigate = useNavigate()
@@ -58,19 +59,22 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
 			if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !newSession)) {
 				setRole(null)
-				navigate('/login')
+
+				// Navigate to the login page only when the user is not already on it
+				!pathname.includes('auth') && navigate('/auth/login')
 			} else if (event === 'SIGNED_IN' || (event === 'INITIAL_SESSION' && newSession)) {
 				if (newSession) {
 					supabase
 						.from('users')
-						.select('role')
+						.select('role,approved')
 						.eq('id', newSession.user.id)
 						.single()
 						.then(({ data: userObject }) => {
 							if (userObject) {
 								setRole(userObject.role)
+								setApproved(userObject.approved ?? false)
 
-								if (pathname.includes('login')) {
+								if (pathname.includes('auth')) {
 									navigate('/')
 								}
 							}
@@ -118,8 +122,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
 			session,
 			user,
 			role,
+			approved,
 		}),
-		[session, user, role],
+		[session, user, role, approved],
 	)
 
 	return (

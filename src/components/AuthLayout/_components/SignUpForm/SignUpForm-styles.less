@@ -1,0 +1,26 @@
+.sign-up-form {
+	.ant-progress {
+		&-steps {
+			&-outer {
+				display: grid;
+				grid-template-columns: auto auto auto 70px;
+				gap: var(--ant-margin-xxs);
+			}
+
+			&-item {
+				width: 100% !important;
+			}
+		}
+
+		&-text {
+			margin-left: auto;
+			width: max-content;
+		}
+
+		&-status-normal {
+			.ant-progress-text {
+				color: var(--ant-color-warning);
+			}
+		}
+	}
+}

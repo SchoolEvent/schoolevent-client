@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { App as AppProvider, ConfigProvider, theme as themeAlg } from 'antd'
+import { App as AppProvider, Card, ConfigProvider, Typography, theme as themeAlg } from 'antd'
 import frFR from 'antd/lib/locale/fr_FR'
 import { useEffect, useState } from 'react'
 import { DndProvider } from 'react-dnd'
@@ -13,8 +13,11 @@ import {
 	CalendarLayout,
 	ContactsLayout,
 	EventForm,
+	LoginForm,
 	MainLayout,
 	ProtectedRoute,
+	SignUpForm,
+	Success,
 } from '@components'
 import { AuthProvider, FavoriteContactsProvider, MapDisplayProvider, useTheme } from '@contexts'
 
@@ -27,7 +30,7 @@ function App() {
 	const { theme } = useTheme()
 
 	useEffect(() => {
-		setFaviconHref(`schoolevent_logo_${theme === 'dark' ? 'white' : 'black'}.svg`)
+		setFaviconHref(`/schoolevent_logo_${theme === 'dark' ? 'white' : 'black'}.svg`)
 	}, [faviconHref, theme])
 
 	return (
@@ -105,7 +108,29 @@ function App() {
 										}
 									/>
 								</Route>
-								<Route path="/login" element={<AuthLayout />} />
+								<Route path="/auth" element={<AuthLayout />}>
+									<Route path="*" element={<Navigate to="/auth/login" />} />
+									<Route
+										path="login"
+										element={
+											<Card title={<Typography.Title level={2}>Connexion</Typography.Title>}>
+												<LoginForm />
+											</Card>
+										}
+									/>
+									<Route path="sign-up" element={<Outlet />}>
+										<Route path="*" element={<Navigate to="/auth/sign-up" />} />
+										<Route
+											index
+											element={
+												<Card title={<Typography.Title level={2}>Inscription</Typography.Title>}>
+													<SignUpForm />
+												</Card>
+											}
+										/>
+										<Route path="success" element={<Success />} />
+									</Route>
+								</Route>
 							</Routes>
 						</AuthProvider>
 					</QueryClientProvider>
