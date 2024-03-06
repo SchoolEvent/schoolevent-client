@@ -1,16 +1,16 @@
-import { Button, Form, Input, Alert } from 'antd'
+import { Alert, Button, Form, Input } from 'antd'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { useSupabase } from '@utils'
 
 import { ILoginFormFields } from '../types'
-import {parseLoginError} from './LoginForm-utils'
-import { useState } from 'react'
+import { parseLoginError } from './LoginForm-utils'
 
 import './LoginForm-styles.less'
 
 export function LoginForm() {
-  const [error, setError] = useState<null | string>(null)
+	const [error, setError] = useState<null | string>(null)
 	const [form] = Form.useForm()
 	const supabase = useSupabase()
 
@@ -23,9 +23,9 @@ export function LoginForm() {
 
 		if (error) {
 			console.error(error)
-      const parsedMessage = parseLoginError(error.message)
+			const parsedMessage = parseLoginError(error.message)
 
-      parsedMessage && setError(parsedMessage)
+			parsedMessage && setError(parsedMessage)
 
 			return
 		}
@@ -34,27 +34,27 @@ export function LoginForm() {
 	return (
 		<Form
 			form={form}
-      className='login-form'
+			className="login-form"
 			name="login"
 			size="large"
 			layout="vertical"
 			autoComplete="off"
 			onFinish={onFinish}
 			initialValues={{ email: '', password: '' }}
-      requiredMark={false}
-      onChange={() => {
-        if(error) {
-          setError(null)
-        }
-      }}
+			requiredMark={false}
+			onChange={() => {
+				if (error) {
+					setError(null)
+				}
+			}}
 		>
-      {error && <Alert className='login-form__alert' type='error' message={error} showIcon />}
+			{error && <Alert className="login-form__alert" type="error" message={error} showIcon />}
 			<Form.Item<ILoginFormFields>
 				label="Email"
 				name="email"
 				validateFirst
 				rules={[
-					{ type: "email", message: 'Veuillez saisir un email valide.' },
+					{ type: 'email', message: 'Veuillez saisir un email valide.' },
 					{ required: true, message: 'Veuillez saisir votre email.' },
 				]}
 			>

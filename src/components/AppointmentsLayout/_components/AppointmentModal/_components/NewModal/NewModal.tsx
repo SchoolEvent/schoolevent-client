@@ -28,14 +28,12 @@ export function NewModal(props: INewModalProps) {
 	// Create appointment
 	const { mutate, isPending } = useMutation({
 		mutationFn: async (values: IFormValues) => {
-			const { data, error } = await supabase
-				.from('appointments')
-				.insert({
-					...values,
-					author_id: user!.id,
-					contacted_date: values.contacted_date?.toISOString(),
-					planned_date: values.planned_date?.toISOString(),
-				})
+			const { data, error } = await supabase.from('appointments').insert({
+				...values,
+				author_id: user!.id,
+				contacted_date: values.contacted_date?.toISOString(),
+				planned_date: values.planned_date?.toISOString(),
+			})
 
 			if (error) {
 				throw error
