@@ -27,7 +27,7 @@ export function login(params = MANAGER_USER, shouldNavigate = false) {
 	getInputFromLabel('Email').type(email)
 	getInputFromLabel('Mot de passe').type(password)
 
-	getButtonFromLabel('Connexion').click()
+	getButtonFromLabel('Se connecter').click()
 }
 
 export function logout() {

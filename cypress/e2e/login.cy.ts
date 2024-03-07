@@ -3,21 +3,15 @@ import {
 	BASE_URL,
 	CALENDAR_URL,
 	CONTACTS_URL,
+	DISABLED_USER,
 	EVENTS_URL,
 	LOGIN_URL,
 	MANAGER_USER,
 	SIDE_MENU_LABELS,
 	STUDENT_USER,
 } from '../constants'
-import {
-	getButtonFromLabel,
-	getInputErrorFromLabel,
-	getInputFromLabel,
-	login,
-	logout,
-} from '../support/utils'
+import { getButtonFromLabel, getInputFromLabel, login, logout } from '../support/utils'
 
-// TODO: write tests to check that the UI adapts to the user's role
 describe('Login', () => {
 	it('allows to login with school email', () => {
 		login(MANAGER_USER, true)
@@ -25,16 +19,24 @@ describe('Login', () => {
 		cy.url().should('eq', `${BASE_URL}/`)
 	})
 
-	it('does not allow to login with personal email', () => {
+	it('displays invalid credentials error', () => {
 		cy.visit(LOGIN_URL)
 
 		getInputFromLabel('Email').type('dummy@email.com')
 		getInputFromLabel('Mot de passe').type('dummypassword')
 
-		// Whenever a user tries to log in with a personal email, the error message should be displayed
-		getInputErrorFromLabel('Email').should('contain.text', 'Veuillez saisir votre email étudiant.')
+		getButtonFromLabel('Se connecter').click()
 
-		getButtonFromLabel('Connexion').should('be.disabled')
+		cy.contains('Email ou mot de passe invalide.').should('be.visible')
+	})
+
+	it('do not allow access to unapproved users', () => {
+		login(DISABLED_USER, true)
+
+		cy.contains('Accès refusé').should('be.visible')
+		cy.contains("Votre compte n'est pas approuvé. Veuillez contacter votre administrateur.").should(
+			'be.visible',
+		)
 	})
 
 	it('displays side menu items based on user role', () => {

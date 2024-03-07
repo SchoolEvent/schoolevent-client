@@ -11,10 +11,17 @@ export const MANAGER_USER = {
 	email: 'manager@esiee-it.fr',
 	password: 'manager',
 }
+
 export const STUDENT_USER = {
 	email: 'student@edu.esiee-it.fr',
 	password: 'student',
 }
+
+export const DISABLED_USER = {
+	email: 'disabled@esiee-it.fr',
+	password: 'disabled',
+}
+
 export const SIDE_MENU_LABELS = {
 	admin: {
 		shouldHaveAccessTo: [
