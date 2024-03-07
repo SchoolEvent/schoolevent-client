@@ -1,3 +1,4 @@
+import { SignIn as SignUpIcon } from '@phosphor-icons/react'
 import { useMutation } from '@tanstack/react-query'
 import { App, Button, Form, Input } from 'antd'
 import { Link, useNavigate } from 'react-router-dom'
@@ -131,7 +132,14 @@ export function SignUpForm() {
 			</Form.Item>
 
 			<Form.Item>
-				<Button htmlType="submit" type="primary" loading={isPending} block>
+				<Button
+					className="sign-up-form__submit-btn"
+					htmlType="submit"
+					type="primary"
+					loading={isPending}
+					icon={<SignUpIcon size={16} weight="bold" />}
+					block
+				>
 					S'inscrire
 				</Button>
 			</Form.Item>

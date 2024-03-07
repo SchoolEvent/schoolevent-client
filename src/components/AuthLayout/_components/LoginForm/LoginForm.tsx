@@ -1,3 +1,4 @@
+import { SignIn as LoginIcon } from '@phosphor-icons/react'
 import { Alert, Button, Form, Input } from 'antd'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -24,10 +25,7 @@ export function LoginForm() {
 		if (error) {
 			console.error(error)
 			const parsedMessage = parseLoginError(error.message)
-
 			parsedMessage && setError(parsedMessage)
-
-			return
 		}
 	}
 
@@ -70,7 +68,13 @@ export function LoginForm() {
 			</Form.Item>
 
 			<Form.Item>
-				<Button htmlType="submit" type="primary" block>
+				<Button
+					className="login-form__submit-btn"
+					htmlType="submit"
+					type="primary"
+					icon={<LoginIcon size={16} weight="bold" />}
+					block
+				>
 					Se connecter
 				</Button>
 			</Form.Item>
