@@ -105,7 +105,7 @@ export function ContactsLayout() {
 						</div>
 						<Divider type="vertical" />
 						<Space direction="horizontal" className="contacts-global-search">
-							<Info tooltip>
+							<Info tooltip tooltipProps={{ placement: 'bottom' }}>
 								<Space direction="vertical">
 									<h4>Recherche globale</h4>
 									<div>

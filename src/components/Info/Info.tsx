@@ -6,11 +6,11 @@ import { TInfoProps } from './Info-types'
 import './Info-styles.less'
 
 export function Info(props: TInfoProps) {
-	const { direction = 'horizontal', children, tooltip } = props
+	const { direction = 'horizontal', children, tooltip, tooltipProps } = props
 
 	if (tooltip) {
 		return (
-			<Tooltip overlayClassName="info__tooltip" title={children}>
+			<Tooltip overlayClassName="info__tooltip" title={children} {...tooltipProps}>
 				<InfoIcon className="info__icon" />
 			</Tooltip>
 		)
